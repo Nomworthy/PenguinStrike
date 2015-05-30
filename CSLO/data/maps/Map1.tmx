@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="8" tileheight="8" nextobjectid="1">
  <tileset firstgid="1" name="Tileset" tilewidth="8" tileheight="8">
-  <image source="../../../../../../Desktop/map/Tileset.png" width="640" height="400"/>
+  <image source="Tileset.png" width="640" height="400"/>
   <tile id="0">
    <properties>
     <property name="Collide" value="1"/>
@@ -144,8 +144,8 @@
   </tile>
  </tileset>
  <layer name="base" width="200" height="200">
-  <data encoding="base64" compression="zlib">
-   eJzt291KwzAYBuCkzMnA+/EKdOr58Oe+nAw8VfHGvIPpqSl1THA1Hdg1lefggZKvhS+Ql5DSViGEimIcJdMenGTqxwXMHXIWyaQH1x3qQ88dcvrKx2umLh+MQV/56LK/DD13yJEPaCcf0E4+oF1f+Zhl6vLBGHi/C+2ekueMu/Bzfd9knnmMIbz/Un8pYO4AAEC51qE5U9Te4tYybsc31x8F9AuHdBa73zvf4174D/bJx2k1fL9wSPYPaHef1vzVjnV/8e0Msvy6fpAPADo4j803V7MCeoHS1Pm4TG5D8z1KPbYooC8oQZ2PVWz+q92MrZxBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABGY7LD0D1ByeQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4S5+zRmcA
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3cW0oDMRgG0MxQlYLbEVfg9b14WZA7sFLwVaUbcwfqqxPGUsFOMwWnSfU8HDokKfyBfKTpTFuHEGqKsdfYH8Bhov+ggLlDyqQxGsBVj/7cc4eUofIxT/TLB7tgqHz02V9yzx1S5AO6yQd0kw/oNlQ+xol++WAX+H4Xuj01nhNuw8/1fZ14z2MVwvua/pcC5g4AAJTrLbRniui1WppWy/bF9UcB9cI2nVT9x55tMBb+gk3ycVznrxe2yf4B3e6bNX+5Yt2ffzuDTL+uH9bkI94bnBQwHyhR/Ox1VOevA7bltGqfuRr3GGv/4L+J+bho3IT2eZTYJgPQivmYVe3vahdtsxVnkPjfDHd1+5q7ZihNzEW8pygfAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOQwWiF3TVAyOQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH7TJ2uXh7wAcQIA
   </data>
  </layer>
 </map>
