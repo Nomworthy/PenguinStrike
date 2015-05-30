@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="8" tileheight="8" nextobjectid="1">
+ <tileset firstgid="1" name="Tileset" tilewidth="8" tileheight="8">
+  <image source="../../../../../../Desktop/map/Tileset.png" width="640" height="400"/>
+  <tile id="0">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="11">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="84">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="85">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="86">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="87">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="88">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="89">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="90">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="91">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="92">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="164">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="165">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="166">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="167">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="168">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="169">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="170">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="171">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+  <tile id="172">
+   <properties>
+    <property name="Collide" value="1"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="base" width="200" height="200">
+  <data encoding="base64" compression="zlib">
+   eJzt291KwzAYBuCkzMnA+/EKdOr58Oe+nAw8VfHGvIPpqSl1THA1Hdg1lefggZKvhS+Ql5DSViGEimIcJdMenGTqxwXMHXIWyaQH1x3qQ88dcvrKx2umLh+MQV/56LK/DD13yJEPaCcf0E4+oF1f+Zhl6vLBGHi/C+2ekueMu/Bzfd9knnmMIbz/Un8pYO4AAEC51qE5U9Te4tYybsc31x8F9AuHdBa73zvf4174D/bJx2k1fL9wSPYPaHef1vzVjnV/8e0Msvy6fpAPADo4j803V7MCeoHS1Pm4TG5D8z1KPbYooC8oQZ2PVWz+q92MrZxBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABGY7LD0D1ByeQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4S5+zRmcA
+  </data>
+ </layer>
+</map>
