@@ -13,7 +13,7 @@ public class WorldMap extends TiledMap {
 		//ok so TopX
 		int xTopOffset = topX % TILESIZE;
 		int yTopOffset = topY % TILESIZE;
-		render(-xTopOffset,-yTopOffset,topX / TILESIZE, topY / TILESIZE, CSLO.GAMEDIM / TILESIZE, CSLO.GAMEDIM / TILESIZE);
+		render(-xTopOffset,-yTopOffset,topX / TILESIZE, topY / TILESIZE, 1 + CSLO.GAMEDIM / TILESIZE, 1 + CSLO.GAMEDIM / TILESIZE);
 	}
 	
 	//public void setTileId(int x,
