@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.LinkedList;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -15,6 +16,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+
 
 public class CSLO extends BasicGame
 {
@@ -41,14 +43,25 @@ public class CSLO extends BasicGame
 	
 	//Game Cursor.
 	private Image cursor;
+	//Bullet Image.
+	private Image bullet;
+	
+	//Bullet Coord.
+	private static class BulletCoord{
+		int x;
+		int y;
+	}
+	
+	//List of all bullets the client knows about.
+	private static LinkedList<BulletCoord> bullets;
 	
     public CSLO() 
     {
-        super("PenguinStrike");
+        super("Cold War");
         try{
         	serverName = InetAddress.getByName("localhost");
         	socket = new DatagramSocket(statePort);
-        } catch (Exception e){
+    	  } catch (Exception e){
         	System.out.println("Could not create Socket");
         }
     }
@@ -74,10 +87,12 @@ public class CSLO extends BasicGame
     public void init(GameContainer container) throws SlickException
     {
     	WorldState.instWorldState();
-    	WorldState.map = new WorldMap("data/maps/Map1.tmx");
     	cursor = new Image("data/gui/mouse.png");
+    	bullet = new Image("data/weapon/bullet.png");
     	cursor.setFilter(Image.FILTER_NEAREST);
+    	bullet.setFilter(Image.FILTER_NEAREST);
     	container.setMouseGrabbed(true);
+    	WorldState.map = new WorldMap("data/maps/Map1.tmx");
     }
  
     @Override
@@ -102,7 +117,23 @@ public class CSLO extends BasicGame
     	int deltaY = (WorldState.players[clientID].getMouseY() - ((GAMEDIM/2)));
     	
     	WorldState.map.drawWorldMap(playerXBase + deltaX,playerYBase + deltaY);
-    	WorldState.players[0].draw(g,playerXBase + deltaX,playerYBase + deltaY);	
+    	int mapOffsetX = playerXBase + deltaX;
+    	int mapOffsetY = playerYBase + deltaY;
+    	
+    	for(int i = 0; i != WorldState.players.length; i++){
+    		Player p = WorldState.players[i];
+    		if( i == clientID)
+    			p.drawInterpolate(g,mapOffsetX,mapOffsetY);	
+    		else 
+    			p.drawOtherClient(g,mapOffsetX,mapOffsetY);
+    	}
+    	
+    	//TODO: don't use tile!
+    	if(bullets != null){
+    		for(BulletCoord t : bullets){
+    		g.drawImage(bullet,t.x - (playerXBase + deltaX) ,t.y - (playerYBase + deltaY));
+    	}
+    	}
     	g.drawImage(cursor,WorldState.players[clientID].getMouseX()-3 , WorldState.players[clientID].getMouseY()-3 );
     }
     
@@ -144,14 +175,29 @@ public class CSLO extends BasicGame
     public static void readState(){
     	try 
     	{
+    		//TODO Count byte payload
     		socket.setSoTimeout(20);
-    		byte[] inputbfr = new byte[8];
-    		DatagramPacket packet = new DatagramPacket(inputbfr, 8);
+    		byte[] inputbfr = new byte[5000];
+    		DatagramPacket packet = new DatagramPacket(inputbfr, 5000);
     		socket.receive(packet);
     		final ByteArrayInputStream bais=new ByteArrayInputStream(inputbfr);
     		final DataInputStream dais=new DataInputStream(bais);
-			WorldState.players[clientID].setX(dais.readFloat());
-	    	WorldState.players[clientID].setY(dais.readFloat());
+    		int playerCount = dais.readInt();
+    		for (int i = 0; i != playerCount; i++){
+    			WorldState.players[i].setX(dais.readFloat());
+    			WorldState.players[i].setY(dais.readFloat());
+       			WorldState.players[i].rotation = (dais.readFloat());
+    			WorldState.players[i].myFrame = (dais.readInt());
+    		}
+	    	int projCount = dais.readInt();
+	    	System.out.println(projCount);
+    		bullets = new LinkedList<BulletCoord>();
+	    	for(int i = 0; i != projCount; i++){
+	    		BulletCoord t = new BulletCoord();
+	    		t.x = dais.readInt();
+	    		t.y = dais.readInt();
+	    		bullets.add(t);
+	    	}
 		} catch (IOException e){
 			e.printStackTrace();
 		}

@@ -9,6 +9,7 @@ import org.newdawn.slick.geom.Circle;
 
 @SuppressWarnings("serial")
 //representaion of a penguin
+//TODO: Divide into client and self
 public class Player extends Circle {
 	//this player's mouse X and Y.
 	private int mouseX;
@@ -24,13 +25,19 @@ public class Player extends Circle {
 	private boolean mouse1;
 	private boolean mouse2;
 	
+	private boolean heldMouse;
+	
 	//Offset to the top left circle of penguin.
 	private int xOffset = 4;
 	private int yOffset = 4;
+	
+	//TODOO
+	public float rotation;
+	public int myFrame;
 
 	
 	public Player(){
-		super(0, 0, RADIUS);
+		super(500, 500, RADIUS);
 		try {
 			sprite = new Animation(new SpriteSheet("data/penguins/penguin.png",31,31),100);
 		} catch (Exception e) {
@@ -74,7 +81,14 @@ public class Player extends Circle {
 		mouse2 = b;
 	}
 	
-	public void draw(Graphics g, int worldX, int worldY){
+	public boolean getMouse1() {
+		return mouse1;
+	}
+	public boolean getMouse2() {
+		return mouse2;
+	}
+	
+	public void drawInterpolate(Graphics g, int worldX, int worldY){
 		if(moveW || moveA || moveS || moveD){
 			sprite.setAutoUpdate(true);
 		} else {
@@ -110,4 +124,22 @@ public class Player extends Circle {
 	public float getSpeed() {
 		return .1f;
 	}
+
+	public boolean isHeldMouse() {
+		return heldMouse;
+	}
+
+	public void setHeldMouse(boolean heldMouse) {
+		this.heldMouse = heldMouse;
+	}
+
+	
+//TODOOOO
+	public void drawOtherClient(Graphics g, int wx, int wy) {
+		sprite.setCurrentFrame(myFrame);
+		Image i =sprite.getCurrentFrame();
+		i.setRotation(rotation);
+		g.drawImage(i,x +- xOffset +- wx, y +- yOffset +- wy);
+	}
+
 }
