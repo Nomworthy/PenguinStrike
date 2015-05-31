@@ -2,16 +2,6 @@
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="200" tilewidth="8" tileheight="8" nextobjectid="1">
  <tileset firstgid="1" name="Tileset" tilewidth="8" tileheight="8">
   <image source="Tileset.png" width="640" height="400"/>
-  <tile id="0">
-   <properties>
-    <property name="Collide" value="1"/>
-   </properties>
-  </tile>
-  <tile id="4">
-   <properties>
-    <property name="Collide" value="1"/>
-   </properties>
-  </tile>
   <tile id="5">
    <properties>
     <property name="Collide" value="1"/>
@@ -23,11 +13,6 @@
    </properties>
   </tile>
   <tile id="7">
-   <properties>
-    <property name="Collide" value="1"/>
-   </properties>
-  </tile>
-  <tile id="8">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
@@ -47,375 +32,250 @@
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="12">
+  <tile id="13">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="84">
+  <tile id="14">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="85">
+  <tile id="15">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="86">
+  <tile id="17">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="87">
+  <tile id="18">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="88">
+  <tile id="19">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="89">
+  <tile id="21">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="90">
+  <tile id="22">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="91">
+  <tile id="23">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="92">
+  <tile id="25">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="164">
+  <tile id="26">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="165">
+  <tile id="27">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="166">
+  <tile id="29">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="167">
+  <tile id="30">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="168">
+  <tile id="31">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="169">
+  <tile id="33">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="170">
+  <tile id="34">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="171">
+  <tile id="35">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="172">
+  <tile id="37">
    <properties>
     <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="244">
+  <tile id="38">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="245">
+  <tile id="39">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="246">
+  <tile id="41">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="247">
+  <tile id="42">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="248">
+  <tile id="43">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="249">
+  <tile id="45">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="250">
+  <tile id="46">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="251">
+  <tile id="47">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="252">
+  <tile id="49">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="324">
+  <tile id="50">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="325">
+  <tile id="51">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="326">
+  <tile id="53">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="327">
+  <tile id="54">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="328">
+  <tile id="55">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="329">
+  <tile id="57">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="330">
+  <tile id="58">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="331">
+  <tile id="59">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="332">
+  <tile id="61">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="404">
+  <tile id="62">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="405">
+  <tile id="63">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="406">
+  <tile id="65">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="407">
+  <tile id="66">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="408">
+  <tile id="67">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="409">
+  <tile id="69">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="410">
+  <tile id="70">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="411">
+  <tile id="71">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="412">
+  <tile id="73">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="484">
+  <tile id="74">
    <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
-  <tile id="485">
+  <tile id="75">
    <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="486">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="487">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="488">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="489">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="490">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="491">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="492">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="564">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="565">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="566">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="567">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="568">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="569">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="570">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="571">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="572">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="644">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="645">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="646">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="647">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="648">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="649">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="650">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="651">
-   <properties>
-    <property name="Collide" value=""/>
-   </properties>
-  </tile>
-  <tile id="652">
-   <properties>
-    <property name="Collide" value=""/>
+    <property name="Collide" value="1"/>
    </properties>
   </tile>
  </tileset>
  <layer name="base" width="200" height="200">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3cTW/TMBgAYCfsQ5P2dxBf4ggI7mMwfg9MSFwZmsR1m/qH+AcMIXEFrsRKo3ombdcta9L2OTxtYqebHfvVm2xOyxBCWflehLATbu5HUf8cbmf7FmMwy/6c+t0B9H3IDipblWqah3tj6f5WIj2mqTscQB/WQTMOXTu8Rn3ffR+yPD7y9zw2ioTz2/04dG00p974XW9c0txQhPb4yHOM89v9OCyb8bveuKT5Ydb1VR47zm+34yA+hiWPj/x6Ks0p+b7z2/04iI9hSeOjmfN5rmjj/N7NOIiPYXlfvZyHmzsu++/DOrir+NibUy8+WAX+vgvTnYX5ufoo/D+/38z5zNfqYvjPjPqLAfQdAAAYrt+hvqeILouJk2JS3mz/HUB7YZmeLbBm+oX11WyYReLjQdl/e2GZusofP4ta3/2BLn2u5vSrlnn9rZzcd5yM70e+zJj/8X+DBwPoD/QtPif6q7j6vGe89rpf9t82WJbnRb3mai8rf1K9PKo8LSdl8gebJsbHy8rbUK9HiWUxBuI61E/l1fWkH8ta322GZYnxcVrUz9U2ZafZPUjznRwfSt+xAbmYS2JcXI7jxDMKACziYVnfsz8u+28LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwurZa9N0mGDJxAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACba7uyM7Y7LtvLjpm13/Z5WBcHyfZh9p6Xt+2PZhwHq+5d5byyX7kYl+Xz/CxMcsN2clxOfLBumvyRzu22eR5jJI2hVIyZ8yl1sMqa+EhzxLQ8MK18dIvfD0PWljcWjQ9YV6OW7ZhL4vXS0YxjU68H0A8AgE30D3gmAB4AcQIA
+   H4sIAAAAAAAAC+3dPW/TQBwH4EuJRIAKVWoGBBUyLxIdKsGEOmTIwMhCPiEfFSPbysX1ywmF+Jw8wyPH9iW18/cvd2el7VUI4aq0Kl1HPrfW29r7b+rXYdgyhN9D+9t1OJZtQhs17Lcu/SotSs9q8fquXt+12jTt1hmcwxwsE+uwO/LyLqGdGo7Xpbn228tdx/6GfKQZy0Zch2Pn4zahnRqO1yXuGxahOx9xm2a79/a4dTh2PjYJ7dRwvC5x/zA0vopzIh9pxuYecR2OnY+UpRqO16VvPBX3Ke11+UgjH/MV52MRDvMxxPgqnXzMVxGG7+GO3e+9z+Accjfl/Fw+mIOp7u8+JLSTD6a2DMMZKULVVw95DE+v728jz/k5sM8YgJykjLOAcbLEpevLgGxAZWxe0uV5qOYNH0ov6mUzl/hYLz/Vy9cZnCOc0tuwz9WY2wyOF07pXZAP6CMf0O99qOYW38NhFr6WXoZqTvJ3+ar0JYPjBQAAAKbhOwDQTTbgUHyfeepjgZzIBDylv4BDxlGw1/4+19THA1Nfh/JA7lyjAAAAAMDU3J8EAAAAAAAAAAAAAABOze8z5MHfvsmXuuSj7/+2Tn1cl04d8iYzefD+z4e8TP/+T30MkDOfTTBORvifzmF+NedjZ37mfK3JCqSREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKDPqnRdu6m3PbTaDK13PR/Oxbrj8XqgTXt9M9AO5u5HqD77t6X7elv7Oi/Cvm9YRe3a5INz09VndF3nRWkburPRjLH6cgNz1WShCPs+oq8fuOvZvvnHnw25S5l/NPryAedq0/G4CNV46XGgbexNBucBAHCJ/gDW53VWAHECAA==
   </data>
  </layer>
 </map>
