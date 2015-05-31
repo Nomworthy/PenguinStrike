@@ -1,43 +1,50 @@
-/*  
-* To change this template, choose Tools | Templates  
-* and open the template in the editor.  
-*/  
- 
+
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.Socket;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-/**
- * @author panos
- */
 public class CSLO extends BasicGame
 {
-	public static final int GAMEDIM = 240;
-	public static final int RESX= 1366;
-	public static final int RESY= 768;
+	//Base Dimension of game (it's a square)
+	public static final int GAMEDIM = 400;
+	
+	//Target Screen Resolution
+	public static final int RESX= 1000;
+	public static final int RESY= 1000;
+	
+	//ID of this client. TODO: be set by the server.
 	private static byte clientID = 0;
+	
+	//IP address of server.
 	private static InetAddress serverName;
+	
+	//Port to send input information to.
 	public static int inputPort = 1337;
+	//Port to send gamestate information to.
 	public static int statePort = 1338;
+	
+	//Our socket to talk to the server.
 	private static DatagramSocket socket;
+	
+	//Game Cursor.
 	private Image cursor;
 	
-    public CSLO()
+    public CSLO() 
     {
-        super("CSLO");
+        super("PenguinStrike");
         try{
         	serverName = InetAddress.getByName("localhost");
         	socket = new DatagramSocket(statePort);
@@ -46,6 +53,7 @@ public class CSLO extends BasicGame
         }
     }
  
+    //Creates the game window.
     public static void main(String[] arguments)
     {
         try
@@ -61,6 +69,7 @@ public class CSLO extends BasicGame
         }
     }
  
+    //Called once after the window is created.
     @Override
     public void init(GameContainer container) throws SlickException
     {
@@ -74,49 +83,55 @@ public class CSLO extends BasicGame
     @Override
     public void update(GameContainer container, int delta) throws SlickException
     {
+    	//fetch user inputs
     	updateInputs(container.getInput());
-    	sendInputPackage(container.getInput());
+    	//send to da server
+    	sendInputPacket(container.getInput());
+    	//get inputs back.
     	readState();
-    	
-     	
     }
  
     public void render(GameContainer container, Graphics g) throws SlickException
     {
     	g.scale((float)RESX/GAMEDIM,(float)RESY/GAMEDIM);
-    	//if the player were centered on screen, draw as such.
+    	//if the player were centered on screen, where is the map drawn?
     	int playerXBase = (int) (WorldState.players[clientID].getCenterX() - GAMEDIM/2);
     	int playerYBase = (int) (WorldState.players[clientID].getCenterY() - GAMEDIM/2);
-    	
-    	//an offset.
+    	//factor in mouse.
     	int deltaX = (WorldState.players[clientID].getMouseX() - ((GAMEDIM/2)));
     	int deltaY = (WorldState.players[clientID].getMouseY() - ((GAMEDIM/2)));
+    	
     	WorldState.map.drawWorldMap(playerXBase + deltaX,playerYBase + deltaY);
     	WorldState.players[0].draw(g,playerXBase + deltaX,playerYBase + deltaY);	
     	g.drawImage(cursor,WorldState.players[clientID].getMouseX()-3 , WorldState.players[clientID].getMouseY()-3 );
-    	//WorldState.map.basicRender();
     }
     
-    public static void sendInputPackage(Input in){
-
-    	byte[] inputpkg = new byte[9];
-    	inputpkg[0] = clientID;
-    	inputpkg[1] = (byte)(in.getMouseX() - 127);	
-    	inputpkg[2] = (byte)(in.getMouseY() - 127);	
-    	inputpkg[3] = in.isKeyDown(Input.KEY_W) ? (byte)1 : (byte)0;	
-    	inputpkg[4] = in.isKeyDown(Input.KEY_A) ? (byte)1 : (byte)0;	
-    	inputpkg[5] = in.isKeyDown(Input.KEY_S) ? (byte)1 : (byte)0;	
-    	inputpkg[6] = in.isKeyDown(Input.KEY_D) ? (byte)1 : (byte)0;	
-    	inputpkg[7] = in.isMouseButtonDown(0) ? (byte)1 : (byte)0;	
-    	inputpkg[8] = in.isMouseButtonDown(1) ? (byte)1 : (byte)0;	
-    	try{
-    		socket.send(new DatagramPacket(inputpkg,9,serverName,inputPort));
-    	} catch (Exception e){
-    		System.out.println("Could not send inputs");
+    public static void sendInputPacket(Input in){
+		final ByteArrayOutputStream baos=new ByteArrayOutputStream();
+		final DataOutputStream daos=new DataOutputStream(baos);
+		try
+		{
+			daos.writeByte(clientID);
+			daos.writeShort((short)(WorldState.players[clientID].getMouseX()));
+			daos.writeShort((short)(WorldState.players[clientID].getMouseY()));
+			daos.writeBoolean(in.isKeyDown(Input.KEY_W));
+			daos.writeBoolean((in.isKeyDown(Input.KEY_A)));
+			daos.writeBoolean((in.isKeyDown(Input.KEY_S)));
+			daos.writeBoolean((in.isKeyDown(Input.KEY_D)));
+			daos.writeBoolean(in.isMouseButtonDown(0));		
+			daos.writeBoolean(in.isMouseButtonDown(1));	
+			daos.close();
+			final byte[] bytes=baos.toByteArray();
+    		socket.send(new DatagramPacket(bytes,bytes.length,serverName,CSLO.inputPort));
+		} catch(Exception e)
+		{
+    			System.out.println(e.getMessage());
     	}
     }
+    	
     
-    public static void updateInputs(Input in){
+    public static void updateInputs(Input in)
+    {
     	WorldState.players[clientID].setMouseX((int)((double)in.getMouseX() * ((double)GAMEDIM/(double)RESX)));
     	WorldState.players[clientID].setMouseY((int)((double)in.getMouseY() * ((double)GAMEDIM/(double)RESY)));
     	WorldState.players[clientID].setMoveW(    	in.isKeyDown(Input.KEY_W) );
@@ -127,18 +142,17 @@ public class CSLO extends BasicGame
     }
     
     public static void readState(){
-    	try {
+    	try 
+    	{
     		socket.setSoTimeout(20);
-    	byte[] inputbfr = new byte[8];
-		DatagramPacket packet = new DatagramPacket(inputbfr, 8);
-		socket.receive(packet);
-    	final ByteArrayInputStream bais=new ByteArrayInputStream(inputbfr);
-    	final DataInputStream dais=new DataInputStream(bais);
-    	
+    		byte[] inputbfr = new byte[8];
+    		DatagramPacket packet = new DatagramPacket(inputbfr, 8);
+    		socket.receive(packet);
+    		final ByteArrayInputStream bais=new ByteArrayInputStream(inputbfr);
+    		final DataInputStream dais=new DataInputStream(bais);
 			WorldState.players[clientID].setX(dais.readFloat());
 	    	WorldState.players[clientID].setY(dais.readFloat());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e){
 			e.printStackTrace();
 		}
     }
