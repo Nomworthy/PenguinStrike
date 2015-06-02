@@ -46,6 +46,8 @@ public class CSLO extends BasicGame
 	//Bullet Image.
 	private Image bullet;
 	
+	private String serverIP = "localhost";
+	
 	//Bullet Coord.
 	private static class BulletCoord{
 		int x;
@@ -57,9 +59,9 @@ public class CSLO extends BasicGame
 	
     public CSLO() 
     {
-        super("Cold War");
+        super("Cold War INDEV");
         try{
-        	serverName = InetAddress.getByName("localhost");
+        	serverName = InetAddress.getByName(serverIP);
         	socket = new DatagramSocket(statePort);
     	  } catch (Exception e){
         	System.out.println("Could not create Socket");
@@ -74,7 +76,6 @@ public class CSLO extends BasicGame
             AppGameContainer app = new AppGameContainer(new CSLO());
             app.setDisplayMode(RESX, RESY, false);
             app.start();
-
         }
         catch (SlickException e)
         {
@@ -86,13 +87,13 @@ public class CSLO extends BasicGame
     @Override
     public void init(GameContainer container) throws SlickException
     {
-    	WorldState.instWorldState();
+    	CState.players = new CPlayer[]{ new CPlayer(),new CPlayer(),new CPlayer(),new CPlayer()};
     	cursor = new Image("data/gui/mouse.png");
     	bullet = new Image("data/weapon/bullet.png");
     	cursor.setFilter(Image.FILTER_NEAREST);
     	bullet.setFilter(Image.FILTER_NEAREST);
     	container.setMouseGrabbed(true);
-    	WorldState.map = new WorldMap("data/maps/Map1.tmx");
+    	CState.worldMap = new WorldMap("data/maps/Map1.tmx");
     }
  
     @Override
@@ -109,32 +110,33 @@ public class CSLO extends BasicGame
     public void render(GameContainer container, Graphics g) throws SlickException
     {
     	g.scale((float)RESX/GAMEDIM,(float)RESY/GAMEDIM);
+    	CPlayer self = CState.players[clientID];
     	//if the player were centered on screen, where is the map drawn?
-    	int playerXBase = (int) (WorldState.players[clientID].getCenterX() - GAMEDIM/2);
-    	int playerYBase = (int) (WorldState.players[clientID].getCenterY() - GAMEDIM/2);
+    	int playerXBase = (int) (self.getX() + self.RADIUS - GAMEDIM/2);
+    	int playerYBase = (int) (self.getY() + self.RADIUS - GAMEDIM/2);
+    	
     	//factor in mouse.
-    	int deltaX = (WorldState.players[clientID].getMouseX() - ((GAMEDIM/2)));
-    	int deltaY = (WorldState.players[clientID].getMouseY() - ((GAMEDIM/2)));
+    	int deltaX = (CState.scaledMouseX - ((GAMEDIM/2)));
+    	int deltaY = (CState.scaledMouseY - ((GAMEDIM/2)));
     	
-    	WorldState.map.drawWorldMap(playerXBase + deltaX,playerYBase + deltaY);
-    	int mapOffsetX = playerXBase + deltaX;
+    	//draw the map
+       	int mapOffsetX = playerXBase + deltaX;
     	int mapOffsetY = playerYBase + deltaY;
-    	
-    	for(int i = 0; i != WorldState.players.length; i++){
-    		Player p = WorldState.players[i];
-    		if( i == clientID)
-    			p.drawInterpolate(g,mapOffsetX,mapOffsetY);	
-    		else 
-    			p.drawOtherClient(g,mapOffsetX,mapOffsetY);
+    	CState.worldMap.drawWorldMap(mapOffsetX,mapOffsetY);
+ 
+    	for(int i = 0; i != CState.players.length; i++){
+    		CPlayer p = CState.players[i];
+    		p.draw(g,mapOffsetX,mapOffsetY);
     	}
     	
-    	//TODO: don't use tile!
     	if(bullets != null){
-    		for(BulletCoord t : bullets){
-    		g.drawImage(bullet,t.x - (playerXBase + deltaX) ,t.y - (playerYBase + deltaY));
+    		for(BulletCoord t : bullets)
+    		{
+    			g.drawImage(bullet,t.x - (mapOffsetX) ,t.y - (mapOffsetY));
+    		}
     	}
-    	}
-    	g.drawImage(cursor,WorldState.players[clientID].getMouseX()-3 , WorldState.players[clientID].getMouseY()-3 );
+    	
+    	g.drawImage(cursor,CState.scaledMouseX-3 , CState.scaledMouseY-3 );
     }
     
     public static void sendInputPacket(Input in){
@@ -143,14 +145,14 @@ public class CSLO extends BasicGame
 		try
 		{
 			daos.writeByte(clientID);
-			daos.writeShort((short)(WorldState.players[clientID].getMouseX()));
-			daos.writeShort((short)(WorldState.players[clientID].getMouseY()));
-			daos.writeBoolean(in.isKeyDown(Input.KEY_W));
-			daos.writeBoolean((in.isKeyDown(Input.KEY_A)));
-			daos.writeBoolean((in.isKeyDown(Input.KEY_S)));
-			daos.writeBoolean((in.isKeyDown(Input.KEY_D)));
-			daos.writeBoolean(in.isMouseButtonDown(0));		
-			daos.writeBoolean(in.isMouseButtonDown(1));	
+			daos.writeShort((short)(CState.scaledMouseX));
+			daos.writeShort((short)(CState.scaledMouseY));
+			daos.writeBoolean(CState.moveW);
+			daos.writeBoolean(CState.moveA);
+			daos.writeBoolean(CState.moveS);
+			daos.writeBoolean(CState.moveD);
+			daos.writeBoolean(CState.mouse1);
+			daos.writeBoolean(CState.mouse2);
 			daos.close();
 			final byte[] bytes=baos.toByteArray();
     		socket.send(new DatagramPacket(bytes,bytes.length,serverName,CSLO.inputPort));
@@ -163,12 +165,14 @@ public class CSLO extends BasicGame
     
     public static void updateInputs(Input in)
     {
-    	WorldState.players[clientID].setMouseX((int)((double)in.getMouseX() * ((double)GAMEDIM/(double)RESX)));
-    	WorldState.players[clientID].setMouseY((int)((double)in.getMouseY() * ((double)GAMEDIM/(double)RESY)));
-    	WorldState.players[clientID].setMoveW(    	in.isKeyDown(Input.KEY_W) );
-    	WorldState.players[clientID].setMoveS(    	in.isKeyDown(Input.KEY_S) );
-    	WorldState.players[clientID].setMoveA(    	in.isKeyDown(Input.KEY_A) );
-    	WorldState.players[clientID].setMoveD(    	in.isKeyDown(Input.KEY_D) );
+    	CState.scaledMouseX = ((int)((double)in.getMouseX() * ((double)GAMEDIM/(double)RESX)));
+    	CState.scaledMouseY = ((int)((double)in.getMouseY() * ((double)GAMEDIM/(double)RESY)));
+    	CState.moveW = in.isKeyDown(Input.KEY_W);
+    	CState.moveA = in.isKeyDown(Input.KEY_A);
+    	CState.moveS = in.isKeyDown(Input.KEY_S);
+    	CState.moveD = in.isKeyDown(Input.KEY_D);
+    	CState.mouse1 = in.isMousePressed(0);
+    	CState.mouse2 = in.isMousePressed(1);
 
     }
     
@@ -184,11 +188,12 @@ public class CSLO extends BasicGame
     		final DataInputStream dais=new DataInputStream(bais);
     		int playerCount = dais.readInt();
     		for (int i = 0; i != playerCount; i++){
-    			WorldState.players[i].setX(dais.readFloat());
-    			WorldState.players[i].setY(dais.readFloat());
-       			WorldState.players[i].rotation = (dais.readFloat());
-    			WorldState.players[i].myFrame = (dais.readInt());
+    			CState.players[i].setX(dais.readFloat());
+    			CState.players[i].setY(dais.readFloat());
+       			CState.players[i].setRotation(dais.readFloat());
+    			CState.players[i].setFrame(dais.readInt());
     		}
+    		
 	    	int projCount = dais.readInt();
 	    	System.out.println(projCount);
     		bullets = new LinkedList<BulletCoord>();
@@ -202,6 +207,5 @@ public class CSLO extends BasicGame
 			e.printStackTrace();
 		}
     }
-   
-    
+
 }

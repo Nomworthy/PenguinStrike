@@ -28,13 +28,13 @@ public class Server {
 	
 	public static void main(String args[]) throws SocketException, UnknownHostException{
 		addKillSwitch();
+	
 		clientNames = new InetAddress[]{
-				InetAddress.getByName("localhost"),
-				InetAddress.getByName("192.168.0.119")};
+				InetAddress.getByName("192.168.0.22"),
+				InetAddress.getByName("192.168.0.103")};
 		sock = new DatagramSocket(CSLO.inputPort);
 		lastTimeStamp = System.nanoTime();
-    	WorldState.instWorldState();
-    	
+    	SState.instWorldState();
 		while(true){
 			byte[] inputbfr = new byte[100];
 			DatagramPacket packet = new DatagramPacket(inputbfr, 100);
@@ -60,37 +60,46 @@ public class Server {
 	private static void doGameLogic(long l) {
 		float ms = (float) (l*.000001);
 		
-		for(Player p : WorldState.players){
-			double rotation = (Math.atan2(p.getMouseY() - (CSLO.GAMEDIM/2), p.getMouseX() - (CSLO.GAMEDIM/2)));;
-		
-		
+		for(SPlayer p : SState.players)
+		{
+			double rotation = (Math.atan2(p.getMouseY() - (CSLO.GAMEDIM/2), p.getMouseX() - (CSLO.GAMEDIM/2)));
+			p.setRot((float) Math.toDegrees(rotation + Math.PI));
+			
 			if(p.getMouse1() && !p.isHeldMouse()){
-				WorldState.addProjectile(new Bullet(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)/4f,(float)Math.sin(rotation)/4f));
+				SState.addProjectile(new SBullet(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)/4f,(float)Math.sin(rotation)/4f));
 			}
 			p.setHeldMouse(p.getMouse1());
 			
+			//TODO BAD STYLE
 			if(p.getMoveW()){
 				p.setY((float)(p.getY() + Math.sin(rotation) * p.getSpeed() * ms));
 				p.setX((float)(p.getX() + Math.cos(rotation) * p.getSpeed() * ms));	
+				p.doFrameLogic(ms);
 		} else
 		if(p.getMoveA()){
 			rotation = rotation + (3*Math.PI)/2;
 			p.setY((float)(p.getY() + Math.sin(rotation) * p.getSpeed() * ms));
 			p.setX((float)(p.getX() + Math.cos(rotation) * p.getSpeed() * ms));	
+			p.doFrameLogic(ms);
 		} else
 		if(p.getMoveS()){
 			rotation = rotation + Math.PI;
 			p.setY((float)(p.getY() + Math.sin(rotation) * p.getSpeed() * ms));
 			p.setX((float)(p.getX() + Math.cos(rotation) * p.getSpeed() * ms));	
+			p.doFrameLogic(ms);
 		} else
 		if(p.getMoveD()){
 			rotation = rotation + Math.PI/2;
 			p.setY((float)(p.getY() + Math.sin(rotation) * p.getSpeed() * ms));
 			p.setX((float)(p.getX() + Math.cos(rotation) * p.getSpeed() * ms));	
+			p.doFrameLogic(ms);
+		} else {
+			p.setFrame(0);
 		}
 		
 		}
-	WorldState.physics(ms);	
+		
+	SState.physics(ms);	
 
 	}
 	
@@ -98,20 +107,20 @@ public class Server {
 		final ByteArrayOutputStream baos=new ByteArrayOutputStream();
 		final DataOutputStream daos=new DataOutputStream(baos);
 		try{
-			daos.writeInt(WorldState.players.length);
-			for(Player p : WorldState.players){
+			daos.writeInt(SState.players.length);
+			for(SPlayer p : SState.players){
 				daos.writeFloat(p.getX());
 				daos.writeFloat(p.getY());
-				daos.writeFloat(p.rotation);
-				daos.writeInt(p.myFrame);
+				daos.writeFloat(p.getRot());
+				daos.writeInt(p.getFrame());
 			}
 			
-			daos.writeInt(WorldState.proj.size());
+			daos.writeInt(SState.proj.size());
 			//TODO: Adhoc for bullets ONLY
-			for(Projectile p : WorldState.proj){
+			for(SProjectile p : SState.proj){
 				//say where to draw bullets.
-				daos.writeInt((int) (p.getShape().getX() - Bullet.offSet));
-				daos.writeInt((int) (p.getShape().getY() - Bullet.offSet));
+				daos.writeInt((int) (p.getShape().getX()));
+				daos.writeInt((int) (p.getShape().getY()));
 			}
 			
 			daos.close();
@@ -130,16 +139,15 @@ public class Server {
     	
 		//1 Identifier
 		int clientID = dais.readByte();
-		//2 MOUSE_X 
-		//3 MOUSE_Y
-		WorldState.players[clientID].setMouseX(dais.readShort());
-		WorldState.players[clientID].setMouseY(dais.readShort());
-		WorldState.players[clientID].setMoveW(dais.readBoolean());
-		WorldState.players[clientID].setMoveA(dais.readBoolean());
-		WorldState.players[clientID].setMoveS(dais.readBoolean());
-		WorldState.players[clientID].setMoveD(dais.readBoolean());
-		WorldState.players[clientID].setMouse1(dais.readBoolean());
-		WorldState.players[clientID].setMouse2(dais.readBoolean());
+		SPlayer p = SState.players[clientID];
+		p.setMouseX(dais.readShort());
+		p.setMouseY(dais.readShort());
+		p.setMoveW(dais.readBoolean());
+		p.setMoveA(dais.readBoolean());
+		p.setMoveS(dais.readBoolean());
+		p.setMoveD(dais.readBoolean());
+		p.setMouse1(dais.readBoolean());
+		p.setMouse2(dais.readBoolean());
 		dais.close();
 	}
 		
