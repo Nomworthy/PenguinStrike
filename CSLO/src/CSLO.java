@@ -28,7 +28,7 @@ public class CSLO extends BasicGame
 	public static final int RESY= 1000;
 	
 	//ID of this client. TODO: be set by the server.
-	private static byte clientID = 0;
+	private static byte clientID = 1;
 	
 	//IP address of server.
 	private static InetAddress serverName;
@@ -195,7 +195,6 @@ public class CSLO extends BasicGame
     		}
     		
 	    	int projCount = dais.readInt();
-	    	System.out.println(projCount);
     		bullets = new LinkedList<BulletCoord>();
 	    	for(int i = 0; i != projCount; i++){
 	    		BulletCoord t = new BulletCoord();
@@ -203,8 +202,8 @@ public class CSLO extends BasicGame
 	    		t.y = dais.readInt();
 	    		bullets.add(t);
 	    	}
-		} catch (IOException e){
-			e.printStackTrace();
+		} catch (Exception e){
+	//System.out.println("Client Error: " + e.getMessage());
 		}
     }
 

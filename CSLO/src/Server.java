@@ -1,4 +1,3 @@
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
@@ -10,51 +9,46 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-import org.newdawn.slick.Input;
+import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 
-//BASICGAME needed to parse TileMap!
-public class Server {
+public class Server extends BasicGame{
+	
 	//our socket for receiving player data
 	private static DatagramSocket sock;
+	
 	//List of client names
 	public static InetAddress clientNames[];
+	
+	//Timestamp to keep track of logic steps
 	public static long lastTimeStamp;
 	
-	public static void main(String args[]) throws SocketException, UnknownHostException{
-		addKillSwitch();
+	public Server(String title) {
+		super(title);
+	}
 	
-		clientNames = new InetAddress[]{
-				InetAddress.getByName("192.168.0.22"),
-				InetAddress.getByName("192.168.0.103")};
-		sock = new DatagramSocket(CSLO.inputPort);
-		lastTimeStamp = System.nanoTime();
-    	SState.instWorldState();
-		while(true){
-			byte[] inputbfr = new byte[100];
-			DatagramPacket packet = new DatagramPacket(inputbfr, 100);
-			sock.setSoTimeout(5);
-			while(true){
-				try{
-					sock.receive(packet);
-					readClientInputs(inputbfr);	
-				} catch (Exception e){
-					//we read them all!
-					break;
-				}
-			}
-			long currentTimeStamp = System.nanoTime();
-			doGameLogic(currentTimeStamp - lastTimeStamp);
-			lastTimeStamp = System.nanoTime();
-			writeState();
-			//now we have the most availablke input, do game logic.
+	public static void main(String args[]) throws SocketException, UnknownHostException{
+		//TODO take a slick approach instead.
+		addKillSwitch();
 		
-		}
+	    try
+	    {
+	    	AppGameContainer app = new AppGameContainer(new Server("ServerMapUtil"));
+	    	app.setDisplayMode(1, 1, false);
+	    	app.start();
+	    }
+	    catch (SlickException e)
+	    {
+	    	e.printStackTrace();
+	    }			
 	}
 		
 	private static void doGameLogic(long l) {
@@ -71,27 +65,23 @@ public class Server {
 			p.setHeldMouse(p.getMouse1());
 			
 			//TODO BAD STYLE
-			if(p.getMoveW()){
-				p.setY((float)(p.getY() + Math.sin(rotation) * p.getSpeed() * ms));
-				p.setX((float)(p.getX() + Math.cos(rotation) * p.getSpeed() * ms));	
+		if(p.getMoveW()){
+				p.setCoords((float)(p.getX() + Math.cos(rotation) * p.getSpeed() * ms), (float)(p.getY() + Math.sin(rotation) * p.getSpeed() * ms));
 				p.doFrameLogic(ms);
 		} else
 		if(p.getMoveA()){
 			rotation = rotation + (3*Math.PI)/2;
-			p.setY((float)(p.getY() + Math.sin(rotation) * p.getSpeed() * ms));
-			p.setX((float)(p.getX() + Math.cos(rotation) * p.getSpeed() * ms));	
+			p.setCoords((float)(p.getX() + Math.cos(rotation) * p.getSpeed() * ms), (float)(p.getY() + Math.sin(rotation) * p.getSpeed() * ms));
 			p.doFrameLogic(ms);
 		} else
 		if(p.getMoveS()){
 			rotation = rotation + Math.PI;
-			p.setY((float)(p.getY() + Math.sin(rotation) * p.getSpeed() * ms));
-			p.setX((float)(p.getX() + Math.cos(rotation) * p.getSpeed() * ms));	
+			p.setCoords((float)(p.getX() + Math.cos(rotation) * p.getSpeed() * ms), (float)(p.getY() + Math.sin(rotation) * p.getSpeed() * ms));
 			p.doFrameLogic(ms);
 		} else
 		if(p.getMoveD()){
 			rotation = rotation + Math.PI/2;
-			p.setY((float)(p.getY() + Math.sin(rotation) * p.getSpeed() * ms));
-			p.setX((float)(p.getX() + Math.cos(rotation) * p.getSpeed() * ms));	
+			p.setCoords((float)(p.getX() + Math.cos(rotation) * p.getSpeed() * ms), (float)(p.getY() + Math.sin(rotation) * p.getSpeed() * ms));
 			p.doFrameLogic(ms);
 		} else {
 			p.setFrame(0);
@@ -164,6 +154,54 @@ public class Server {
 		frame.pack();
 		frame.setVisible(true);
 		
+	}
+
+	@Override
+	public void render(GameContainer arg0, Graphics arg1) throws SlickException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void init(GameContainer arg0) throws SlickException {
+		try {
+			clientNames = new InetAddress[]{
+					InetAddress.getByName("localhost"),
+					InetAddress.getByName("192.168.0.103")};
+			sock = new DatagramSocket(CSLO.inputPort);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		lastTimeStamp = System.nanoTime();
+    	SState.instWorldState();
+		SState.map = new WorldMap("data/maps/Map1.tmx");	
+	}
+
+	@Override
+	public void update(GameContainer arg0, int arg1) throws SlickException {
+		byte[] inputbfr = new byte[100];
+		DatagramPacket packet = new DatagramPacket(inputbfr, 100);
+		try {
+			sock.setSoTimeout(5);
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		while(true){
+			try{
+				sock.receive(packet);
+				readClientInputs(inputbfr);	
+			} catch (Exception e){
+				//we read them all!
+				break;
+			}
+		}
+		long currentTimeStamp = System.nanoTime();
+		doGameLogic(currentTimeStamp - lastTimeStamp);
+		lastTimeStamp = System.nanoTime();
+		writeState();
+		//now we have the most availablke input, do game logic.
 	}
 		
 }

@@ -1,5 +1,6 @@
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
@@ -15,11 +16,23 @@ public class CPlayer{
 	private int frame;
 	private float x;
 	private float y;
-	private Animation sprite;
+	private Animation spriteJacket;
+	private Animation spriteHands;
+	private Animation spriteUnderShirt;
+	private Animation spriteHead;
 
+	private Color jacketCol;
+	private Color underShirtCol;
+	
 	public CPlayer(){
 		try {
-			sprite = new Animation(new SpriteSheet("data/penguins/penguin.png",31,31),100);
+			spriteJacket = new Animation(new SpriteSheet("data/penguins/wJacket.png",31,31),100);
+			spriteHands = new Animation(new SpriteSheet("data/penguins/wHands.png",31,31),100);
+			spriteUnderShirt = new Animation(new SpriteSheet("data/penguins/wUnder.png",31,31),100);
+			spriteHead = new Animation(new SpriteSheet("data/penguins/wHead.png",31,31),100);
+			jacketCol = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
+			underShirtCol = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -51,9 +64,24 @@ public class CPlayer{
 	}
 	
 	public void draw(Graphics g, int wx, int wy) {
-		sprite.setCurrentFrame(frame);
-		Image i =sprite.getCurrentFrame();
-		i.setRotation(rotation);
-		g.drawImage(i,x +- xOffset +- wx, y +- yOffset +- wy);
+
+		spriteJacket.setCurrentFrame(frame);
+		spriteHead.setCurrentFrame(frame);
+		spriteUnderShirt.setCurrentFrame(frame);
+		spriteHands.setCurrentFrame(frame);
+		Image j =spriteJacket.getCurrentFrame();
+		Image ha =spriteHands.getCurrentFrame();
+		Image u =spriteUnderShirt.getCurrentFrame();
+		Image he =spriteHead.getCurrentFrame();
+		j.setRotation(rotation);
+		ha.setRotation(rotation);
+		u.setRotation(rotation);
+		he.setRotation(rotation);
+		
+		
+		g.drawImage(j,x +- xOffset +- wx, y +- yOffset +- wy,jacketCol);
+		g.drawImage(ha,x +- xOffset +- wx, y +- yOffset +- wy);
+		g.drawImage(u,x +- xOffset +- wx, y +- yOffset +- wy,underShirtCol);
+		g.drawImage(he,x +- xOffset +- wx, y +- yOffset +- wy);
 	}
 }

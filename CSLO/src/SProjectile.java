@@ -23,7 +23,7 @@ public abstract class SProjectile{
 	{
 		shape.setX(shape.getX() + (xVel*ms));
 		shape.setY(shape.getY() + (yVel*ms));
-		//live = !SState.map.checkCollide(shape);
+		live = !SState.map.checkCollide(shape);
 	}
 
 	//what to do when bullet hits someone

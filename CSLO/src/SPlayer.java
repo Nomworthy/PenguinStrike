@@ -129,5 +129,19 @@ public class SPlayer extends Circle {
 		this.heldMouse = heldMouse;
 	}
 
+	public void setCoords(float newX, float newY){
+
+		float oldX = this.getX();
+		float oldY = this.getY();
+		
+		super.setX(newX);
+		super.setY(newY);
+		
+		if(SState.map.checkCollide(this)){
+			super.setX(oldX);
+			super.setY(oldY);
+		}
+		
+	}
 
 }
