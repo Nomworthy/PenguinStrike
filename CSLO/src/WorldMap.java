@@ -48,7 +48,6 @@ public class WorldMap extends TiledMap {
 				if(tileID >= STONESTART){
 					int phase = tileID % STONEPHASE;
 					tileIntegrity[x][y] = phase * STONEPHASESTR;
-					System.out.println(x + " " + y + " " + tileIntegrity[x][y]);
 				}
 				
 				if(tileID == UNBREAKABLE)
@@ -66,10 +65,7 @@ public class WorldMap extends TiledMap {
 		int maxYTile = (int)(s.getMaxY())/TILESIZE;
 		
 		for(int x = minXTile; x <= maxXTile; x++){
-			for(int y = minYTile; y <= maxYTile; y++){
-				if(tileIntegrity[x][y] > 0)
-					System.out.println("GRID " + x*TILESIZE + " " + y*TILESIZE + " BULLET " + s.getCenterX() + " " + s.getCenterY() );
-				
+			for(int y = minYTile; y <= maxYTile; y++){	
 				if(tileIntegrity[x][y] > 0 && s.intersects(new Rectangle(x*TILESIZE,y*TILESIZE,TILESIZE,TILESIZE))){
 					return true;
 				}

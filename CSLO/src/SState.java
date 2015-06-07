@@ -7,6 +7,9 @@ public class SState {
 	public static WorldMap map;
 	public static SPlayer[] players = new SPlayer[4];
 	public static LinkedList<SProjectile> proj = new LinkedList<SProjectile>();
+	public static LinkedList<SProjectile> newProj = new LinkedList<SProjectile>();
+	public static LinkedList<SProjectile> oldProj = new LinkedList<SProjectile>();
+	public static short bulletCounter = 0;
 	
 	public static void instWorldState(){
     //	try {
@@ -24,12 +27,18 @@ public class SState {
 		while (listIterator.hasNext()) {
 			SProjectile p = listIterator.next();
 			p.moveBullet(ms);
-			if(!p.isLive())
+			if(!p.isLive()){
+				oldProj.add(p);
 				listIterator.remove();
+			}
 		}
 	}
 
 	public static void addProjectile(SProjectile p) {
 		proj.add(p);
+	}
+	
+	public static short nextBulletId(){
+		return bulletCounter++;
 	}
 }

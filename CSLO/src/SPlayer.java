@@ -15,7 +15,7 @@ public class SPlayer extends Circle {
 	private int mouseY;
 	
 	//the radius. TODO!
-	private final static int RADIUS = 12;
+	private final static int RADIUS = 11;
 	
 	private boolean moveW;
 	private boolean moveA;
@@ -138,10 +138,32 @@ public class SPlayer extends Circle {
 		super.setY(newY);
 		
 		if(SState.map.checkCollide(this)){
+			//failure!
 			super.setX(oldX);
 			super.setY(oldY);
+		} else {
+			return;
 		}
 		
+		//try Y
+		super.setY(newY);
+		
+		if(SState.map.checkCollide(this)){
+			//fail!
+			super.setY(oldY);
+		} else {
+			return;
+		}
+		
+		//try X
+		super.setX(newX);
+		
+		if(SState.map.checkCollide(this)){
+			//fail!
+			super.setX(oldX);
+		} else {
+			return;
+		}
 	}
 
 }

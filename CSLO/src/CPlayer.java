@@ -8,10 +8,10 @@ import org.newdawn.slick.SpriteSheet;
 //all the client knows about a player.
 public class CPlayer{
 	//Offset to the top left circle of penguin.
-	private int xOffset = 4;
-	private int yOffset = 4;
+	private int xOffset = 5;
+	private int yOffset = 5;
 	//BAD STYLE:RADIUS NEEDS DEFINED FOR SERVER AND THIS
-	public final int RADIUS = 12;
+	public final int RADIUS = 11;
 	private float rotation;
 	private int frame;
 	private float x;

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.newdawn.slick.AppGameContainer;
@@ -28,7 +29,7 @@ public class CSLO extends BasicGame
 	public static final int RESY= 1000;
 	
 	//ID of this client. TODO: be set by the server.
-	private static byte clientID = 1;
+	private static byte clientID = 0;
 	
 	//IP address of server.
 	private static InetAddress serverName;
@@ -48,14 +49,19 @@ public class CSLO extends BasicGame
 	
 	private String serverIP = "localhost";
 	
+	static int netProj = 0;	
+	
 	//Bullet Coord.
 	private static class BulletCoord{
-		int x;
-		int y;
+		short id;
+		float x;
+		float y;
+		float xVel;
+		float yVel;
 	}
 	
 	//List of all bullets the client knows about.
-	private static LinkedList<BulletCoord> bullets;
+	private static LinkedList<BulletCoord> bullets = new LinkedList<BulletCoord>();
 	
     public CSLO() 
     {
@@ -105,6 +111,7 @@ public class CSLO extends BasicGame
     	sendInputPacket(container.getInput());
     	//get inputs back.
     	readState();
+    	moveBullets(delta);
     }
  
     public void render(GameContainer container, Graphics g) throws SlickException
@@ -186,25 +193,52 @@ public class CSLO extends BasicGame
     		socket.receive(packet);
     		final ByteArrayInputStream bais=new ByteArrayInputStream(inputbfr);
     		final DataInputStream dais=new DataInputStream(bais);
-    		int playerCount = dais.readInt();
+    		
+    		byte playerCount = dais.readByte();
     		for (int i = 0; i != playerCount; i++){
     			CState.players[i].setX(dais.readFloat());
     			CState.players[i].setY(dais.readFloat());
        			CState.players[i].setRotation(dais.readFloat());
-    			CState.players[i].setFrame(dais.readInt());
+    			CState.players[i].setFrame(dais.readByte());
     		}
     		
-	    	int projCount = dais.readInt();
-    		bullets = new LinkedList<BulletCoord>();
-	    	for(int i = 0; i != projCount; i++){
+	    	int newProjCount = dais.readShort();
+	    	netProj += newProjCount;
+	    	for(int i = 0; i != newProjCount; i++){
 	    		BulletCoord t = new BulletCoord();
-	    		t.x = dais.readInt();
-	    		t.y = dais.readInt();
+	    		t.id = dais.readShort();
+	    		t.x = (float)dais.readShort();
+	    		t.y = (float)dais.readShort();
+	    		t.xVel = dais.readFloat();
+	    		t.yVel = dais.readFloat();
 	    		bullets.add(t);
 	    	}
+
+	    	int oldProjCount = dais.readShort();
+	    	
+	     	netProj -= oldProjCount;
+			for(int i = 0; i != oldProjCount; i++){
+				removeBulletById(dais.readShort());
+			}
 		} catch (Exception e){
 	//System.out.println("Client Error: " + e.getMessage());
 		}
+    }
+    
+    public static void removeBulletById(short id){
+		Iterator<BulletCoord> iterator = bullets.iterator();
+		while (iterator.hasNext()) {
+			if(iterator.next().id == id)
+				iterator.remove();
+		}
+    	
+    }
+    
+    void moveBullets(int ms){
+    	for(BulletCoord b : bullets){
+    		b.x += b.xVel * ((double)ms);
+    		b.y += b.yVel * ((double)ms);
+    	}
     }
 
 }

@@ -10,6 +10,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.LinkedList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -60,7 +61,9 @@ public class Server extends BasicGame{
 			p.setRot((float) Math.toDegrees(rotation + Math.PI));
 			
 			if(p.getMouse1() && !p.isHeldMouse()){
-				SState.addProjectile(new SBullet(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)/4f,(float)Math.sin(rotation)/4f));
+				SProjectile newP = new SBullet(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)/4f,(float)Math.sin(rotation)/4f,SState.nextBulletId());
+				SState.addProjectile(newP);
+				SState.newProj.add(newP);
 			}
 			p.setHeldMouse(p.getMouse1());
 			
@@ -97,21 +100,37 @@ public class Server extends BasicGame{
 		final ByteArrayOutputStream baos=new ByteArrayOutputStream();
 		final DataOutputStream daos=new DataOutputStream(baos);
 		try{
-			daos.writeInt(SState.players.length);
+			
+			daos.writeByte(SState.players.length);
+			
 			for(SPlayer p : SState.players){
 				daos.writeFloat(p.getX());
 				daos.writeFloat(p.getY());
 				daos.writeFloat(p.getRot());
-				daos.writeInt(p.getFrame());
+				daos.writeByte(p.getFrame());
 			}
 			
-			daos.writeInt(SState.proj.size());
-			//TODO: Adhoc for bullets ONLY
-			for(SProjectile p : SState.proj){
-				//say where to draw bullets.
-				daos.writeInt((int) (p.getShape().getX()));
-				daos.writeInt((int) (p.getShape().getY()));
+			//write new projectiles.
+			daos.writeShort(SState.newProj.size());
+			//writes whenever a new bullet occurs
+			for(SProjectile p : SState.newProj){
+				//write the ID. write the X,Y. write the velocity.
+				daos.writeShort(p.getID());
+				daos.writeShort((int) (p.getShape().getX()));
+				daos.writeShort((int) (p.getShape().getY()));
+				daos.writeFloat(p.getXVel());
+				daos.writeFloat(p.getYVel());
 			}
+			SState.newProj = new LinkedList<SProjectile>();
+			
+			//kill old projectiles.
+			daos.writeShort(SState.oldProj.size());
+			//writes whenever a new bullet occurs
+			for(SProjectile p : SState.oldProj){
+				daos.writeShort(p.getID());
+			}
+			
+			SState.oldProj = new LinkedList<SProjectile>();
 			
 			daos.close();
 			final byte[] bytes=baos.toByteArray();
@@ -132,6 +151,7 @@ public class Server extends BasicGame{
 		SPlayer p = SState.players[clientID];
 		p.setMouseX(dais.readShort());
 		p.setMouseY(dais.readShort());
+		//we need only send one of these, but yolo it's 4 bits
 		p.setMoveW(dais.readBoolean());
 		p.setMoveA(dais.readBoolean());
 		p.setMoveS(dais.readBoolean());
@@ -167,7 +187,7 @@ public class Server extends BasicGame{
 		try {
 			clientNames = new InetAddress[]{
 					InetAddress.getByName("localhost"),
-					InetAddress.getByName("192.168.0.103")};
+					InetAddress.getByName("192.168.0.114")};
 			sock = new DatagramSocket(CSLO.inputPort);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
