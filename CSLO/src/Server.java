@@ -21,6 +21,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
+
 public class Server extends BasicGame{
 	
 	//our socket for receiving player data
@@ -52,6 +53,7 @@ public class Server extends BasicGame{
 	    }			
 	}
 		
+	
 	private static void doGameLogic(long l) {
 		float ms = (float) (l*.000001);
 		
@@ -59,6 +61,7 @@ public class Server extends BasicGame{
 		{
 			double rotation = (Math.atan2(p.getMouseY() - (CSLO.GAMEDIM/2), p.getMouseX() - (CSLO.GAMEDIM/2)));
 			p.setRot((float) Math.toDegrees(rotation + Math.PI));
+		
 			
 			if(p.getMouse1() && !p.isHeldMouse()){
 				SProjectile newP = new SBullet(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)/4f,(float)Math.sin(rotation)/4f,SState.nextBulletId());
@@ -93,7 +96,8 @@ public class Server extends BasicGame{
 		}
 		
 	SState.physics(ms);	
-
+	
+	SState.map.cleanDirtyTiles();
 	}
 	
 	private static void writeState(){
@@ -132,10 +136,21 @@ public class Server extends BasicGame{
 			
 			SState.oldProj = new LinkedList<SProjectile>();
 			
+			
+			daos.writeShort(SState.map.getDirtyTiles().size());
+			//writes whenever a new bullet occurs
+			for(WorldMap.Tile t : SState.map.getDirtyTiles()){
+				daos.writeShort(t.x);
+				daos.writeShort(t.y);
+				daos.writeShort(t.id);
+			}
+			
+			
 			daos.close();
 			final byte[] bytes=baos.toByteArray();
 			for(InetAddress a : clientNames){
-				sock.send(new DatagramPacket(bytes,bytes.length,a,CSLO.statePort));
+				DatagramPacket p= new DatagramPacket(bytes,bytes.length,a,CSLO.statePort);
+				sock.send(p);
 			}
     	} catch (Exception e){
     		e.printStackTrace();}
@@ -189,6 +204,8 @@ public class Server extends BasicGame{
 					InetAddress.getByName("localhost"),
 					InetAddress.getByName("192.168.0.114")};
 			sock = new DatagramSocket(CSLO.inputPort);
+			sock.setReceiveBufferSize(10000);
+			sock.setSendBufferSize(10000);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -201,6 +218,7 @@ public class Server extends BasicGame{
 	@Override
 	public void update(GameContainer arg0, int arg1) throws SlickException {
 		byte[] inputbfr = new byte[100];
+
 		DatagramPacket packet = new DatagramPacket(inputbfr, 100);
 		try {
 			sock.setSoTimeout(5);
@@ -221,6 +239,7 @@ public class Server extends BasicGame{
 		doGameLogic(currentTimeStamp - lastTimeStamp);
 		lastTimeStamp = System.nanoTime();
 		writeState();
+		SState.map.purgeDirtyTiles();
 		//now we have the most availablke input, do game logic.
 	}
 		

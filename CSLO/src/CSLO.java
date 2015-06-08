@@ -49,7 +49,7 @@ public class CSLO extends BasicGame
 	
 	private String serverIP = "localhost";
 	
-	static int netProj = 0;	
+	//static int netProj = 0;	
 	
 	//Bullet Coord.
 	private static class BulletCoord{
@@ -69,6 +69,8 @@ public class CSLO extends BasicGame
         try{
         	serverName = InetAddress.getByName(serverIP);
         	socket = new DatagramSocket(statePort);
+        	socket.setReceiveBufferSize(50000);
+        	socket.setSendBufferSize(50000);
     	  } catch (Exception e){
         	System.out.println("Could not create Socket");
         }
@@ -151,6 +153,7 @@ public class CSLO extends BasicGame
 		final DataOutputStream daos=new DataOutputStream(baos);
 		try
 		{
+			
 			daos.writeByte(clientID);
 			daos.writeShort((short)(CState.scaledMouseX));
 			daos.writeShort((short)(CState.scaledMouseY));
@@ -178,8 +181,8 @@ public class CSLO extends BasicGame
     	CState.moveA = in.isKeyDown(Input.KEY_A);
     	CState.moveS = in.isKeyDown(Input.KEY_S);
     	CState.moveD = in.isKeyDown(Input.KEY_D);
-    	CState.mouse1 = in.isMousePressed(0);
-    	CState.mouse2 = in.isMousePressed(1);
+    	CState.mouse1 = in.isMouseButtonDown(0);
+    	CState.mouse2 = in.isMouseButtonDown(1);
 
     }
     
@@ -203,7 +206,7 @@ public class CSLO extends BasicGame
     		}
     		
 	    	int newProjCount = dais.readShort();
-	    	netProj += newProjCount;
+	    	//netProj += newProjCount;
 	    	for(int i = 0; i != newProjCount; i++){
 	    		BulletCoord t = new BulletCoord();
 	    		t.id = dais.readShort();
@@ -216,10 +219,20 @@ public class CSLO extends BasicGame
 
 	    	int oldProjCount = dais.readShort();
 	    	
-	     	netProj -= oldProjCount;
+	     	//netProj -= oldProjCount;
 			for(int i = 0; i != oldProjCount; i++){
 				removeBulletById(dais.readShort());
 			}
+			
+
+	    	int tileCount = dais.readShort();
+	    	
+	     	//netProj -= oldProjCount;
+			for(int i = 0; i != tileCount; i++){
+				CState.worldMap.setTileId(dais.readShort(),dais.readShort(),CState.worldMap.getWallLayerIndex(),dais.readShort());
+			}
+			
+			
 		} catch (Exception e){
 	//System.out.println("Client Error: " + e.getMessage());
 		}

@@ -10,6 +10,7 @@ public abstract class SProjectile{
 	//is the bullet live? (able to hit people)
 	private boolean live = true;
 	private short id;
+	private double wallDamage = 100;
 	
 	public SProjectile(Shape s, float xVel, float yVel, short id) 
 	{
@@ -24,7 +25,7 @@ public abstract class SProjectile{
 	{
 		shape.setX(shape.getX() + (xVel*ms));
 		shape.setY(shape.getY() + (yVel*ms));
-		live = !SState.map.checkCollide(shape);
+		live = !SState.map.checkCollide(shape,wallDamage);
 	}
 
 	//what to do when bullet hits someone
@@ -49,5 +50,6 @@ public abstract class SProjectile{
 	public float getYVel(){
 		return yVel;
 	}
+
 	
 }

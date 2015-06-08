@@ -12,11 +12,6 @@ public class SState {
 	public static short bulletCounter = 0;
 	
 	public static void instWorldState(){
-    //	try {
-			//WorldState.map = new WorldMap("data/maps/Map1.tmx");
-	//	} catch (SlickException e) {
-	//		e.printStackTrace();
-	//	}
 		for(int i = 0; i != players.length; i++){
 			players[i] = new SPlayer();
 		}
