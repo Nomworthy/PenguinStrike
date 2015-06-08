@@ -136,7 +136,7 @@ public class WorldMap extends TiledMap {
 	}
 
 	public boolean tileBecomesDirty(int x, int y, double dmg){
-		return (tileIntegrity[x][y]-dmg <= 0.0 || ((int)((tileIntegrity[x][y] / STONEPHASESTR)) != ((int)((tileIntegrity[x][y] - dmg) / STONEPHASESTR))));
+		return (tileIntegrity[x][y] - dmg <= 0.0 || ((int)((tileIntegrity[x][y] / STONEPHASESTR)) != ((int)((tileIntegrity[x][y] - dmg) / STONEPHASESTR))));
 	}
 	
 	public LinkedList<Tile> getDirtyTiles(){
