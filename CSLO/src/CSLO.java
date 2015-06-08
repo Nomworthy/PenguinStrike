@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
@@ -17,6 +18,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 
 
 public class CSLO extends BasicGame
@@ -46,6 +48,7 @@ public class CSLO extends BasicGame
 	private Image cursor;
 	//Bullet Image.
 	private Image bullet;
+	private Animation rocket;
 	
 	private String serverIP = "localhost";
 	
@@ -54,10 +57,12 @@ public class CSLO extends BasicGame
 	//Bullet Coord.
 	private static class BulletCoord{
 		short id;
+		boolean bullet;
 		float x;
 		float y;
 		float xVel;
 		float yVel;
+		float rot;
 	}
 	
 	//List of all bullets the client knows about.
@@ -98,6 +103,8 @@ public class CSLO extends BasicGame
     	CState.players = new CPlayer[]{ new CPlayer(),new CPlayer(),new CPlayer(),new CPlayer()};
     	cursor = new Image("data/gui/mouse.png");
     	bullet = new Image("data/weapon/bullet.png");
+		rocket = new Animation(new SpriteSheet("data/weapon/rocket.png",20,8),25);
+		rocket.setAutoUpdate(true);
     	cursor.setFilter(Image.FILTER_NEAREST);
     	bullet.setFilter(Image.FILTER_NEAREST);
     	container.setMouseGrabbed(true);
@@ -141,7 +148,11 @@ public class CSLO extends BasicGame
     	if(bullets != null){
     		for(BulletCoord t : bullets)
     		{
-    			g.drawImage(bullet,t.x - (mapOffsetX) ,t.y - (mapOffsetY));
+    			if(t.bullet)
+    				g.drawImage(bullet,t.x - (mapOffsetX) ,t.y - (mapOffsetY));
+    			else
+    				//will have to pull rotatation
+    				g.drawAnimation(rocket,t.x - (mapOffsetX) ,t.y - (mapOffsetY));
     		}
     	}
     	
@@ -209,11 +220,15 @@ public class CSLO extends BasicGame
 	    	//netProj += newProjCount;
 	    	for(int i = 0; i != newProjCount; i++){
 	    		BulletCoord t = new BulletCoord();
+	    		t.bullet = dais.readBoolean();
 	    		t.id = dais.readShort();
 	    		t.x = (float)dais.readShort();
 	    		t.y = (float)dais.readShort();
 	    		t.xVel = dais.readFloat();
 	    		t.yVel = dais.readFloat();
+	    		if(!t.bullet){
+	    			t.rot = dais.readFloat();
+	    		}
 	    		bullets.add(t);
 	    	}
 

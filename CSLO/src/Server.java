@@ -64,11 +64,17 @@ public class Server extends BasicGame{
 		
 			
 			if(p.getMouse1() && !p.isHeldMouse()){
-				SProjectile newP = new SBullet(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)/4f,(float)Math.sin(rotation)/4f,SState.nextBulletId());
+				SProjectile newP = new SBullet(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)/3f,(float)Math.sin(rotation)/3f,SState.nextBulletId());
 				SState.addProjectile(newP);
 				SState.newProj.add(newP);
 			}
-			p.setHeldMouse(p.getMouse1());
+			
+			if(p.getMouse2() && !p.isHeldMouse()){
+				SProjectile newP = new SRocket(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)/5f,(float)Math.sin(rotation)/5f,(float)rotation,SState.nextBulletId());	
+				SState.addProjectile(newP);
+				SState.newProj.add(newP);
+			}
+			p.setHeldMouse(p.getMouse1() || p.getMouse2());
 			
 			//TODO BAD STYLE
 		if(p.getMoveW()){
@@ -118,12 +124,27 @@ public class Server extends BasicGame{
 			daos.writeShort(SState.newProj.size());
 			//writes whenever a new bullet occurs
 			for(SProjectile p : SState.newProj){
-				//write the ID. write the X,Y. write the velocity.
-				daos.writeShort(p.getID());
-				daos.writeShort((int) (p.getShape().getX()));
-				daos.writeShort((int) (p.getShape().getY()));
-				daos.writeFloat(p.getXVel());
-				daos.writeFloat(p.getYVel());
+				if(p instanceof SBullet){
+					daos.writeBoolean(true);
+					
+					daos.writeShort(p.getID());
+					daos.writeShort((int) (p.getShape().getX()));
+					daos.writeShort((int) (p.getShape().getY()));
+					
+					daos.writeFloat(p.getXVel());
+					daos.writeFloat(p.getYVel());
+				} else {
+					//it's a rocket
+					daos.writeBoolean(false);
+					
+					daos.writeShort(p.getID());
+					daos.writeShort((int) (p.getShape().getCenterX()));
+					daos.writeShort((int) (p.getShape().getCenterY()));
+					
+					daos.writeFloat(p.getXVel());
+					daos.writeFloat(p.getYVel());	
+					daos.writeFloat(((SRocket)p).rotation);
+				}
 			}
 			SState.newProj = new LinkedList<SProjectile>();
 			
@@ -201,8 +222,7 @@ public class Server extends BasicGame{
 	public void init(GameContainer arg0) throws SlickException {
 		try {
 			clientNames = new InetAddress[]{
-					InetAddress.getByName("localhost"),
-					InetAddress.getByName("192.168.0.114")};
+					InetAddress.getByName("localhost")};
 			sock = new DatagramSocket(CSLO.inputPort);
 			sock.setReceiveBufferSize(10000);
 			sock.setSendBufferSize(10000);
