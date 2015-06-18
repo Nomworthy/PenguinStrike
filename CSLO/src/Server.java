@@ -226,7 +226,7 @@ public class Server extends BasicGame{
 		try {
 			clientNames = new InetAddress[]{
 					InetAddress.getByName("localhost"),
-					InetAddress.getByName("192.168.0.114")};
+					InetAddress.getByName("192.168.0.117")};
 			sock = new DatagramSocket(CSLO.inputPort);
 			sock.setReceiveBufferSize(10000);
 			sock.setSendBufferSize(10000);

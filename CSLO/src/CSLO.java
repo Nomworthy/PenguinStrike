@@ -29,7 +29,7 @@ public class CSLO extends BasicGame
 	public static final int RESY= 800;
 	
 	//ID of this client. TODO: be set by the server.
-	private static byte clientID = 0;
+	private static byte clientID = 1;
 	
 	//IP address of server.
 	private static InetAddress serverName;
@@ -50,6 +50,12 @@ public class CSLO extends BasicGame
 	
 	private String serverIP;
 	private CMainMenu preLobby;
+	
+	private long currentTimeStamp;
+	private long lastTimeStamp;
+	
+
+	private static long tickRateNano =30000000L;
 	
 	enum GameState{
 		//menu for setting name, color, etc.
@@ -145,7 +151,11 @@ public class CSLO extends BasicGame
 				sendInputPacket(container.getInput());
 				//get inputs back.
 				readState();
-				moveBullets(delta);
+				currentTimeStamp = System.nanoTime();
+				//TODO Fix dirty hardcoding
+				double delta2 = 30.0000000;
+				moveBullets(delta2);
+				lastTimeStamp = currentTimeStamp;
 			break;
     	}
     }
@@ -301,10 +311,10 @@ public class CSLO extends BasicGame
     	
     }
     
-    void moveBullets(int ms){
+    void moveBullets(double ms){
     	for(BulletCoord b : bullets){
-    		b.x += b.xVel * ((double)ms);
-    		b.y += b.yVel * ((double)ms);
+    		b.x += b.xVel * (ms);
+    		b.y += b.yVel * (ms);
     	}
     }
     
@@ -315,6 +325,7 @@ public class CSLO extends BasicGame
         	socket = new DatagramSocket(statePort);
         	socket.setReceiveBufferSize(50000);
         	socket.setSendBufferSize(50000);
+        	lastTimeStamp = System.nanoTime();
     	  } catch (Exception e){
         	System.out.println("Could not create Socket");
         }	
