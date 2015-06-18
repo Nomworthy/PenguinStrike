@@ -1,9 +1,7 @@
 import java.util.LinkedList;
-
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.geom.Shape;
-import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.geom.Rectangle;
 
 public class WorldMap extends TiledMap {
@@ -96,7 +94,7 @@ public class WorldMap extends TiledMap {
 						//yes! before we damage the tile check if it becomes dirty.
 						if(tileBecomesDirty(x,y,wallDamage)){
 							dirtyTiles.add(new Tile(x,y));
-							System.out.println("Tile Became Dirty");
+							//System.out.println("Tile Became Dirty");
 						}
 						tileIntegrity[x][y] = Math.max(tileIntegrity[x][y] - wallDamage,0.0);
 					}
@@ -116,7 +114,6 @@ public class WorldMap extends TiledMap {
 			int phase = oldID % STONEPHASE;
 			int baseID = oldID - phase;
 			int newID;
-			System.out.println("old ID" + oldID);
 			
 			if(tileIntegrity[t.x][t.y] == 0.00)
 				newID = baseID + 1;
@@ -124,7 +121,6 @@ public class WorldMap extends TiledMap {
 				newID = baseID + 1 + (int)(tileIntegrity[t.x][t.y] / STONEPHASESTR) + 1;
 			t.id = newID;
 			
-			System.out.println("old ID" + newID);
 			
 			setTileId(t.x,t.y,wallLayerIndex,newID); 
 		}

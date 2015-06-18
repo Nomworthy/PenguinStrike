@@ -21,6 +21,8 @@ public class CPlayer{
 	private Animation spriteHands;
 	private Animation spriteUnderShirt;
 	private Animation spriteHead;
+	
+
 
 	private Color jacketCol;
 	private Color underShirtCol;

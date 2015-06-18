@@ -32,6 +32,10 @@ public class Server extends BasicGame{
 	
 	//Timestamp to keep track of logic steps
 	public static long lastTimeStamp;
+	//Timestamp to keep track of logic steps
+	public static long currentTimeStamp;
+	
+	private static long tickRateNano =30000000L;
 	
 	public Server(String title) {
 		super(title);
@@ -212,7 +216,6 @@ public class Server extends BasicGame{
 		
 	}
 
-	@Override
 	public void render(GameContainer arg0, Graphics arg1) throws SlickException {
 		// TODO Auto-generated method stub
 		
@@ -222,7 +225,8 @@ public class Server extends BasicGame{
 	public void init(GameContainer arg0) throws SlickException {
 		try {
 			clientNames = new InetAddress[]{
-					InetAddress.getByName("localhost")};
+					InetAddress.getByName("localhost"),
+					InetAddress.getByName("192.168.0.114")};
 			sock = new DatagramSocket(CSLO.inputPort);
 			sock.setReceiveBufferSize(10000);
 			sock.setSendBufferSize(10000);
@@ -237,6 +241,7 @@ public class Server extends BasicGame{
 
 	@Override
 	public void update(GameContainer arg0, int arg1) throws SlickException {
+
 		byte[] inputbfr = new byte[100];
 
 		DatagramPacket packet = new DatagramPacket(inputbfr, 100);
@@ -255,12 +260,26 @@ public class Server extends BasicGame{
 				break;
 			}
 		}
-		long currentTimeStamp = System.nanoTime();
-		doGameLogic(currentTimeStamp - lastTimeStamp);
-		lastTimeStamp = System.nanoTime();
+		
+		doGameLogic(tickRateNano);
+
+		currentTimeStamp = System.nanoTime();
+		long execTime = currentTimeStamp - lastTimeStamp;
+		System.out.println("Exec " + execTime/1000000000.0 + " Tick " + tickRateNano/1000000000.0);
+		//I want to send every .05 s
+		if(execTime < tickRateNano)
+		{
+			try {
+				System.out.println("Sleep for " + (tickRateNano-execTime)/1000);
+				Thread.sleep((tickRateNano-execTime)/1000000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		lastTimeStamp = currentTimeStamp;
 		writeState();
 		SState.map.purgeDirtyTiles();
-		//now we have the most availablke input, do game logic.
+		
 	}
 		
 }
