@@ -5,17 +5,13 @@ import org.newdawn.slick.SlickException;
 
 public class SState {
 	public static WorldMap map;
-	public static SPlayer[] players = new SPlayer[4];
+	public static SPlayer[] players = new SPlayer[CSLO.maxPlayerCount];
+	public static int playerCount = 0;
 	public static LinkedList<SProjectile> proj = new LinkedList<SProjectile>();
 	public static LinkedList<SProjectile> newProj = new LinkedList<SProjectile>();
 	public static LinkedList<SProjectile> oldProj = new LinkedList<SProjectile>();
 	public static short bulletCounter = 0;
-	
-	public static void instWorldState(){
-		for(int i = 0; i != players.length; i++){
-			players[i] = new SPlayer();
-		}
-	}
+
 	
 	public static void physics(float ms){
 		ListIterator<SProjectile> listIterator = proj.listIterator();

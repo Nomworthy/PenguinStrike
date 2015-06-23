@@ -29,7 +29,7 @@ public class CSLO extends BasicGame
 	public static final int RESY= 800;
 	
 	//ID of this client. TODO: be set by the server.
-	private static byte clientID = 1;
+	private static byte clientID = -1;
 	
 	//IP address of server.
 	private static InetAddress serverName;
@@ -54,8 +54,11 @@ public class CSLO extends BasicGame
 	private long currentTimeStamp;
 	private long lastTimeStamp;
 	
+	public static byte HANDSHAKE = -127;
 
 	private static long tickRateNano =30000000L;
+	
+	static final int maxPlayerCount = 10;
 	
 	enum GameState{
 		//menu for setting name, color, etc.
@@ -174,6 +177,7 @@ public class CSLO extends BasicGame
 			case SETUP:
 			case END:
 			case FIGHT:
+				
 				CPlayer self = CState.players[clientID];
 				//if the player were centered on screen, where is the map drawn?
 				int playerXBase = (int) (self.getX() + self.RADIUS - GAMEDIM/2);
@@ -258,6 +262,7 @@ public class CSLO extends BasicGame
     		final DataInputStream dais=new DataInputStream(bais);
     		
     		byte playerCount = dais.readByte();
+    		
     		for (int i = 0; i != playerCount; i++){
     			CState.players[i].setX(dais.readFloat());
     			CState.players[i].setY(dais.readFloat());
@@ -320,14 +325,37 @@ public class CSLO extends BasicGame
     
     void initServer()
     {
-        try{
+        try
+        {
         	serverName = InetAddress.getByName(serverIP);
         	socket = new DatagramSocket(statePort);
         	socket.setReceiveBufferSize(50000);
         	socket.setSendBufferSize(50000);
         	lastTimeStamp = System.nanoTime();
-    	  } catch (Exception e){
-        	System.out.println("Could not create Socket");
-        }	
+        	
+        	final ByteArrayOutputStream baos=new ByteArrayOutputStream();
+    		final DataOutputStream daos=new DataOutputStream(baos);
+    			
+    		daos.writeByte(HANDSHAKE);
+    		daos.close();
+    		
+    	
+    		final byte[] bytes=baos.toByteArray();
+        	socket.send(new DatagramPacket(bytes,bytes.length,serverName,CSLO.inputPort));
+        
+        	socket.setSoTimeout(100);
+        	byte[] inputbfr = new byte[1];
+        	DatagramPacket packet = new DatagramPacket(inputbfr, 1);
+        	socket.receive(packet); 		
+        	clientID = inputbfr[0];
+        } catch (Exception e)
+        
+        {
+        	gs = GameState.PRELOBBY;
+        	socket.close();
+        }
+    			
+
+      
     }
 }

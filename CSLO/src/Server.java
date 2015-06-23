@@ -63,6 +63,8 @@ public class Server extends BasicGame{
 		
 		for(SPlayer p : SState.players)
 		{
+			if(p != null)
+			{
 			double rotation = (Math.atan2(p.getMouseY() - (CSLO.GAMEDIM/2), p.getMouseX() - (CSLO.GAMEDIM/2)));
 			p.setRot((float) Math.toDegrees(rotation + Math.PI));
 		
@@ -104,6 +106,7 @@ public class Server extends BasicGame{
 		}
 		
 		}
+		}
 		
 	SState.physics(ms);	
 	
@@ -115,13 +118,16 @@ public class Server extends BasicGame{
 		final DataOutputStream daos=new DataOutputStream(baos);
 		try{
 			
-			daos.writeByte(SState.players.length);
+			daos.writeByte(1);
 			
 			for(SPlayer p : SState.players){
-				daos.writeFloat(p.getX());
-				daos.writeFloat(p.getY());
-				daos.writeFloat(p.getRot());
-				daos.writeByte(p.getFrame());
+				if(p != null)
+				{
+					daos.writeFloat(p.getX());
+					daos.writeFloat(p.getY());
+					daos.writeFloat(p.getRot());
+					daos.writeByte(p.getFrame());
+				}
 			}
 			
 			//write new projectiles.
@@ -174,20 +180,38 @@ public class Server extends BasicGame{
 			daos.close();
 			final byte[] bytes=baos.toByteArray();
 			for(InetAddress a : clientNames){
-				DatagramPacket p= new DatagramPacket(bytes,bytes.length,a,CSLO.statePort);
-				sock.send(p);
+				if(a != null)
+				{
+					DatagramPacket p= new DatagramPacket(bytes,bytes.length,a,CSLO.statePort);
+					sock.send(p);
+				}
 			}
     	} catch (Exception e){
     		e.printStackTrace();}
 	}
 
-	public static void readClientInputs(byte[] inpack) throws IOException{
+	public static void readClientInputs(byte[] inpack, DatagramPacket packet) throws IOException{
 
 		final ByteArrayInputStream bais=new ByteArrayInputStream(inpack);
 		final DataInputStream dais=new DataInputStream(bais);
     	
 		//1 Identifier
 		int clientID = dais.readByte();
+		
+		if(clientID == CSLO.HANDSHAKE){
+			final ByteArrayOutputStream baos=new ByteArrayOutputStream();
+			final DataOutputStream daos=new DataOutputStream(baos);
+				
+			daos.writeByte(SState.playerCount);
+			daos.close();
+			final byte[] b = baos.toByteArray();
+			DatagramPacket p= new DatagramPacket(b,b.length,packet.getAddress(),CSLO.statePort);
+			sock.send(p);
+			clientNames[SState.playerCount] = packet.getAddress();
+			SState.players[SState.playerCount] = new SPlayer();
+			SState.playerCount++;
+		} else 
+		{
 		SPlayer p = SState.players[clientID];
 		p.setMouseX(dais.readShort());
 		p.setMouseY(dais.readShort());
@@ -199,6 +223,7 @@ public class Server extends BasicGame{
 		p.setMouse1(dais.readBoolean());
 		p.setMouse2(dais.readBoolean());
 		dais.close();
+		}
 	}
 		
 	public static void addKillSwitch(){
@@ -224,9 +249,7 @@ public class Server extends BasicGame{
 	@Override
 	public void init(GameContainer arg0) throws SlickException {
 		try {
-			clientNames = new InetAddress[]{
-					InetAddress.getByName("localhost"),
-					InetAddress.getByName("192.168.0.117")};
+			clientNames = new InetAddress[CSLO.maxPlayerCount];
 			sock = new DatagramSocket(CSLO.inputPort);
 			sock.setReceiveBufferSize(10000);
 			sock.setSendBufferSize(10000);
@@ -235,7 +258,6 @@ public class Server extends BasicGame{
 			e.printStackTrace();
 		}
 		lastTimeStamp = System.nanoTime();
-    	SState.instWorldState();
 		SState.map = new WorldMap("data/maps/Map1.tmx");	
 	}
 
@@ -254,7 +276,7 @@ public class Server extends BasicGame{
 		while(true){
 			try{
 				sock.receive(packet);
-				readClientInputs(inputbfr);	
+				readClientInputs(inputbfr,packet);	
 			} catch (Exception e){
 				//we read them all!
 				break;
@@ -265,12 +287,11 @@ public class Server extends BasicGame{
 
 		currentTimeStamp = System.nanoTime();
 		long execTime = currentTimeStamp - lastTimeStamp;
-		System.out.println("Exec " + execTime/1000000000.0 + " Tick " + tickRateNano/1000000000.0);
 		//I want to send every .05 s
 		if(execTime < tickRateNano)
 		{
 			try {
-				System.out.println("Sleep for " + (tickRateNano-execTime)/1000);
+				
 				Thread.sleep((tickRateNano-execTime)/1000000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
