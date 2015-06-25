@@ -1,10 +1,10 @@
-import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Transform;
 
 public class SRocket extends SProjectile {
 	public final static int rocketWidth= 20;
 	public final static int rocketHeight= 8;
+	public final static double damage = 2000;
 	//private this
 	public float rotation;
 	
@@ -15,6 +15,16 @@ public class SRocket extends SProjectile {
 
 	@Override
 	public void onCollide() {
+		int cX = (int) (getShape().getCenterX()/SState.map.TILESIZE);
+		int cY = (int) (getShape().getCenterY()/SState.map.TILESIZE);
+		for(int x = cX-1; x <= cX+1; x++)
+		{
+			for(int y = cY-1; y <= cY+1;y++)
+			{
+				SState.map.damageTile(x,y, damage);
+			}
+		}
+		
 	}
 
 }

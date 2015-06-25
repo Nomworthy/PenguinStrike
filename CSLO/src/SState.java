@@ -19,6 +19,7 @@ public class SState {
 			SProjectile p = listIterator.next();
 			p.moveBullet(ms);
 			if(!p.isLive()){
+				p.onCollide();
 				oldProj.add(p);
 				listIterator.remove();
 			}

@@ -115,7 +115,8 @@ public class CSLO extends BasicGame
     @Override
     public void init(GameContainer container) throws SlickException
     {
-    	CState.players = new CPlayer[]{ new CPlayer(),new CPlayer(),new CPlayer(),new CPlayer()};
+    	CState.players = new CPlayer[]{new CPlayer(),new CPlayer(),new CPlayer(),new CPlayer(),
+    								new CPlayer(),new CPlayer(),new CPlayer(),new CPlayer()};
     	cursor = new Image("data/gui/mouse.png");
     	bullet = new Image("data/weapon/bullet.png");
 		rocket = new Animation(new SpriteSheet("data/weapon/rocket.png",20,8),70);

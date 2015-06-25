@@ -1,11 +1,12 @@
 import java.util.LinkedList;
+
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Rectangle;
 
 public class WorldMap extends TiledMap {
-	private final int TILESIZE = 8;
+	final int TILESIZE = 8;
 	//0, Destroyed. 0-499, weak. 500-999, med. 1000-1499, strong.
 	private final double STONEPHASESTR = 500;
 	private final int STONESTART = 4000;
@@ -80,24 +81,17 @@ public class WorldMap extends TiledMap {
 	}
 
 	//checks collsion, but also does damage to wall.
-	public boolean checkCollide(Shape s, double wallDamage) {
-		int minXTile = (int)(s.getMinX())/TILESIZE;
-		int maxXTile = (int)(s.getMaxX())/TILESIZE;
-		int minYTile = (int)(s.getMinY())/TILESIZE;
-		int maxYTile = (int)(s.getMaxY())/TILESIZE;
+	public boolean checkCollide(SProjectile s, double wallDamage) {
+		
+		int minXTile = (int)(s.getShape().getMinX())/TILESIZE;
+		int maxXTile = (int)(s.getShape().getMaxX())/TILESIZE;
+		int minYTile = (int)(s.getShape().getMinY())/TILESIZE;
+		int maxYTile = (int)(s.getShape().getMaxY())/TILESIZE;
 		
 		for(int x = minXTile; x <= maxXTile; x++){
 			for(int y = minYTile; y <= maxYTile; y++){	
-				if(tileIntegrity[x][y] > 0 && s.intersects(new Rectangle(x*TILESIZE,y*TILESIZE,TILESIZE,TILESIZE))){
+				if(tileIntegrity[x][y] > 0 && s.getShape().intersects(new Rectangle(x*TILESIZE,y*TILESIZE,TILESIZE,TILESIZE))){
 					//we collided! is the tile invincible?
-					if(tileIntegrity[x][y] != Integer.MAX_VALUE){
-						//yes! before we damage the tile check if it becomes dirty.
-						if(tileBecomesDirty(x,y,wallDamage)){
-							dirtyTiles.add(new Tile(x,y));
-							//System.out.println("Tile Became Dirty");
-						}
-						tileIntegrity[x][y] = Math.max(tileIntegrity[x][y] - wallDamage,0.0);
-					}
 					return true;
 				}
 			}
@@ -141,6 +135,18 @@ public class WorldMap extends TiledMap {
 	
 	public int getWallLayerIndex(){
 		return wallLayerIndex;
+	}
+
+	public void damageTile(int xTile, int yTile, double damage) {
+		if(tileIntegrity[xTile][yTile] > 0 && tileIntegrity[xTile][yTile] != Integer.MAX_VALUE)
+		{
+			//yes! before we damage the tile check if it becomes dirty.
+			if(tileBecomesDirty(xTile,yTile,damage)){
+				dirtyTiles.add(new Tile(xTile,yTile));
+			}
+			
+			tileIntegrity[xTile][yTile] = Math.max(tileIntegrity[xTile][yTile] - damage,0.0);
+		}	
 	}
 
 }

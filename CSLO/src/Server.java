@@ -65,6 +65,7 @@ public class Server extends BasicGame{
 		{
 			if(p != null)
 			{
+				
 			double rotation = (Math.atan2(p.getMouseY() - (CSLO.GAMEDIM/2), p.getMouseX() - (CSLO.GAMEDIM/2)));
 			p.setRot((float) Math.toDegrees(rotation + Math.PI));
 		
@@ -118,7 +119,7 @@ public class Server extends BasicGame{
 		final DataOutputStream daos=new DataOutputStream(baos);
 		try{
 			
-			daos.writeByte(1);
+			daos.writeByte(SState.playerCount);
 			
 			for(SPlayer p : SState.players){
 				if(p != null)
