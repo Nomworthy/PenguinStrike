@@ -44,6 +44,8 @@ public class CSLO extends BasicGame
 	
 	private Image cursor;
 	private Image bullet;
+	private Image explosionImage;
+	
 	private Animation rocket;
 	private final static int rocketWidth= 20;
 	private final static int rocketHeight= 8;
@@ -87,8 +89,15 @@ public class CSLO extends BasicGame
 		float rot;
 	}
 	
+	private static class Explosion{
+		float x;
+		float y;
+		int frame;
+	}
+	
 	//List of all bullets the client knows about.
 	private static LinkedList<BulletCoord> bullets = new LinkedList<BulletCoord>();
+	private static LinkedList<Explosion> explosions = new LinkedList<Explosion>();
 	
     public CSLO() 
     {
@@ -119,6 +128,8 @@ public class CSLO extends BasicGame
     								new CPlayer(),new CPlayer(),new CPlayer(),new CPlayer()};
     	cursor = new Image("data/gui/mouse.png");
     	bullet = new Image("data/weapon/bullet.png");
+    	explosionImage = new Image("data/weapon/explosion.png");
+    	
 		rocket = new Animation(new SpriteSheet("data/weapon/rocket.png",20,8),70);
 		rocket.setAutoUpdate(true);
     	cursor.setFilter(Image.FILTER_NEAREST);
@@ -127,6 +138,7 @@ public class CSLO extends BasicGame
     	CState.worldMap = new WorldMap("data/maps/Map1.tmx");
     	CWFont.initFontSheet();
     	preLobby = new CMainMenu(container);
+    	explosions = new LinkedList<Explosion>();
     }
  
     @Override
@@ -209,6 +221,17 @@ public class CSLO extends BasicGame
 						}
 					}
 				}
+				
+				if(explosions != null)
+				{
+					for(Explosion e : explosions)
+					{
+						//g.drawImage(explosionImage, e.x - 15, e.y - 15, 30*e.frame,0, 30*(1+e.frame), 30);
+						g.drawImage(explosionImage, e.x +- (mapOffsetX) +- rocketWidth/2 +- 30, e.y +- (mapOffsetY) +- rocketHeight/2 +-15, 30*e.frame,0, 30*(1+e.frame), 30);
+						
+					}
+				}
+				
 				g.drawImage(cursor,CState.scaledMouseX-3 , CState.scaledMouseY-3 );
     	}
     }
@@ -308,20 +331,49 @@ public class CSLO extends BasicGame
 		}
     }
     
-    public static void removeBulletById(short id){
+    //LINEAR TIME
+    public static void removeBulletById(short id)
+    {
 		Iterator<BulletCoord> iterator = bullets.iterator();
 		while (iterator.hasNext()) {
-			if(iterator.next().id == id)
+			BulletCoord b = iterator.next();
+			if(b.id == id)
+			{
+				
+				if(!b.bullet)
+				{
+					
+					Explosion e = new Explosion();
+					e.x = b.x;
+					e.y = b.y;
+					e.frame = 0;
+					explosions.add(e);
+					
+				}
+					
+					
 				iterator.remove();
+			}
 		}
     	
     }
     
     void moveBullets(double ms){
+    	
     	for(BulletCoord b : bullets){
     		b.x += b.xVel * (ms);
     		b.y += b.yVel * (ms);
     	}
+    	
+    	
+		Iterator<Explosion> iterator = explosions.iterator();
+		while (iterator.hasNext())
+		{
+			Explosion e = iterator.next();
+			e.frame++;
+			if(e.frame == 4)		
+				iterator.remove();
+		}    	
     }
     
     void initServer()

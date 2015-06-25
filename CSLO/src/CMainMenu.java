@@ -38,10 +38,12 @@ public class CMainMenu {
 		nameField = new TextField(container,f,-1,-1,0,0);
 		IPField = new TextField(container,f,-1,-1,0,0);
 	}
+	
+	
 	public void draw(Image cursor,Graphics g, GUIContext container) {
-
         	
     		CWFont.draw(g,"COLD WAR", 70, 50,5,Color.cyan);
+    		CWFont.draw(g,"-ULTIMATE PENGUIN HEROES-", 110, 90,1,Color.cyan);
     		
     		CWFont.draw(g,"NAME: " + nameField.getText() + (mState == State.NAMESET ? "-" : "")
     				, 30, 110,3,new Color(127,0,255));
@@ -52,7 +54,7 @@ public class CMainMenu {
     				, 210, 235,2,Color.orange);
     		CWFont.draw(g,"CONNECT!", 30, 270,3, ((IPField.getText().length() == 0|| nameField.getText().length() == 0) ? Color.darkGray : Color.white));
     		
-    		CWFont.draw(g,"(C) NEUTRAL SPACE STUDIOS 1985", 10, 310,2, Color.cyan);
+    		CWFont.draw(g,")C( NEUTRAL SPACE STUDIOS 1985", 10, 310,2, Color.cyan);
     		
     		g.drawImage(cursor,CState.scaledMouseX-3 , CState.scaledMouseY-3 );		
 	}

@@ -15,13 +15,17 @@ public class SRocket extends SProjectile {
 
 	@Override
 	public void onCollide() {
-		int cX = (int) (getShape().getCenterX()/SState.map.TILESIZE);
-		int cY = (int) (getShape().getCenterY()/SState.map.TILESIZE);
+		System.out.println("X " + (rocketWidth/2)*Math.cos(rotation) + " Y " + (rocketWidth/2)*Math.sin(rotation));
+		
+		int cX = (int) ((( getShape().getCenterX() + ((rocketWidth/2)*Math.cos(rotation)))   /SState.map.TILESIZE));
+		int cY = (int) ((( getShape().getCenterY() + ((rocketWidth/2)*Math.sin(rotation))) /SState.map.TILESIZE));
+		
 		for(int x = cX-1; x <= cX+1; x++)
 		{
 			for(int y = cY-1; y <= cY+1;y++)
 			{
-				SState.map.damageTile(x,y, damage);
+				SState.map.damageTile(x,y,damage);
+				
 			}
 		}
 		

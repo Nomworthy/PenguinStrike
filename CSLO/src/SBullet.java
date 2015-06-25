@@ -11,7 +11,7 @@ public class SBullet extends SProjectile {
 	@Override
 	public void onCollide() {
 		int minX = (int) (getShape().getMinX()/SState.map.TILESIZE);
-		int maxX = (int) (getShape().getMaxY()/SState.map.TILESIZE);
+		int maxX = (int) (getShape().getMaxX()/SState.map.TILESIZE);
 		int minY = (int) (getShape().getMinY()/SState.map.TILESIZE);
 		int maxY = (int) (getShape().getMaxY()/SState.map.TILESIZE);
 		

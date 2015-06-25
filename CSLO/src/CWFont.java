@@ -22,7 +22,6 @@ public class CWFont {
 	
 	public static void draw(Graphics g, String s, int x, int y, int scale, Color color)
 	{
-		s = new String(s).toUpperCase();
 		for (int i = 0; i < s.length(); i++){
 		    char c = s.charAt(i);     
 		    print(g,c,x,y,scale,color);
@@ -32,16 +31,8 @@ public class CWFont {
 	
 	private static void print(Graphics g, char c, int x, int y, int scale,Color color)
 	{
-		int pos;
-		if(Character.isAlphabetic(c))
-		{
-			pos = c - 65;
-		} else if (c >= 32 && c <= 58){
-			pos = (26) + (c - 32);
-		} else {
-			return;
-		}
 		
+		int pos = c - 32;
 		int xLetter = (pos%sheetWidth)*fontWidth;
 		int yLetter = (pos/sheetWidth)*fontHeight;
 		g.setColor(Color.red);
