@@ -29,10 +29,13 @@ public class SPlayer extends Circle {
 	private int frame;
 	private double frameTimeLeft;
 	private final double frameTimeLeftMax = 100;
+	
+	private boolean spectator = true;
+	private boolean team;
 
 	
 	public SPlayer(){
-		super(500, 500, RADIUS);
+		super(0, 0, RADIUS);
 	}
 
 	public int getMouseX() {
@@ -164,6 +167,34 @@ public class SPlayer extends Circle {
 		} else {
 			return;
 		}
+	}
+
+	public void setTeam(boolean readBoolean) {
+		spectator = false;
+		team = readBoolean;
+		if(team)
+		{
+			
+			super.setX(500);
+			super.setY(500);
+			
+		} else
+		{
+			
+			super.setX(1500);
+			super.setY(500);
+			
+		}
+	}
+	
+	public boolean isSpectator()
+	{
+		return spectator;
+	}
+	
+	public boolean getTeam()
+	{
+		return team;
 	}
 
 }

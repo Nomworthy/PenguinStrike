@@ -15,9 +15,8 @@ public class SRocket extends SProjectile {
 
 	@Override
 	public void onCollide() {
-		System.out.println("X " + (rocketWidth/2)*Math.cos(rotation) + " Y " + (rocketWidth/2)*Math.sin(rotation));
-		
-		int cX = (int) ((( getShape().getCenterX() + ((rocketWidth/2)*Math.cos(rotation)))   /SState.map.TILESIZE));
+
+		int cX = (int) ((( getShape().getCenterX() + ((rocketWidth/2)*Math.cos(rotation))) /SState.map.TILESIZE));
 		int cY = (int) ((( getShape().getCenterY() + ((rocketWidth/2)*Math.sin(rotation))) /SState.map.TILESIZE));
 		
 		for(int x = cX-1; x <= cX+1; x++)

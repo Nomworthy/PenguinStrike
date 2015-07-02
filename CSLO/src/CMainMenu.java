@@ -55,7 +55,7 @@ public class CMainMenu {
     		CWFont.draw(g,"CONNECT!", 30, 270,3, ((IPField.getText().length() == 0|| nameField.getText().length() == 0) ? Color.darkGray : Color.white));
     		
     		CWFont.draw(g,")C( NEUTRAL SPACE STUDIOS 1985", 10, 310,2, Color.cyan);
-    		
+        	
     		g.drawImage(cursor,CState.scaledMouseX-3 , CState.scaledMouseY-3 );		
 	}
 

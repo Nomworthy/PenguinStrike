@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -30,6 +31,9 @@ public class CSLO extends BasicGame
 	
 	//ID of this client. TODO: be set by the server.
 	private static byte clientID = -1;
+	
+	private static boolean spectator = true;
+	private static boolean penguinTeam = false;
 	
 	//IP address of server.
 	private static InetAddress serverName;
@@ -57,6 +61,7 @@ public class CSLO extends BasicGame
 	private long lastTimeStamp;
 	
 	public static byte HANDSHAKE = -127;
+	public static byte TEAMREQUEST = -126;
 
 	private static long tickRateNano =30000000L;
 	
@@ -70,7 +75,8 @@ public class CSLO extends BasicGame
 		//In game : setup
 		SETUP,
 		FIGHT,
-		END
+		END,
+		TEAMMENU
 	}
 	
 	private static GameState gs = GameState.PRELOBBY;
@@ -152,7 +158,7 @@ public class CSLO extends BasicGame
 				updateInputs(container.getInput());
 				preLobby.doLogic(container,delta);
 				if(preLobby.isDone()){
-					gs = GameState.FIGHT;
+					gs = GameState.TEAMMENU;
 					serverIP = preLobby.getServerIP();
 					preLobby.getName();
 					initServer();
@@ -161,10 +167,30 @@ public class CSLO extends BasicGame
 			case SETUP:
 			case END:
 			case FIGHT:
+			case TEAMMENU:
 				//fetch user inputs
 				updateInputs(container.getInput());
 				//send to da server
-				sendInputPacket(container.getInput());
+				if(gs != GameState.TEAMMENU)
+					sendInputPacket(container.getInput());
+				else 
+				{
+					boolean mPressed = container.getInput().isMousePressed(0) ;
+			    	if(mPressed && isOnPenguinButton())
+			    	{
+			    		gs = GameState.FIGHT;
+						switchTeam(true);
+			    	}
+			    		
+			    	if(mPressed && isOnBearButton())
+			    	{
+			    		gs = GameState.FIGHT;
+			    		switchTeam(false);
+			    	}
+					
+				}
+			//	else
+			//		sendMenuPacket(container.getInput());
 				//get inputs back.
 				readState();
 				currentTimeStamp = System.nanoTime();
@@ -173,10 +199,13 @@ public class CSLO extends BasicGame
 				moveBullets(delta2);
 				lastTimeStamp = currentTimeStamp;
 			break;
+				
     	}
     }
  
-    public void render(GameContainer container, Graphics g) throws SlickException
+
+
+	public void render(GameContainer container, Graphics g) throws SlickException
     {
     	g.scale((float)RESX/GAMEDIM,(float)RESY/GAMEDIM);
     	
@@ -190,6 +219,8 @@ public class CSLO extends BasicGame
 			case SETUP:
 			case END:
 			case FIGHT:
+			case TEAMMENU:
+
 				
 				CPlayer self = CState.players[clientID];
 				//if the player were centered on screen, where is the map drawn?
@@ -201,6 +232,15 @@ public class CSLO extends BasicGame
 				//draw the map
 				int mapOffsetX = playerXBase + deltaX;
 				int mapOffsetY = playerYBase + deltaY;
+				
+				
+				//manhandle camera
+				if(gs == GameState.TEAMMENU)
+				{
+					mapOffsetX = 400;
+					mapOffsetY = 400;			
+				}
+				
 				CState.worldMap.drawWorldMap(mapOffsetX,mapOffsetY);
  
 				for(int i = 0; i != CState.players.length; i++){
@@ -212,12 +252,16 @@ public class CSLO extends BasicGame
 					for(BulletCoord t : bullets)
 					{
 						if(t.bullet)
+						{
 							g.drawImage(bullet,t.x - (mapOffsetX)  ,t.y - (mapOffsetY) );
+						}
 						else{
 							//will have to pull rotatation
 							Image i = rocket.getCurrentFrame();
 							i.setRotation((float)Math.toDegrees(t.rot));
 							g.drawImage(i,t.x +- (mapOffsetX)+- rocketWidth/2 ,t.y +- (mapOffsetY)+ - rocketHeight/2);
+							g.setColor(Color.blue);
+							g.drawRect(t.x - (mapOffsetX)  ,t.y - (mapOffsetY),1,1);
 						}
 					}
 				}
@@ -227,16 +271,51 @@ public class CSLO extends BasicGame
 					for(Explosion e : explosions)
 					{
 						//g.drawImage(explosionImage, e.x - 15, e.y - 15, 30*e.frame,0, 30*(1+e.frame), 30);
-						g.drawImage(explosionImage, e.x +- (mapOffsetX) +- rocketWidth/2 +- 30, e.y +- (mapOffsetY) +- rocketHeight/2 +-15, 30*e.frame,0, 30*(1+e.frame), 30);
+						float baseX =  e.x + -(mapOffsetX);
+						float baseY = e.y + -(mapOffsetY);
+						g.drawImage(explosionImage,baseX - 15, baseY - 15, baseX + 15, baseY + 15, 30*e.frame,0, 30*(1+e.frame), 30);
 						
 					}
 				}
+				
+				
+				if(gs == GameState.TEAMMENU)
+				{
+
+					drawTeamMenu(g);
+				}
+
 				
 				g.drawImage(cursor,CState.scaledMouseX-3 , CState.scaledMouseY-3 );
     	}
     }
     
-    public static void sendInputPacket(Input in){
+    private void drawTeamMenu(Graphics g) {
+    	//Pick what side you are on, also view players
+    	g.setColor(Color.darkGray);
+    	g.fillRect(100, 150, 200, 100);
+    	g.setColor(Color.blue);
+    	g.fillRect(110, 160, 180, 30);
+    	g.setColor(Color.red);
+    	g.fillRect(110, 210, 180, 30);
+    	g.setColor(Color.yellow);
+    	
+    	if(isOnPenguinButton())
+    	{
+        	g.drawRect(110, 160, 180, 30);	
+    	}
+    		
+    	if(isOnBearButton())
+    	{
+    	   g.drawRect(110, 210, 180, 30);	
+    	}
+    	    		
+    	
+    	CWFont.draw(g, "PENGUINS", 120, 170, 2, Color.black);
+    	CWFont.draw(g, "POLAR BEARS", 120, 220, 2, Color.black);
+	}
+
+	public static void sendInputPacket(Input in){
 		final ByteArrayOutputStream baos=new ByteArrayOutputStream();
 		final DataOutputStream daos=new DataOutputStream(baos);
 		try
@@ -401,6 +480,7 @@ public class CSLO extends BasicGame
         	DatagramPacket packet = new DatagramPacket(inputbfr, 1);
         	socket.receive(packet); 		
         	clientID = inputbfr[0];
+        	
         } catch (Exception e)
         
         {
@@ -410,5 +490,56 @@ public class CSLO extends BasicGame
     			
 
       
+    }
+    
+    void switchTeam(boolean pen)
+    {
+        try
+        {
+        	
+        	final ByteArrayOutputStream baos=new ByteArrayOutputStream();
+    		final DataOutputStream daos=new DataOutputStream(baos);
+    			
+    		daos.writeByte(TEAMREQUEST);
+      		daos.writeByte(clientID);
+    		daos.writeBoolean(pen);
+    		daos.close();
+    		
+    	
+    		final byte[] bytes=baos.toByteArray();
+        	socket.send(new DatagramPacket(bytes,bytes.length,serverName,CSLO.inputPort));
+        
+        	socket.setSoTimeout(100);
+        	byte[] inputbfr = new byte[1];
+        	DatagramPacket packet = new DatagramPacket(inputbfr, 1);
+        	socket.receive(packet); 		
+        	
+        	if(inputbfr[0] == TEAMREQUEST){
+        		return;
+        	} else {
+        		System.out.println("Server ignored request!");
+        	}
+        	
+        } catch (Exception e)
+        
+        {
+        	gs = GameState.PRELOBBY;
+        	socket.close();
+        }
+    			
+
+      
+    }
+    
+    boolean isOnPenguinButton()
+    {
+    	return(CState.scaledMouseX > 110 && CState.scaledMouseX < 110+180 && 
+    			CState.scaledMouseY > 160 && CState.scaledMouseY < 160+30);
+    }
+    
+    boolean isOnBearButton()
+    {
+    	return(CState.scaledMouseX > 110 && CState.scaledMouseX < 110+180 && 
+    	    	   CState.scaledMouseY > 210 && CState.scaledMouseY < 210+30);
     }
 }

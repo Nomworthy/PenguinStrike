@@ -21,6 +21,7 @@ public class CPlayer{
 	private Animation spriteHands;
 	private Animation spriteUnderShirt;
 	private Animation spriteHead;
+	private Animation spriteWeapon;
 	
 
 
@@ -29,10 +30,13 @@ public class CPlayer{
 	
 	public CPlayer(){
 		try {
-			spriteJacket = new Animation(new SpriteSheet("data/penguins/wJacket.png",31,31),100);
-			spriteHands = new Animation(new SpriteSheet("data/penguins/wHands.png",31,31),100);
-			spriteUnderShirt = new Animation(new SpriteSheet("data/penguins/wUnder.png",31,31),100);
-			spriteHead = new Animation(new SpriteSheet("data/penguins/wHead.png",31,31),100);
+			spriteJacket = new Animation(new SpriteSheet("data/chars/thJacket.png",31,31),100);
+			spriteHands = new Animation(new SpriteSheet("data/chars/thHands.png",31,31),100);
+			spriteUnderShirt = new Animation(new SpriteSheet("data/chars/thUndershirt.png",31,31),100);
+			//depends!
+			spriteHead = new Animation(new SpriteSheet("data/chars/wBear.png",31,31),100);
+			spriteWeapon = new Animation(new SpriteSheet("data/chars/garand.png",31,31),100);
+			
 			jacketCol = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
 			underShirtCol = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
 			
@@ -72,19 +76,26 @@ public class CPlayer{
 		spriteHead.setCurrentFrame(frame);
 		spriteUnderShirt.setCurrentFrame(frame);
 		spriteHands.setCurrentFrame(frame);
+		spriteWeapon.setCurrentFrame(frame);
+		
 		Image j =spriteJacket.getCurrentFrame();
 		Image ha =spriteHands.getCurrentFrame();
 		Image u =spriteUnderShirt.getCurrentFrame();
 		Image he =spriteHead.getCurrentFrame();
+		Image w =spriteWeapon.getCurrentFrame();
+		
 		j.setRotation(rotation);
 		ha.setRotation(rotation);
 		u.setRotation(rotation);
 		he.setRotation(rotation);
+		w.setRotation(rotation);
 		
 		
 		g.drawImage(j,x +- xOffset +- wx, y +- yOffset +- wy,jacketCol);
 		g.drawImage(ha,x +- xOffset +- wx, y +- yOffset +- wy);
 		g.drawImage(u,x +- xOffset +- wx, y +- yOffset +- wy,underShirtCol);
 		g.drawImage(he,x +- xOffset +- wx, y +- yOffset +- wy);
+		g.drawImage(w,x +- xOffset +- wx, y +- yOffset +- wy);
+		
 	}
 }

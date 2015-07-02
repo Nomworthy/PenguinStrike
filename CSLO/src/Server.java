@@ -37,6 +37,7 @@ public class Server extends BasicGame{
 	
 	private static long tickRateNano =30000000L;
 	
+	private static float GARANDSPREAD = (float) Math.toRadians(4);
 	public Server(String title) {
 		super(title);
 	}
@@ -71,7 +72,17 @@ public class Server extends BasicGame{
 		
 			
 			if(p.getMouse1() && !p.isHeldMouse()){
-				SProjectile newP = new SBullet(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)/3f,(float)Math.sin(rotation)/3f,SState.nextBulletId());
+				
+				//shooting a bullet, have to move it.
+				float gunXAdd = (float) (p.radius *  Math.cos(-Math.PI + -Math.toRadians(p.getRot()) +- .38));
+				float gunYAdd = (float) (p.radius * Math.sin(-Math.toRadians(p.getRot()) +- .38));	
+		
+				//PROBLEM!	double BRotation= (Math.atan2(p.getMouseY() - ((CSLO.GAMEDIM/2) + gunYAdd), p.getMouseX() - ((CSLO.GAMEDIM/2) + gunXAdd)));
+			
+				//Bullet inaccuracy
+				float spread = (float) (Math.random()*GARANDSPREAD) - (GARANDSPREAD/2f);
+				
+				SProjectile newP = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+spread)/3f,(float)Math.sin(rotation+spread)/3f,SState.nextBulletId());
 				SState.addProjectile(newP);
 				SState.newProj.add(newP);
 			}
@@ -211,7 +222,28 @@ public class Server extends BasicGame{
 			clientNames[SState.playerCount] = packet.getAddress();
 			SState.players[SState.playerCount] = new SPlayer();
 			SState.playerCount++;
+			
+		} else if(clientID == CSLO.TEAMREQUEST){
+			
+			//read team request
+			final ByteArrayOutputStream baos=new ByteArrayOutputStream();
+			final DataOutputStream daos=new DataOutputStream(baos);
+				
+			daos.writeByte(CSLO.TEAMREQUEST);
+			daos.close();
+			
+			byte playerID = dais.readByte();
+			
+			//Transmit COLOR1, COLOR2, TEAM. 
+			SState.players[playerID].setTeam(dais.readBoolean());
+			
+			
+			final byte[] b = baos.toByteArray();
+			DatagramPacket p= new DatagramPacket(b,b.length,packet.getAddress(),CSLO.statePort);
+			sock.send(p);
 		} else 
+			
+			
 		{
 		SPlayer p = SState.players[clientID];
 		p.setMouseX(dais.readShort());
