@@ -32,10 +32,24 @@ public class SPlayer extends Circle {
 	
 	private boolean spectator = true;
 	private boolean team;
+	
+	private short r;
+	private short g;
+	private short b;
+	
+	private short sr;
+	private short sg;
+	private short sb;
 
 	
-	public SPlayer(){
+	public SPlayer(short r, short g, short b, short sr, short sg, short sb){
 		super(0, 0, RADIUS);
+		this.r = r;
+		this.g =g;
+		this.b = b;
+		this.sr = sr;
+		this.sg = sg;
+		this.sb = sb;
 	}
 
 	public int getMouseX() {
@@ -175,14 +189,14 @@ public class SPlayer extends Circle {
 		if(team)
 		{
 			
-			super.setX(500);
-			super.setY(500);
+			super.setX(Server.homeSpawnX);
+			super.setY(Server.homeSpawnY);
 			
 		} else
 		{
 			
-			super.setX(1500);
-			super.setY(500);
+			super.setX(Server.awaySpawnX);
+			super.setY(Server.awaySpawnY);
 			
 		}
 	}
@@ -197,4 +211,22 @@ public class SPlayer extends Circle {
 		return team;
 	}
 
+	public short[] sendColorArray(){
+		return new short[]{r,g,b,sr,sg,sb};
+	}
+
+	public void die() {
+		if(team)
+		{
+		super.setX(Server.homeSpawnX);
+		super.setY(Server.homeSpawnY);
+		} else 
+		{
+		super.setX(Server.awaySpawnX);
+		super.setY(Server.awaySpawnY);
+		}
+		
+		
+	}
+	
 }

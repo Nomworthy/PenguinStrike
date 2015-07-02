@@ -3,6 +3,7 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
 //all the client knows about a player.
@@ -23,10 +24,10 @@ public class CPlayer{
 	private Animation spriteHead;
 	private Animation spriteWeapon;
 	
-
-
 	private Color jacketCol;
 	private Color underShirtCol;
+	
+	private boolean oldTeam = false;
 	
 	public CPlayer(){
 		try {
@@ -37,8 +38,8 @@ public class CPlayer{
 			spriteHead = new Animation(new SpriteSheet("data/chars/wBear.png",31,31),100);
 			spriteWeapon = new Animation(new SpriteSheet("data/chars/garand.png",31,31),100);
 			
-			jacketCol = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
-			underShirtCol = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
+			jacketCol = new Color(0f,0f,0f);
+			underShirtCol = new Color(0f,0f,0f);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -97,5 +98,30 @@ public class CPlayer{
 		g.drawImage(he,x +- xOffset +- wx, y +- yOffset +- wy);
 		g.drawImage(w,x +- xOffset +- wx, y +- yOffset +- wy);
 		
+	}
+	
+	public void setCol(short s, short t, short u, short v, short w, short z)
+	{
+		jacketCol = new Color(s,t,u);
+		underShirtCol = new Color(v,w,z);
+	}
+	
+	public void setTeam(boolean team)
+	{
+
+		if(team == oldTeam) return;
+		
+		try {
+		if(team)
+		{
+				spriteHead = new Animation(new SpriteSheet("data/chars/wPenguin.png",31,31),100);
+		} else {
+				spriteHead = new Animation(new SpriteSheet("data/chars/wBear.png",31,31),100);
+		}
+		
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

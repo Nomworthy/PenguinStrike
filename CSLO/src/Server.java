@@ -38,6 +38,13 @@ public class Server extends BasicGame{
 	private static long tickRateNano =30000000L;
 	
 	private static float GARANDSPREAD = (float) Math.toRadians(4);
+	
+	public static final int homeSpawnX = 500;
+	public static final int homeSpawnY = 500;
+	
+	public static final int awaySpawnX = 1000;
+	public static final int awaySpawnY = 1000;
+	
 	public Server(String title) {
 		super(title);
 	}
@@ -85,12 +92,20 @@ public class Server extends BasicGame{
 				SProjectile newP = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+spread)/3f,(float)Math.sin(rotation+spread)/3f,SState.nextBulletId());
 				SState.addProjectile(newP);
 				SState.newProj.add(newP);
+				
+				
 			}
 			
 			if(p.getMouse2() && !p.isHeldMouse()){
+				
 				SProjectile newP = new SRocket(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)/5f,(float)Math.sin(rotation)/5f,(float)rotation,SState.nextBulletId());	
 				SState.addProjectile(newP);
 				SState.newProj.add(newP);
+			
+				//don't want to accidenally blow up the player! (hardoc radius)
+				newP.getShape().setX(newP.getShape().getX() + (newP.getXVel()*35));
+				newP.getShape().setY(newP.getShape().getY() + (newP.getYVel()*35));
+				
 			}
 			p.setHeldMouse(p.getMouse1() || p.getMouse2());
 			
@@ -139,6 +154,11 @@ public class Server extends BasicGame{
 					daos.writeFloat(p.getY());
 					daos.writeFloat(p.getRot());
 					daos.writeByte(p.getFrame());
+					daos.writeBoolean(p.getTeam());
+					for(int i = 0; i != 6; i++)
+					{
+						daos.writeShort(p.sendColorArray()[i]);
+					}
 				}
 			}
 			
@@ -220,7 +240,7 @@ public class Server extends BasicGame{
 			DatagramPacket p= new DatagramPacket(b,b.length,packet.getAddress(),CSLO.statePort);
 			sock.send(p);
 			clientNames[SState.playerCount] = packet.getAddress();
-			SState.players[SState.playerCount] = new SPlayer();
+			SState.players[SState.playerCount] = new SPlayer(dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort());
 			SState.playerCount++;
 			
 		} else if(clientID == CSLO.TEAMREQUEST){

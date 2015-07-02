@@ -33,9 +33,6 @@ public class CMainMenu {
 	private TextField IPField;
 	private Color primaryColor = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
 	private Color secondaryColor = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
-	private int colorMax = Integer.MAX_VALUE;
-	private int pcInt = 256;
-	private int scInt = 256*256;
 	
 	public CMainMenu(GameContainer container){
    		TrueTypeFont f = new TrueTypeFont(new java.awt.Font(java.awt.Font.SERIF,java.awt.Font.BOLD,8),false);
@@ -173,4 +170,15 @@ public class CMainMenu {
 			
 		return null;
 	}
+	
+	public Color getPrimaryCol()
+	{
+		return primaryColor;
+	}
+	
+	public Color getSecondaryCol()
+	{
+		return secondaryColor;
+	}
+	
 }

@@ -24,7 +24,21 @@ public abstract class SProjectile{
 	{
 		shape.setX(shape.getX() + (xVel*ms));
 		shape.setY(shape.getY() + (yVel*ms));
-		live = !SState.map.checkCollide(getShape());
+		for(SPlayer p : SState.players)
+		{
+			if(p != null)
+			{
+				if(p.intersects(shape))
+				{
+					p.die();
+					live = false;
+				}
+				
+			}
+			
+		}
+		if(SState.map.checkCollide(getShape()))
+			live = false;
 	}
 
 	//what to do when bullet hits someone

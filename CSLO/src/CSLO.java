@@ -58,12 +58,10 @@ public class CSLO extends BasicGame
 	private CMainMenu preLobby;
 	
 	private long currentTimeStamp;
-	private long lastTimeStamp;
 	
 	public static byte HANDSHAKE = -127;
 	public static byte TEAMREQUEST = -126;
 
-	private static long tickRateNano =30000000L;
 	
 	static final int maxPlayerCount = 10;
 	
@@ -161,7 +159,7 @@ public class CSLO extends BasicGame
 					gs = GameState.TEAMMENU;
 					serverIP = preLobby.getServerIP();
 					preLobby.getName();
-					initServer();
+					initServer(preLobby.getPrimaryCol(), preLobby.getSecondaryCol());
 				}
 				break;
 			case SETUP:
@@ -193,11 +191,9 @@ public class CSLO extends BasicGame
 			//		sendMenuPacket(container.getInput());
 				//get inputs back.
 				readState();
-				currentTimeStamp = System.nanoTime();
 				//TODO Fix dirty hardcoding
 				double delta2 = 30.0000000;
 				moveBullets(delta2);
-				lastTimeStamp = currentTimeStamp;
 			break;
 				
     	}
@@ -285,6 +281,12 @@ public class CSLO extends BasicGame
 					drawTeamMenu(g);
 				}
 
+				g.setColor(new Color(0f,0f,0f,0.5f));
+				g.fillRect(300, 350, 100, 50);
+				CWFont.draw(g, "Life:   100", 305, 355, 1, new Color (1f,1f,1f,0.5f));
+				CWFont.draw(g, "Ammo:   99/99", 305, 365, 1, new Color (1f,1f,1f,0.5f));
+				CWFont.draw(g, "Bout 5  $9999", 305, 375, 1, new Color (1f,1f,1f,0.5f));
+				CWFont.draw(g, "Build Time 5:00", 305, 385, 1, new Color (1f,1f,1f,0.5f));
 				
 				g.drawImage(cursor,CState.scaledMouseX-5 , CState.scaledMouseY-5 );
     	}
@@ -371,6 +373,8 @@ public class CSLO extends BasicGame
     			CState.players[i].setY(dais.readFloat());
        			CState.players[i].setRotation(dais.readFloat());
     			CState.players[i].setFrame(dais.readByte());
+    			CState.players[i].setTeam(dais.readBoolean());
+    			CState.players[i].setCol(dais.readShort(),dais.readShort(),dais.readShort() ,dais.readShort(),dais.readShort(),dais.readShort());
     		}
     		
 	    	int newProjCount = dais.readShort();
@@ -455,7 +459,7 @@ public class CSLO extends BasicGame
 		}    	
     }
     
-    void initServer()
+    void initServer(Color primary, Color secondary)
     {
         try
         {
@@ -463,12 +467,20 @@ public class CSLO extends BasicGame
         	socket = new DatagramSocket(statePort);
         	socket.setReceiveBufferSize(50000);
         	socket.setSendBufferSize(50000);
-        	lastTimeStamp = System.nanoTime();
         	
         	final ByteArrayOutputStream baos=new ByteArrayOutputStream();
     		final DataOutputStream daos=new DataOutputStream(baos);
     			
     		daos.writeByte(HANDSHAKE);
+    		
+    		daos.writeShort(primary.getRed());
+    		daos.writeShort(primary.getGreen());
+    		daos.writeShort(primary.getBlue());
+
+    		daos.writeShort(secondary.getRed());
+    		daos.writeShort(secondary.getGreen());
+    		daos.writeShort(secondary.getBlue());
+    		
     		daos.close();
     		
     	
