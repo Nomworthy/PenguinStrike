@@ -1,3 +1,4 @@
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.AppletGameContainer.Container;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -32,6 +33,9 @@ public class CMainMenu {
 	private TextField IPField;
 	private Color primaryColor = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
 	private Color secondaryColor = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
+	private int colorMax = Integer.MAX_VALUE;
+	private int pcInt = 256;
+	private int scInt = 256*256;
 	
 	public CMainMenu(GameContainer container){
    		TrueTypeFont f = new TrueTypeFont(new java.awt.Font(java.awt.Font.SERIF,java.awt.Font.BOLD,8),false);
@@ -56,7 +60,24 @@ public class CMainMenu {
     		
     		CWFont.draw(g,")C( NEUTRAL SPACE STUDIOS 1985", 10, 310,2, Color.cyan);
         	
-    		g.drawImage(cursor,CState.scaledMouseX-3 , CState.scaledMouseY-3 );		
+        	if(CState.scaledMouseY > 150 && CState.scaledMouseY < 170)
+        	{
+
+        		drawColorSet(g,30,150,290,20);
+        		if(Mouse.isButtonDown(0))
+            		CWFont.draw(g,"FAVOURITE COLOUR", 30, 150,3, primaryColor);
+        	}
+        	if(CState.scaledMouseY > 190 && CState.scaledMouseY < 210)
+        	{
+
+        		drawColorSet(g,30,190,290,20);
+        		if(Mouse.isButtonDown(0))
+            		CWFont.draw(g,"SECONDARY COLOUR", 30, 190,3, secondaryColor);
+        	}
+    		
+    		g.drawImage(cursor,CState.scaledMouseX-5 , CState.scaledMouseY-5 );
+    		
+    		
 	}
 
 	public void doLogic(GameContainer container, int delta) {
@@ -71,10 +92,18 @@ public class CMainMenu {
 		}
     	if(CState.mouse1 && CState.scaledMouseY > 110 && CState.scaledMouseY < 150)
     		mState = State.NAMESET;
-    	if(CState.mouse1 && CState.scaledMouseY > 150 && CState.scaledMouseY < 190)
-    		primaryColor = new Color((float)Math.random(), (float)Math.random(),(float) Math.random());
-    	if(CState.mouse1 && CState.scaledMouseY > 190 && CState.scaledMouseY < 230)
-    		secondaryColor = new Color((float)Math.random(), (float)Math.random(),(float) Math.random());
+    	
+    	if(CState.mouse1 && CState.scaledMouseY > 150 && CState.scaledMouseY < 180)
+    	{
+    		primaryColor = getColor(30,150,290,20,CState.scaledMouseX,CState.scaledMouseY);
+    		//colour change
+    	}
+    	if(CState.mouse1 && CState.scaledMouseY > 190 && CState.scaledMouseY < 220)
+    	{
+
+    		secondaryColor = getColor(30,190,290,20,CState.scaledMouseX,CState.scaledMouseY);
+    		//colour change
+    	}
     	if(CState.mouse1 && CState.scaledMouseY > 230 && CState.scaledMouseY < 280)
     		mState = State.IPSET;
     	if(CState.mouse1 && CState.scaledMouseY > 280 && CState.scaledMouseY < 320)
@@ -96,5 +125,52 @@ public class CMainMenu {
 	
 	public String getName(){
 		return nameField.getText();
+	}
+	
+	public void drawColorSet(Graphics g, int x, int y, int w, int h)
+	{
+		for(int xd = x; xd != x+w; xd++)
+		{
+			for(int yd = y; yd != y+h; yd++)
+			{
+				//A section has size w/6
+				int section = (6*(xd-x))/(w);
+				float percent = ((xd - x) - (section*(w/6f))) * (1f/(w/6f));
+				//System.out.println(section + " " + percent);
+				switch(section)
+				{ 
+					case 0: g.setColor(new Color(1f,percent,0f)); break;
+					case 1: g.setColor(new Color(1f-percent,1f,0f)); break;
+					case 2: g.setColor(new Color(0f,1f,percent)); break;
+					case 3: g.setColor(new Color(0f,1f-percent,1f)); break;
+					case 4: g.setColor(new Color(0f,0f,1f-percent)); break;
+					case 5: g.setColor(new Color(percent,percent,percent)); break;
+				}
+
+				g.fillRect(xd, yd, 1, 1);
+				//g.setColor()
+			
+			}
+		}
+		
+	}
+	
+	public Color getColor(int x, int y, int w, int h, int xd, int yd)
+	{
+		//A section has size w/6
+		int section = (6*(xd-x))/(w);
+		float percent = ((xd - x) - (section*(w/6f))) * (1f/(w/6f));
+		//System.out.println(section + " " + percent);
+		switch(section)
+		{ 
+			case 0: return (new Color(1f,percent,0f)); 
+			case 1: return (new Color(1f-percent,1f,0f)); 
+			case 2: return (new Color(0f,1f,percent)); 
+			case 3: return (new Color(0f,1f-percent,1f));
+			case 4: return (new Color(0f,0f,1f-percent)); 
+			case 5: return (new Color(percent,percent,percent));
+		}
+			
+		return null;
 	}
 }

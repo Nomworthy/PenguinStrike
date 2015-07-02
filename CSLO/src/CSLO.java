@@ -286,7 +286,7 @@ public class CSLO extends BasicGame
 				}
 
 				
-				g.drawImage(cursor,CState.scaledMouseX-3 , CState.scaledMouseY-3 );
+				g.drawImage(cursor,CState.scaledMouseX-5 , CState.scaledMouseY-5 );
     	}
     }
     
