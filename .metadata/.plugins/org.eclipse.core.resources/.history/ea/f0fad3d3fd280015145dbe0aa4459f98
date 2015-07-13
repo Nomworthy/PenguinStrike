@@ -161,7 +161,7 @@ public class CSLO extends BasicGame
 					gs = GameState.TEAMMENU;
 					serverIP = preLobby.getServerIP();
 					preLobby.getName();
-					initServer(!CState.mouse2,preLobby.getPrimaryCol(), preLobby.getSecondaryCol());
+					initServer(preLobby.getPrimaryCol(), preLobby.getSecondaryCol());
 				}
 				break;
 			case SETUP:
@@ -485,7 +485,7 @@ public class CSLO extends BasicGame
 		}    	
     }
     
-    void initServer(boolean fixedDirMode, Color primary, Color secondary)
+    void initServer(Color primary, Color secondary)
     {
         try
         {
@@ -498,8 +498,6 @@ public class CSLO extends BasicGame
     		final DataOutputStream daos=new DataOutputStream(baos);
     			
     		daos.writeByte(HANDSHAKE);
-    		
-    		daos.writeBoolean(fixedDirMode);
     		
     		daos.writeShort(primary.getRed());
     		daos.writeShort(primary.getGreen());

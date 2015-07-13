@@ -68,13 +68,11 @@ public class Server extends BasicGame{
 	
 	private static void doGameLogic(long l) {
 		float ms = (float) (l*.000001);
+		boolean easyMove = true;
 		for(SPlayer p : SState.players)
 		{
 			if(p != null)
 			{
-
-			boolean easyMove = p.getFixedMoveDir();
-			
 				
 			double rotation = (Math.atan2(p.getMouseY() - (CSLO.GAMEDIM/2), p.getMouseX() - (CSLO.GAMEDIM/2)));
 			p.setRot((float) Math.toDegrees(rotation + Math.PI));
@@ -137,35 +135,27 @@ public class Server extends BasicGame{
 		}
 		else
 		{
-			double moveSpeed = 1.0;
-			//half move speed
-			if((p.getMoveW() || p.getMoveS()) && (p.getMoveA() || p.getMoveD()))
-			{
-				moveSpeed = .70710678118;
-			}
-				
 			//ez mode
 			if(p.getMoveW()){
-				p.setCoords((float)(p.getX()), (float)(p.getY() - (p.getSpeed() * moveSpeed * ms)));
+					p.setCoords((float)(p.getX()), (float)(p.getY() - (p.getSpeed() * ms)));
+					p.doFrameLogic(ms);
 			} 
 			if(p.getMoveA()){
-				p.setCoords((float)(p.getX()  - (p.getSpeed() * moveSpeed * ms)), (float)(p.getY()));
+				p.setCoords((float)(p.getX()  - (p.getSpeed() * ms)), (float)(p.getY()));
+				p.doFrameLogic(ms);
 			} 
 			if(p.getMoveS()){
-				p.setCoords((float)(p.getX()), (float)(p.getY() + (p.getSpeed() * moveSpeed * ms)));
+				p.setCoords((float)(p.getX()), (float)(p.getY() + (p.getSpeed() * ms)));
+				p.doFrameLogic(ms);
 			} 
 			if(p.getMoveD()){
-				p.setCoords((float)(p.getX() + (p.getSpeed() * moveSpeed * ms)), (float)(p.getY()));
-	
+				p.setCoords((float)(p.getX() + (p.getSpeed() * ms)), (float)(p.getY()));
+				p.doFrameLogic(ms);
 			}
 			
 			if(!p.getMoveW() && !p.getMoveA() && !p.getMoveS() && !p.getMoveD())
 			{
 				p.setFrame(0);
-			} else
-			{
-				p.doFrameLogic(ms);
-				
 			}
 	
 		}
@@ -277,7 +267,7 @@ public class Server extends BasicGame{
 			DatagramPacket p= new DatagramPacket(b,b.length,packet.getAddress(),CSLO.statePort);
 			sock.send(p);
 			clientNames[SState.playerCount] = packet.getAddress();
-			SState.players[SState.playerCount] = new SPlayer(dais.readBoolean(), dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort());
+			SState.players[SState.playerCount] = new SPlayer(dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort());
 			SState.playerCount++;
 			
 		} else if(clientID == CSLO.TEAMREQUEST){
