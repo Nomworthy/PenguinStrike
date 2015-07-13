@@ -143,6 +143,8 @@ public class CSLO extends BasicGame
     	CWFont.initFontSheet();
     	preLobby = new CMainMenu(container);
     	explosions = new LinkedList<Explosion>();
+    	CWeapon.load();
+    	CState.initInventory();
     }
  
     @Override
@@ -287,6 +289,30 @@ public class CSLO extends BasicGame
 				CWFont.draw(g, "Ammo:   99/99", 305, 365, 1, new Color (1f,1f,1f,0.5f));
 				CWFont.draw(g, "Bout 5  $9999", 305, 375, 1, new Color (1f,1f,1f,0.5f));
 				CWFont.draw(g, "Build Time 5:00", 305, 385, 1, new Color (1f,1f,1f,0.5f));
+				
+				//24 * 2 (26 * 7) + 2 = 184
+				g.setColor(new Color(0f,0f,1f,0.3f));
+				
+				for(int i = 0; i != 7; i ++)
+				{
+					g.fillRect(118 + (i * 26), 400 - 26, 24, 24);
+				}
+				
+				
+				g.fillRect(116, 400 - 28, 184, 26);
+				g.setColor(new Color(0f,0f,0f,0.3f));
+				
+				int i = 0;
+				for(CWeapon c : CState.inventory)
+				{
+					if(c != null)
+						c.draw(118+(26*i), 374);
+				}
+				
+				
+				/** now to draw buy screen - draw slots." */
+				//CBuyMenu.draw(g);
+				
 				
 				g.drawImage(cursor,CState.scaledMouseX-5 , CState.scaledMouseY-5 );
     	}

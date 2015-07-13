@@ -1,0 +1,27 @@
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
+
+
+
+
+public class CBuyMenu {
+
+	
+	public static void draw(Graphics g)
+	{
+		g.setColor(Color.black);
+		for(int x = 0; x != 7; x++)
+		{
+			for(int y = 0; y != 7; y++)
+			{
+			//	CWFont.draw(g, "TOPIC", 51 + ??, 51 + ??, 1, Color.black);
+
+				//g.fillRect(x, y, width, height);
+			}
+		}
+		
+		
+		g.drawRect(50, 50, 300, 300);
+		
+	}
+}

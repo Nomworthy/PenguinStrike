@@ -103,8 +103,8 @@ public class Server extends BasicGame{
 				SState.newProj.add(newP);
 			
 				//don't want to accidenally blow up the player! (hardoc radius)
-				newP.getShape().setX(newP.getShape().getX() + (newP.getXVel()*35));
-				newP.getShape().setY(newP.getShape().getY() + (newP.getYVel()*35));
+				newP.getShape().setX(newP.getShape().getX() + (newP.getXVel()*40));
+				newP.getShape().setY(newP.getShape().getY() + (newP.getYVel()*40));
 				
 			}
 			p.setHeldMouse(p.getMouse1() || p.getMouse2());
@@ -231,6 +231,7 @@ public class Server extends BasicGame{
 		int clientID = dais.readByte();
 		
 		if(clientID == CSLO.HANDSHAKE){
+			System.out.println("TEST");
 			final ByteArrayOutputStream baos=new ByteArrayOutputStream();
 			final DataOutputStream daos=new DataOutputStream(baos);
 				

@@ -12,4 +12,10 @@ public class CState {
 	public static boolean moveD;
 	public static boolean mouse1;
 	public static boolean mouse2;
+	public static CWeapon[] inventory;
+	
+	public static void initInventory()
+	{
+		inventory = new CWeapon[7];
+	}
 }

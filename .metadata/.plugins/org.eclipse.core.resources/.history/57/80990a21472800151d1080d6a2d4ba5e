@@ -1,0 +1,22 @@
+import java.awt.Image;
+
+
+public class CWeapons {
+
+	public static Image knife;
+	public static Image pistol;
+	public static Image smg;
+	public static Image shotgun;
+	public static Image rifle;
+	public static Image rLauncher;
+	public static Image bandage;
+	
+	public static void Load()
+	{
+		knife = new Image("")
+		
+		
+		
+	}
+	
+}

@@ -1,0 +1,34 @@
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
+
+public class CWeapons {
+
+	public static Image knife;
+	public static Image pistol;
+	public static Image smg;
+	public static Image shotgun;
+	public static Image rifle;
+	public static Image rLauncher;
+	public static Image bandage;
+	public static Image grenade;
+	
+	public static void load()
+	{
+		try {
+			knife = new Image("data/weapon/grd_knife.png");
+			pistol = new Image("data/weapon/grd_pistol.png");
+			smg = new Image("data/weapon/grd_smg.png");
+			shotgun = new Image("data/weapon/grd_shotgun.png");
+			rifle = new Image("data/weapon/grd_rifle.png");
+			rLauncher= new Image("data/weapon/grd_rlauncher.png");
+			grenade = new Image("data/weapon/grd_grenade.png");
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
+}
