@@ -19,7 +19,6 @@ public class CPlayer{
 	private float x;
 	private float y;
 	private Animation spriteJacket;
-	private Animation spriteHands;
 	private Animation spriteUnderShirt;
 	private Animation spriteHead;
 	private Animation spriteWeapon;
@@ -32,10 +31,9 @@ public class CPlayer{
 	public CPlayer(){
 		try {
 			spriteJacket = new Animation(new SpriteSheet("data/chars/thJacket.png",31,31),100);
-			spriteHands = new Animation(new SpriteSheet("data/chars/thHands.png",31,31),100);
 			spriteUnderShirt = new Animation(new SpriteSheet("data/chars/thUndershirt.png",31,31),100);
 			//depends!
-			spriteHead = new Animation(new SpriteSheet("data/chars/wBear.png",31,31),100);
+			spriteHead = new Animation(new SpriteSheet("data/chars/thBear.png",31,31),100);
 			spriteWeapon = new Animation(new SpriteSheet("data/chars/garand.png",31,31),100);
 			
 			jacketCol = new Color(0f,0f,0f);
@@ -76,24 +74,20 @@ public class CPlayer{
 		spriteJacket.setCurrentFrame(frame);
 		spriteHead.setCurrentFrame(frame);
 		spriteUnderShirt.setCurrentFrame(frame);
-		spriteHands.setCurrentFrame(frame);
 		spriteWeapon.setCurrentFrame(frame);
 		
 		Image j =spriteJacket.getCurrentFrame();
-		Image ha =spriteHands.getCurrentFrame();
 		Image u =spriteUnderShirt.getCurrentFrame();
 		Image he =spriteHead.getCurrentFrame();
 		Image w =spriteWeapon.getCurrentFrame();
 		
 		j.setRotation(rotation);
-		ha.setRotation(rotation);
 		u.setRotation(rotation);
 		he.setRotation(rotation);
 		w.setRotation(rotation);
 		
 		
 		g.drawImage(j,x +- xOffset +- wx, y +- yOffset +- wy,jacketCol);
-		g.drawImage(ha,x +- xOffset +- wx, y +- yOffset +- wy);
 		g.drawImage(u,x +- xOffset +- wx, y +- yOffset +- wy,underShirtCol);
 		g.drawImage(he,x +- xOffset +- wx, y +- yOffset +- wy);
 		g.drawImage(w,x +- xOffset +- wx, y +- yOffset +- wy);
@@ -114,9 +108,9 @@ public class CPlayer{
 		try {
 		if(team)
 		{
-				spriteHead = new Animation(new SpriteSheet("data/chars/wPenguin.png",31,31),100);
+				spriteHead = new Animation(new SpriteSheet("data/chars/thPenguin.png",31,31),100);
 		} else {
-				spriteHead = new Animation(new SpriteSheet("data/chars/wBear.png",31,31),100);
+				spriteHead = new Animation(new SpriteSheet("data/chars/thBear.png",31,31),100);
 		}
 		
 		} catch (SlickException e) {

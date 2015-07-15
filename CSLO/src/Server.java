@@ -37,13 +37,24 @@ public class Server extends BasicGame{
 	
 	private static long tickRateNano =30000000L;
 	
-	private static float GARANDSPREAD = (float) Math.toRadians(4);
+	public static final int GARANDACC = 4;
+	public static final int GARANDCLIP = 7;
+
+	public static final int GARANDCOST = 500;
+	public static final int GARANDPOWER = 50;
+	
+	public static final float GARANDSPEED = .46f;
+	
+	private static float GARANDSPREAD = (float) Math.toRadians(GARANDACC);
+
 	
 	public static final int homeSpawnX = 500;
 	public static final int homeSpawnY = 500;
 	
-	public static final int awaySpawnX = 1000;
-	public static final int awaySpawnY = 1000;
+	public static final int awaySpawnX = 309*8;
+	public static final int awaySpawnY = 178*8;
+
+	public static final float ROCKETSPEED = .2f;
 	
 	public Server(String title) {
 		super(title);
@@ -83,15 +94,16 @@ public class Server extends BasicGame{
 			if(p.getMouse1() && !p.isHeldMouse()){
 				
 				//shooting a bullet, have to move it.
-				float gunXAdd = (float) (p.radius *  Math.cos(-Math.PI + -Math.toRadians(p.getRot()) +- .38));
-				float gunYAdd = (float) (p.radius * Math.sin(-Math.toRadians(p.getRot()) +- .38));	
+				float gunXAdd = (float) (((float) (1.1f*p.getSpeed()*ms) + 2f + p.radius) *  Math.cos(-Math.PI + -Math.toRadians(p.getRot()) +- .38));
+				float gunYAdd =  (float) (((float) (1.1f*p.getSpeed()*ms) + 2f + p.radius) * Math.sin(-Math.toRadians(p.getRot()) +- .38));	
 		
 				//PROBLEM!	double BRotation= (Math.atan2(p.getMouseY() - ((CSLO.GAMEDIM/2) + gunYAdd), p.getMouseX() - ((CSLO.GAMEDIM/2) + gunXAdd)));
 			
 				//Bullet inaccuracy
+				//depends on who fired it.
 				float spread = (float) (Math.random()*GARANDSPREAD) - (GARANDSPREAD/2f);
 				
-				SProjectile newP = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+spread)/3f,(float)Math.sin(rotation+spread)/3f,SState.nextBulletId());
+				SProjectile newP = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+spread)*GARANDSPEED,(float)Math.sin(rotation+spread)*GARANDSPEED,SState.nextBulletId());
 				SState.addProjectile(newP);
 				SState.newProj.add(newP);
 				
@@ -100,13 +112,14 @@ public class Server extends BasicGame{
 			
 			if(p.getMouse2() && !p.isHeldMouse()){
 				
-				SProjectile newP = new SRocket(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)/5f,(float)Math.sin(rotation)/5f,(float)rotation,SState.nextBulletId());	
+				SProjectile newP = new SRocket(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)*ROCKETSPEED,(float)Math.sin(rotation)*ROCKETSPEED,(float)rotation,SState.nextBulletId());	
 				SState.addProjectile(newP);
 				SState.newProj.add(newP);
 			
-				//don't want to accidenally blow up the player! (hardoc radius)
-				newP.getShape().setX(newP.getShape().getX() + (newP.getXVel()*40));
-				newP.getShape().setY(newP.getShape().getY() + (newP.getYVel()*40));
+				//don't want to accidenally blow up the player!
+				newP.getShape().setX(newP.getShape().getX() + ((float)Math.cos(rotation) * ((1.1f*p.getSpeed()*ms) + 10f)));
+				newP.getShape().setY(newP.getShape().getY() + ((float)Math.sin(rotation) * ((1.1f*p.getSpeed()*ms) + 10f)));
+				
 				
 			}
 			p.setHeldMouse(p.getMouse1() || p.getMouse2());

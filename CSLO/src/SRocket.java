@@ -19,9 +19,9 @@ public class SRocket extends SProjectile {
 		int cX = (int) ((( getShape().getCenterX() + ((rocketWidth/2)*Math.cos(rotation))) /SState.map.TILESIZE));
 		int cY = (int) ((( getShape().getCenterY() + ((rocketWidth/2)*Math.sin(rotation))) /SState.map.TILESIZE));
 		
-		for(int x = cX-1; x <= cX+1; x++)
+		for(int x = cX-2; x <= cX+2; x++)
 		{
-			for(int y = cY-1; y <= cY+1;y++)
+			for(int y = cY-2; y <= cY+2;y++)
 			{
 				SState.map.damageTile(x,y,damage);
 				

@@ -57,21 +57,24 @@ public class CMainMenu {
     		
     		CWFont.draw(g,")C( NEUTRAL SPACE STUDIOS 1985", 10, 310,2, Color.cyan);
         	
-        	if(CState.scaledMouseY > 150 && CState.scaledMouseY < 170)
-        	{
-
-        		drawColorSet(g,30,150,290,20);
-        		if(Mouse.isButtonDown(0))
-            		CWFont.draw(g,"FAVOURITE COLOUR", 30, 150,3, primaryColor);
-        	}
-        	if(CState.scaledMouseY > 190 && CState.scaledMouseY < 210)
-        	{
-
-        		drawColorSet(g,30,190,290,20);
-        		if(Mouse.isButtonDown(0))
-            		CWFont.draw(g,"SECONDARY COLOUR", 30, 190,3, secondaryColor);
-        	}
+  
+	    			
+	        	if(CState.scaledMouseY > 150 && CState.scaledMouseY < 170)
+	        	{
+	
+	        		drawColorSet(g,30,150,290,20);
+	        		if(Mouse.isButtonDown(0))
+	            		CWFont.draw(g,"FAVOURITE COLOUR", 30, 150,3, primaryColor);
+	        	}
+	        	if(CState.scaledMouseY > 190 && CState.scaledMouseY < 210)
+	        	{
+	
+	        		drawColorSet(g,30,190,290,20);
+	        		if(Mouse.isButtonDown(0))
+	            		CWFont.draw(g,"SECONDARY COLOUR", 30, 190,3, secondaryColor);
+	        	}
     		
+	    		
     		g.drawImage(cursor,CState.scaledMouseX-5 , CState.scaledMouseY-5 );
     		
     		
@@ -87,20 +90,27 @@ public class CMainMenu {
 		{
 			IPField.setText(IPField.getText().substring(0, MAXIPLEN));
 		}
+		
     	if(CState.mouse1 && CState.scaledMouseY > 110 && CState.scaledMouseY < 150)
     		mState = State.NAMESET;
     	
-    	if(CState.mouse1 && CState.scaledMouseY > 150 && CState.scaledMouseY < 180)
-    	{
-    		primaryColor = getColor(30,150,290,20,CState.scaledMouseX,CState.scaledMouseY);
-    		//colour change
-    	}
-    	if(CState.mouse1 && CState.scaledMouseY > 190 && CState.scaledMouseY < 220)
-    	{
-
-    		secondaryColor = getColor(30,190,290,20,CState.scaledMouseX,CState.scaledMouseY);
-    		//colour change
-    	}
+  		
+		if(CState.scaledMouseX > 30 && CState.scaledMouseX < 320)
+		{
+			
+	    	if(CState.mouse1 && CState.scaledMouseY > 150 && CState.scaledMouseY < 180)
+	    	{
+	    		primaryColor = getColor(30,150,290,20,CState.scaledMouseX,CState.scaledMouseY);
+	    		//colour change
+	    	}
+	    	if(CState.mouse1 && CState.scaledMouseY > 190 && CState.scaledMouseY < 220)
+	    	{
+	
+	    		secondaryColor = getColor(30,190,290,20,CState.scaledMouseX,CState.scaledMouseY);
+	    		//colour change
+	    	}
+		}	
+		
     	if(CState.mouse1 && CState.scaledMouseY > 230 && CState.scaledMouseY < 280)
     		mState = State.IPSET;
     	if(CState.mouse1 && CState.scaledMouseY > 280 && CState.scaledMouseY < 320)

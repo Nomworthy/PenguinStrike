@@ -2,6 +2,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -32,9 +33,6 @@ public class CSLO extends BasicGame
 	//ID of this client. TODO: be set by the server.
 	private static byte clientID = -1;
 	
-	private static boolean spectator = true;
-	private static boolean penguinTeam = false;
-	
 	//IP address of server.
 	private static InetAddress serverName;
 	
@@ -61,9 +59,11 @@ public class CSLO extends BasicGame
 	
 	public static byte HANDSHAKE = -127;
 	public static byte TEAMREQUEST = -126;
-
+	public static byte BUYREQUEST = -125;
 	
 	static final int maxPlayerCount = 10;
+	
+	private static boolean buyMenu = false;
 	
 	enum GameState{
 		//menu for setting name, color, etc.
@@ -170,6 +170,8 @@ public class CSLO extends BasicGame
 			case TEAMMENU:
 				//fetch user inputs
 				updateInputs(container.getInput());
+				
+				toggleBuyMenu(container.getInput());
 				//send to da server
 				if(gs != GameState.TEAMMENU)
 					sendInputPacket(container.getInput());
@@ -231,6 +233,12 @@ public class CSLO extends BasicGame
 				int mapOffsetX = playerXBase + deltaX;
 				int mapOffsetY = playerYBase + deltaY;
 				
+				if(buyMenu)
+				{
+					mapOffsetX = playerXBase;
+					mapOffsetY = playerYBase ;	
+					
+				}
 				
 				//manhandle camera
 				if(gs == GameState.TEAMMENU)
@@ -271,7 +279,7 @@ public class CSLO extends BasicGame
 						//g.drawImage(explosionImage, e.x - 15, e.y - 15, 30*e.frame,0, 30*(1+e.frame), 30);
 						float baseX =  e.x + -(mapOffsetX);
 						float baseY = e.y + -(mapOffsetY);
-						g.drawImage(explosionImage,baseX - 15, baseY - 15, baseX + 15, baseY + 15, 30*e.frame,0, 30*(1+e.frame), 30);
+						g.drawImage(explosionImage,baseX - 30, baseY - 30, baseX + 30, baseY + 30, 60*e.frame,0, 60*(1+e.frame), 60);
 						
 					}
 				}
@@ -307,11 +315,12 @@ public class CSLO extends BasicGame
 				{
 					if(c != null)
 						c.draw(118+(26*i), 374);
+					i++;
 				}
 				
 				
-				/** now to draw buy screen - draw slots." */
-				//CBuyMenu.draw(g);
+				if(buyMenu)
+					CBuyMenu.draw(g);
 				
 				
 				g.drawImage(cursor,CState.scaledMouseX-5 , CState.scaledMouseY-5 );
@@ -582,4 +591,34 @@ public class CSLO extends BasicGame
     	return(CState.scaledMouseX > 110 && CState.scaledMouseX < 110+180 && 
     	    	   CState.scaledMouseY > 210 && CState.scaledMouseY < 210+30);
     }
+    
+    void toggleBuyMenu(Input i)
+    {
+    	if(i.isKeyPressed(Input.KEY_B))
+    		buyMenu = !buyMenu;
+    }
+    
+    //fun fact: you can hack to buy any weapon
+    void sendBuyRequest(int weapon)
+    { 	
+    	try {
+    		
+	     	final ByteArrayOutputStream baos=new ByteArrayOutputStream();
+			final DataOutputStream daos=new DataOutputStream(baos);
+				
+			daos.writeByte(BUYREQUEST);
+	  
+			daos.writeByte(clientID);
+			daos.writeByte(weapon);
+			daos.close();
+			
+			final byte[] bytes=baos.toByteArray();
+	    	socket.send(new DatagramPacket(bytes,bytes.length,serverName,CSLO.inputPort));
+	    	
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+    }
+    	
 }

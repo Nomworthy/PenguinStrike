@@ -22,23 +22,40 @@ public abstract class SProjectile{
 	//propagate logic
 	public void moveBullet(float ms)
 	{
-		shape.setX(shape.getX() + (xVel*ms));
-		shape.setY(shape.getY() + (yVel*ms));
-		for(SPlayer p : SState.players)
+		//the bigger amount of pixels to move.
+		float steps = (Math.abs(xVel*ms) > Math.abs(yVel*ms)) ? Math.abs(xVel*ms) : Math.abs(yVel*ms);
+		
+		steps += 1;
+		
+		float deltaX = (xVel*ms) / steps;
+		float deltaY = (yVel*ms) / steps;
+
+
+		for(int i = 0; i != (int)(steps+1); i++)
 		{
-			if(p != null)
+			shape.setX(shape.getX() + deltaX);
+			shape.setY(shape.getY() + deltaY);
+		
+			for(SPlayer p : SState.players)
 			{
-				if(p.intersects(shape))
+	
+				if(p != null)
 				{
-					p.die();
-					live = false;
+					if(p.intersects(shape))
+					{
+						p.die();
+						live = false;
+						return;
+					}
 				}
-				
 			}
 			
+			if(SState.map.checkCollide(getShape()))
+			{
+				live = false;
+				return;
+			}
 		}
-		if(SState.map.checkCollide(getShape()))
-			live = false;
 	}
 
 	//what to do when bullet hits someone

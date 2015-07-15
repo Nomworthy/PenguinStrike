@@ -54,13 +54,21 @@ public class CWeapon {
 		
 	}
 
+	
+	public CWeapon(WeaponType w, byte b, byte m )
+	{
+		bulletsLeft = b;
+		magsLeft = m;
+		wType = w;
+	}
+	
 	public void draw(int x, int y) {
 		
 		switch (wType)
 		{
-		case BANDAGE:
-			bandage.draw(x,y);
-			break;
+		//case BANDAGE:
+	//		bandage.draw(x,y);
+		//	break;
 		case GRENADE:
 			grenade.draw(x,y);
 			break;
