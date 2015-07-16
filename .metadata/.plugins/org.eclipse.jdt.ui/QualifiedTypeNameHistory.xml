@@ -21,14 +21,12 @@
 <fullyQualifiedTypeName name="java.util.ListIterator"/>
 <fullyQualifiedTypeName name="org.newdawn.slick.geom.Vector2f"/>
 <fullyQualifiedTypeName name="org.newdawn.slick.geom.Shape"/>
-<fullyQualifiedTypeName name="CState"/>
 <fullyQualifiedTypeName name="WorldState"/>
 <fullyQualifiedTypeName name="java.lang.Math"/>
 <fullyQualifiedTypeName name="org.newdawn.slick.BasicGame"/>
 <fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="java.util.LinkedList"/>
 <fullyQualifiedTypeName name="java.util.Iterator"/>
-<fullyQualifiedTypeName name="SState"/>
 <fullyQualifiedTypeName name="WorldMap.Tile"/>
 <fullyQualifiedTypeName name="org.newdawn.slick.geom.Rectangle"/>
 <fullyQualifiedTypeName name="org.newdawn.slick.geom.Transform"/>
@@ -49,4 +47,8 @@
 <fullyQualifiedTypeName name="java.awt.Color"/>
 <fullyQualifiedTypeName name="org.newdawn.slick.Graphics"/>
 <fullyQualifiedTypeName name="org.newdawn.slick.Color"/>
+<fullyQualifiedTypeName name="CWFont"/>
+<fullyQualifiedTypeName name="CWeapon.WeaponType"/>
+<fullyQualifiedTypeName name="SState"/>
+<fullyQualifiedTypeName name="CState"/>
 </qualifiedTypeNameHistroy>

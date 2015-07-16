@@ -21,7 +21,10 @@ public class CPlayer{
 	private Animation spriteJacket;
 	private Animation spriteUnderShirt;
 	private Animation spriteHead;
+	
 	private Animation spriteWeapon;
+	
+	private Animation[] weapons;
 	
 	private Color jacketCol;
 	private Color underShirtCol;
@@ -35,6 +38,17 @@ public class CPlayer{
 			//depends!
 			spriteHead = new Animation(new SpriteSheet("data/chars/thBear.png",31,31),100);
 			spriteWeapon = new Animation(new SpriteSheet("data/chars/garand.png",31,31),100);
+			
+			weapons = new Animation[7];
+			weapons[0] = null;
+			weapons[1] = new Animation(new SpriteSheet("data/chars/knife.png",31,31),100);
+			weapons[2] = new Animation(new SpriteSheet("data/chars/pistol.png",31,31),100);
+			weapons[3] = new Animation(new SpriteSheet("data/chars/smg.png",31,31),100);
+			weapons[4] = new Animation(new SpriteSheet("data/chars/shotgun.png",31,31),100);
+			weapons[5] = new Animation(new SpriteSheet("data/chars/garand.png",31,31),100);
+			weapons[6] = new Animation(new SpriteSheet("data/chars/rocketLauncher.png",31,31),100);
+			
+			
 			
 			jacketCol = new Color(0f,0f,0f);
 			underShirtCol = new Color(0f,0f,0f);
@@ -118,4 +132,10 @@ public class CPlayer{
 			e.printStackTrace();
 		}
 	}
+	
+	public void setWeapon(byte b)
+	{
+		spriteWeapon = weapons[b];
+	}
+	
 }

@@ -45,7 +45,16 @@ public class Server extends BasicGame{
 	
 	public static final float GARANDSPEED = .46f;
 	
+	public static final int SHOTGUNACC = 65;
+	public static final int SHOTGUNCLIP = 5;
+
+	public static final int SHOTGUNCOST = 300;
+	public static final int SHOTGUNPOWER = 10;
+	
+	public static final float SHOTGUNSPEED = .35f;
+	
 	private static float GARANDSPREAD = (float) Math.toRadians(GARANDACC);
+	private static float SHOTGUNSPREAD = (float) Math.toRadians(SHOTGUNACC);
 
 	
 	public static final int homeSpawnX = 500;
@@ -92,6 +101,33 @@ public class Server extends BasicGame{
 		
 			
 			if(p.getMouse1() && !p.isHeldMouse()){
+		
+				if(p.getWeapon() == CSLO.ROCKET)
+				{	
+					SProjectile newP = new SRocket(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)*ROCKETSPEED,(float)Math.sin(rotation)*ROCKETSPEED,(float)rotation,SState.nextBulletId());	
+					SState.addProjectile(newP);
+					SState.newProj.add(newP);
+				
+					//don't want to accidenally blow up the player!
+					newP.getShape().setX(newP.getShape().getX() + ((float)Math.cos(rotation) * ((1.1f*p.getSpeed()*ms) + 10f)));
+					newP.getShape().setY(newP.getShape().getY() + ((float)Math.sin(rotation) * ((1.1f*p.getSpeed()*ms) + 10f)));
+				} else 
+				{
+				
+					float heldSpread = 0;
+					float heldSpeed = 0;
+					
+					if(p.getWeapon() == CSLO.SHOTGUN)
+					{
+						heldSpread = SHOTGUNSPREAD;
+						heldSpeed = SHOTGUNSPEED;
+						
+					} else 
+					{
+						heldSpread = GARANDSPREAD;
+						heldSpeed = GARANDSPEED;
+					}
+				
 				
 				//shooting a bullet, have to move it.
 				float gunXAdd = (float) (((float) (1.1f*p.getSpeed()*ms) + 2f + p.radius) *  Math.cos(-Math.PI + -Math.toRadians(p.getRot()) +- .38));
@@ -101,26 +137,25 @@ public class Server extends BasicGame{
 			
 				//Bullet inaccuracy
 				//depends on who fired it.
-				float spread = (float) (Math.random()*GARANDSPREAD) - (GARANDSPREAD/2f);
-				
-				SProjectile newP = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+spread)*GARANDSPEED,(float)Math.sin(rotation+spread)*GARANDSPEED,SState.nextBulletId());
+				float thisBulletheldSpread = (float)( (Math.random()*heldSpread) - (heldSpread/2.0));
+				SProjectile newP = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+thisBulletheldSpread)*heldSpeed,(float)Math.sin(rotation+thisBulletheldSpread)*heldSpeed,SState.nextBulletId());
 				SState.addProjectile(newP);
 				SState.newProj.add(newP);
+				
+				if(p.getWeapon() == CSLO.SHOTGUN)
+				{
+					for(int i = 0; i != 10; i ++)
+					{
+						thisBulletheldSpread = (float) ((Math.random()*heldSpread) - (heldSpread/2.0));
+						SProjectile newPs = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+thisBulletheldSpread)*heldSpeed,(float)Math.sin(rotation+thisBulletheldSpread)*heldSpeed,SState.nextBulletId());
+						SState.addProjectile(newPs);
+						SState.newProj.add(newPs);
+					}
+					
+				}
 				
 				
 			}
-			
-			if(p.getMouse2() && !p.isHeldMouse()){
-				
-				SProjectile newP = new SRocket(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)*ROCKETSPEED,(float)Math.sin(rotation)*ROCKETSPEED,(float)rotation,SState.nextBulletId());	
-				SState.addProjectile(newP);
-				SState.newProj.add(newP);
-			
-				//don't want to accidenally blow up the player!
-				newP.getShape().setX(newP.getShape().getX() + ((float)Math.cos(rotation) * ((1.1f*p.getSpeed()*ms) + 10f)));
-				newP.getShape().setY(newP.getShape().getY() + ((float)Math.sin(rotation) * ((1.1f*p.getSpeed()*ms) + 10f)));
-				
-				
 			}
 			p.setHeldMouse(p.getMouse1() || p.getMouse2());
 			
@@ -208,6 +243,8 @@ public class Server extends BasicGame{
 					{
 						daos.writeShort(p.sendColorArray()[i]);
 					}
+
+					daos.writeByte(p.getWeapon());
 				}
 			}
 			
@@ -325,6 +362,7 @@ public class Server extends BasicGame{
 		p.setMoveD(dais.readBoolean());
 		p.setMouse1(dais.readBoolean());
 		p.setMouse2(dais.readBoolean());
+		p.setWeapon(dais.readByte());
 		dais.close();
 		}
 	}

@@ -61,6 +61,13 @@ public class CSLO extends BasicGame
 	public static byte TEAMREQUEST = -126;
 	public static byte BUYREQUEST = -125;
 	
+	public static byte KNIFE = 1;
+	public static byte PISTOL = 2;
+	public static byte SMG = 3;
+	public static byte SHOTGUN = 4;
+	public static byte RIFLE = 5;
+	public static byte ROCKET = 6;
+	
 	static final int maxPlayerCount = 10;
 	
 	private static boolean buyMenu = false;
@@ -172,6 +179,7 @@ public class CSLO extends BasicGame
 				updateInputs(container.getInput());
 				
 				toggleBuyMenu(container.getInput());
+				inventoryMenu(container.getInput());
 				//send to da server
 				if(gs != GameState.TEAMMENU)
 					sendInputPacket(container.getInput());
@@ -204,6 +212,45 @@ public class CSLO extends BasicGame
     }
  
 
+
+	private void inventoryMenu(Input input) {
+		
+		if(input.isKeyPressed(Input.KEY_1))
+		{
+			CState.invPointer = 1;
+		}
+		
+		if(input.isKeyPressed(Input.KEY_2))
+		{
+			CState.invPointer = 2;
+		}
+		
+		if(input.isKeyPressed(Input.KEY_3))
+		{
+			CState.invPointer = 3;
+		}
+		
+		if(input.isKeyPressed(Input.KEY_4))
+		{
+			CState.invPointer = 4;
+		}
+		
+		if(input.isKeyPressed(Input.KEY_5))
+		{
+			CState.invPointer = 5;
+		}
+		
+		if(input.isKeyPressed(Input.KEY_6))
+		{
+			CState.invPointer = 6;
+		}
+		
+		if(input.isKeyPressed(Input.KEY_7))
+		{
+			CState.invPointer = 7;
+		}
+		
+	}
 
 	public void render(GameContainer container, Graphics g) throws SlickException
     {
@@ -367,6 +414,7 @@ public class CSLO extends BasicGame
 			daos.writeBoolean(CState.moveD);
 			daos.writeBoolean(CState.mouse1);
 			daos.writeBoolean(CState.mouse2);
+			daos.writeByte(CState.invPointer);
 			daos.close();
 			final byte[] bytes=baos.toByteArray();
     		socket.send(new DatagramPacket(bytes,bytes.length,serverName,CSLO.inputPort));
@@ -410,6 +458,7 @@ public class CSLO extends BasicGame
     			CState.players[i].setFrame(dais.readByte());
     			CState.players[i].setTeam(dais.readBoolean());
     			CState.players[i].setCol(dais.readShort(),dais.readShort(),dais.readShort() ,dais.readShort(),dais.readShort(),dais.readShort());
+    			CState.players[i].setWeapon(dais.readByte());
     		}
     		
 	    	int newProjCount = dais.readShort();

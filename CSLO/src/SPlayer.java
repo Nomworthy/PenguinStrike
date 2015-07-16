@@ -42,8 +42,9 @@ public class SPlayer extends Circle {
 	private short sr;
 	private short sg;
 	private short sb;
-
 	
+	private byte weapon = 1;
+
 	public SPlayer(boolean c, short r, short g, short b, short sr, short sg, short sb){
 		super(0, 0, RADIUS);
 		this.fixedDirMode = c;
@@ -235,6 +236,17 @@ public class SPlayer extends Circle {
 
 	public boolean getFixedMoveDir() {
 		return fixedDirMode;
+	}
+	
+
+	public void setWeapon(byte b)
+	{
+		weapon = b;
+	}
+
+	public byte getWeapon() 
+	{
+		return weapon;
 	}
 	
 }
