@@ -223,7 +223,7 @@ public class SPlayer extends Circle {
 	}
 
 	private void die() {
-		
+		HP = 100;
 		if(team)
 		{
 			super.setX(Server.homeSpawnX);
@@ -254,10 +254,14 @@ public class SPlayer extends Circle {
 	public void hurt(short damage)
 	{
 		HP = (byte)(HP - damage);
-		if(damage >= 100 && HP <= 0)
+		if(damage >= 100 || HP <= 0)
 		{
 			die();
 		}
+	}
+
+	public byte getHP() {
+		return HP;
 	}
 	
 }

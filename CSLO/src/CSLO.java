@@ -340,7 +340,7 @@ public class CSLO extends BasicGame
 
 				g.setColor(new Color(0f,0f,0f,0.5f));
 				g.fillRect(300, 350, 100, 50);
-				CWFont.draw(g, "Life:   100", 305, 355, 1, new Color (1f,1f,1f,0.5f));
+				CWFont.draw(g, "Life:   "+SState.players[clientID].getHP(), 305, 355, 1, new Color (1f,1f,1f,0.5f));
 				CWFont.draw(g, "Ammo:   99/99", 305, 365, 1, new Color (1f,1f,1f,0.5f));
 				CWFont.draw(g, "Bout 5  $9999", 305, 375, 1, new Color (1f,1f,1f,0.5f));
 				CWFont.draw(g, "Build Time 5:00", 305, 385, 1, new Color (1f,1f,1f,0.5f));
@@ -452,6 +452,8 @@ public class CSLO extends BasicGame
     		byte playerCount = dais.readByte();
     		
     		for (int i = 0; i != playerCount; i++){
+    			
+    			CState.players[i].setHP(dais.readByte());
     			CState.players[i].setX(dais.readFloat());
     			CState.players[i].setY(dais.readFloat());
        			CState.players[i].setRotation(dais.readFloat());

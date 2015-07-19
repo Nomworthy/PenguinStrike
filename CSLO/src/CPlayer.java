@@ -31,6 +31,8 @@ public class CPlayer{
 	
 	private boolean oldTeam = false;
 	
+	private byte HP;
+	
 	public CPlayer(){
 		try {
 			spriteJacket = new Animation(new SpriteSheet("data/chars/thJacket.png",31,31),100);
@@ -136,6 +138,14 @@ public class CPlayer{
 	public void setWeapon(byte b)
 	{
 		spriteWeapon = weapons[b];
+	}
+
+	public void setHP(byte readByte) {
+		HP = readByte;
+	}
+	
+	public byte getHP() {
+		return HP;
 	}
 	
 }

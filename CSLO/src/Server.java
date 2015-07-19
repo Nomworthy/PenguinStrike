@@ -238,6 +238,8 @@ public class Server extends BasicGame{
 			for(SPlayer p : SState.players){
 				if(p != null)
 				{
+
+					daos.writeByte(p.getHP());
 					daos.writeFloat(p.getX());
 					daos.writeFloat(p.getY());
 					daos.writeFloat(p.getRot());
