@@ -40,9 +40,9 @@ public class Server extends BasicGame{
 	public static final int GARANDACC = 3;
 	public static final int GARANDCLIP = 7;
 	public static final int GARANDCOST = 500;
-	public static final int GARANDPOWER = 40;
+	public static final int GARANDPOWER = 30;
 	public static final int GARANDVAR = 20;
-	public static final float GARANDSPEED = .77f;
+	public static final float GARANDSPEED = .40f;
 	
 	public static final int PISTOLACC = 14;
 	public static final int PISTOLCLIP = 11;
@@ -56,15 +56,15 @@ public class Server extends BasicGame{
 	public static final int SHOTGUNCOST = 300;
 	public static final int SHOTGUNPOWER = 5;
 	public static final int SHOTGUNVAR= 20;
-	public static final float SHOTGUNSPEED = .35f;
-	private static final float SHOTGUNCOOLDOWNMAX = 1000.0f;
+	public static final float SHOTGUNSPEED = .30f;
+	private static final float SHOTGUNCOOLDOWNMAX = 700.0f;
 	
 	public static final int SMGACC = 30;
 	public static final int SMGCLIP = 30;
 	public static final int SMGCOST = 400;
-	public static final int SMGPOWER = 20;
+	public static final int SMGPOWER = 15;
 	public static final int SMGVAR = 10;
-	public static final float SMGSPEED = .99f;
+	public static final float SMGSPEED = .60f;
 	private static final float SMGCOOLDOWNMAX = 150.0f;
 	public static final int SHOTGUNPELLETS = 10;
 	
@@ -81,7 +81,7 @@ public class Server extends BasicGame{
 	public static final int homeSpawnX = 500;
 	public static final int homeSpawnY = 500;
 	
-	public static final int awaySpawnX = 309*8;
+	public static final int awaySpawnX = 312*8;
 	public static final int awaySpawnY = 178*8;
 
 
