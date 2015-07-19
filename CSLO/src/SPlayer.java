@@ -47,6 +47,9 @@ public class SPlayer extends Circle {
 	
 	private byte HP = 100;
 
+	private float shotgunCoolDown;
+	private float smgCoolDown;
+	
 	public SPlayer(boolean c, short r, short g, short b, short sr, short sg, short sb){
 		super(0, 0, RADIUS);
 		this.fixedDirMode = c;
@@ -262,6 +265,22 @@ public class SPlayer extends Circle {
 
 	public byte getHP() {
 		return HP;
+	}
+
+	public float getShotgunCoolDown() {
+		return shotgunCoolDown;
+	}
+
+	public void setShotgunCoolDown(float shotgunCoolDown) {
+		this.shotgunCoolDown = shotgunCoolDown;
+	}
+
+	public float getSmgCoolDown() {
+		return smgCoolDown;
+	}
+
+	public void setSmgCoolDown(float smgCoolDown) {
+		this.smgCoolDown = smgCoolDown;
 	}
 	
 }

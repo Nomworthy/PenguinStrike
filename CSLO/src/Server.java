@@ -37,24 +37,45 @@ public class Server extends BasicGame{
 	
 	private static long tickRateNano =30000000L;
 	
-	public static final int GARANDACC = 4;
+	public static final int GARANDACC = 3;
 	public static final int GARANDCLIP = 7;
-
 	public static final int GARANDCOST = 500;
-	public static final int GARANDPOWER = 50;
+	public static final int GARANDPOWER = 40;
+	public static final int GARANDVAR = 20;
+	public static final float GARANDSPEED = .77f;
 	
-	public static final float GARANDSPEED = .46f;
+	public static final int PISTOLACC = 14;
+	public static final int PISTOLCLIP = 11;
+	public static final int PISTOLCOST = 100;
+	public static final int PISTOLPOWER = 30;
+	public static final int PISTOLVAR = 10;
+	public static final float PISTOLSPEED = .40f;
 	
-	public static final int SHOTGUNACC = 65;
+	public static final int SHOTGUNACC = 50;
 	public static final int SHOTGUNCLIP = 5;
-
 	public static final int SHOTGUNCOST = 300;
-	public static final int SHOTGUNPOWER = 10;
-	
+	public static final int SHOTGUNPOWER = 5;
+	public static final int SHOTGUNVAR= 20;
 	public static final float SHOTGUNSPEED = .35f;
+	private static final float SHOTGUNCOOLDOWNMAX = 1000.0f;
+	
+	public static final int SMGACC = 30;
+	public static final int SMGCLIP = 30;
+	public static final int SMGCOST = 400;
+	public static final int SMGPOWER = 20;
+	public static final int SMGVAR = 10;
+	public static final float SMGSPEED = .99f;
+	private static final float SMGCOOLDOWNMAX = 150.0f;
+	public static final int SHOTGUNPELLETS = 10;
+	
+	
+	public static final float ROCKETSPEED = .2f;
+	public static final short ROCKETPOWER = 200;
+	public static final int ROCKETCOST = 800;
 	
 	private static float GARANDSPREAD = (float) Math.toRadians(GARANDACC);
 	private static float SHOTGUNSPREAD = (float) Math.toRadians(SHOTGUNACC);
+	private static float SMGSPREAD = (float) Math.toRadians(SMGACC);
 
 	
 	public static final int homeSpawnX = 500;
@@ -63,8 +84,10 @@ public class Server extends BasicGame{
 	public static final int awaySpawnX = 309*8;
 	public static final int awaySpawnY = 178*8;
 
-	public static final float ROCKETSPEED = .2f;
-	public static final short ROCKETPOWER = 200;
+
+	
+
+	
 	
 	public Server(String title) {
 		super(title);
@@ -93,6 +116,18 @@ public class Server extends BasicGame{
 		{
 			if(p != null)
 			{
+				
+				if(p.getShotgunCoolDown() > 0.0)
+				{
+					p.setShotgunCoolDown(p.getShotgunCoolDown() - ms);
+					
+				}
+				
+				if(p.getSmgCoolDown() > 0.0)
+				{
+					p.setSmgCoolDown(p.getSmgCoolDown() - ms);
+					
+				}
 
 			boolean easyMove = p.getFixedMoveDir();
 			
@@ -100,8 +135,27 @@ public class Server extends BasicGame{
 			double rotation = (Math.atan2(p.getMouseY() - (CSLO.GAMEDIM/2), p.getMouseX() - (CSLO.GAMEDIM/2)));
 			p.setRot((float) Math.toDegrees(rotation + Math.PI));
 		
+			if(p.getMouse1() && p.getWeapon() == CSLO.SMG && p.getSmgCoolDown() <= 0)
+			{
+				
+				float gunXAdd = (float) (((float) (1.1f*p.getSpeed()*ms) + 2f + p.radius) *  Math.cos(-Math.PI + -Math.toRadians(p.getRot()) +- .38));
+				float gunYAdd =  (float) (((float) (1.1f*p.getSpeed()*ms) + 2f + p.radius) * Math.sin(-Math.toRadians(p.getRot()) +- .38));	
+		
+				//PROBLEM!	double BRotation= (Math.atan2(p.getMouseY() - ((CSLO.GAMEDIM/2) + gunYAdd), p.getMouseX() - ((CSLO.GAMEDIM/2) + gunXAdd)));
 			
-			if(p.getMouse1() && !p.isHeldMouse()){
+				//Bullet inaccuracy
+				//depends on who fired it.
+				float thisBulletheldSpread = (float)( (Math.random()*SMGSPREAD) - (SMGSPREAD/2.0));
+		
+				SProjectile newP = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+thisBulletheldSpread)*SMGSPEED,(float)Math.sin(rotation+thisBulletheldSpread)*SMGSPEED,SState.nextBulletId(),(short)(SMGPOWER+(Math.random()*SMGVAR)));
+				SState.addProjectile(newP);
+				SState.newProj.add(newP);
+				p.setSmgCoolDown(SMGCOOLDOWNMAX);
+				
+				
+			} else
+			
+			if(p.getMouse1() && !p.isHeldMouse() && p.getWeapon() != CSLO.SMG){
 		
 				if(p.getWeapon() == CSLO.ROCKET)
 				{	
@@ -118,18 +172,21 @@ public class Server extends BasicGame{
 					float heldSpread = 0;
 					float heldSpeed = 0;
 					short heldPower = 0;
+					short heldVar = 0;
 					
 					if(p.getWeapon() == CSLO.SHOTGUN)
 					{
 						heldSpread = SHOTGUNSPREAD;
 						heldSpeed = SHOTGUNSPEED;
 						heldPower = SHOTGUNPOWER;
+						heldVar = SHOTGUNVAR;
 						
 					} else 
 					{
 						heldSpread = GARANDSPREAD;
 						heldSpeed = GARANDSPEED;
 						heldPower = GARANDPOWER;
+						heldVar = GARANDVAR;
 					}
 				
 				
@@ -142,19 +199,24 @@ public class Server extends BasicGame{
 				//Bullet inaccuracy
 				//depends on who fired it.
 				float thisBulletheldSpread = (float)( (Math.random()*heldSpread) - (heldSpread/2.0));
-				SProjectile newP = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+thisBulletheldSpread)*heldSpeed,(float)Math.sin(rotation+thisBulletheldSpread)*heldSpeed,SState.nextBulletId(),heldPower);
-				SState.addProjectile(newP);
-				SState.newProj.add(newP);
 				
-				if(p.getWeapon() == CSLO.SHOTGUN)
+				if(p.getWeapon() != CSLO.SHOTGUN)
 				{
-					for(int i = 0; i != 10; i ++)
+					SProjectile newP = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+thisBulletheldSpread)*heldSpeed,(float)Math.sin(rotation+thisBulletheldSpread)*heldSpeed,SState.nextBulletId(),(short)(heldPower+(Math.random()*heldVar)));
+					SState.addProjectile(newP);
+					SState.newProj.add(newP);
+				}
+				
+				if(p.getWeapon() == CSLO.SHOTGUN && p.getShotgunCoolDown() <= 0.0)
+				{
+					for(int i = 0; i != SHOTGUNPELLETS; i ++)
 					{
 						thisBulletheldSpread = (float) ((Math.random()*heldSpread) - (heldSpread/2.0));
-						SProjectile newPs = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+thisBulletheldSpread)*heldSpeed,(float)Math.sin(rotation+thisBulletheldSpread)*heldSpeed,SState.nextBulletId(),heldPower);
+						SProjectile newPs = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+thisBulletheldSpread)*heldSpeed,(float)Math.sin(rotation+thisBulletheldSpread)*heldSpeed,SState.nextBulletId(),(short)(heldPower+(Math.random()*heldVar)));
 						SState.addProjectile(newPs);
 						SState.newProj.add(newPs);
 					}
+					p.setShotgunCoolDown(SHOTGUNCOOLDOWNMAX);
 					
 				}
 				
