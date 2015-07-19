@@ -10,13 +10,15 @@ public abstract class SProjectile{
 	//is the bullet live? (able to hit people)
 	private boolean live = true;
 	private short id;
+	private short damage;
 	
-	public SProjectile(Shape s, float xVel, float yVel, short id) 
+	public SProjectile(Shape s, float xVel, float yVel, short id, short damage) 
 	{
 		this.shape = s;
 		this.xVel = xVel;
 		this.yVel = yVel;
 		this.id = id;
+		this.damage = damage;
 	}
 	
 	//propagate logic
@@ -43,7 +45,7 @@ public abstract class SProjectile{
 				{
 					if(p.intersects(shape))
 					{
-						p.die();
+						p.hurt(damage);
 						live = false;
 						return;
 					}

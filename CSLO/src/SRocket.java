@@ -8,8 +8,8 @@ public class SRocket extends SProjectile {
 	//private this
 	public float rotation;
 	
-	public SRocket(float x, float y, float xVel, float yVel, float angle,short ID) {
-		super((new Rectangle(x,y,rocketWidth,rocketHeight)) .transform(Transform.createRotateTransform(angle,x, y)), xVel, yVel,ID);
+	public SRocket(float x, float y, float xVel, float yVel, float angle,short ID, short damage) {
+		super((new Rectangle(x,y,rocketWidth,rocketHeight)) .transform(Transform.createRotateTransform(angle,x, y)), xVel, yVel,ID,damage);
 		rotation = angle;
 	}
 

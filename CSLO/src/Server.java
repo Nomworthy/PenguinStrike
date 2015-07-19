@@ -64,6 +64,7 @@ public class Server extends BasicGame{
 	public static final int awaySpawnY = 178*8;
 
 	public static final float ROCKETSPEED = .2f;
+	public static final short ROCKETPOWER = 200;
 	
 	public Server(String title) {
 		super(title);
@@ -104,7 +105,7 @@ public class Server extends BasicGame{
 		
 				if(p.getWeapon() == CSLO.ROCKET)
 				{	
-					SProjectile newP = new SRocket(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)*ROCKETSPEED,(float)Math.sin(rotation)*ROCKETSPEED,(float)rotation,SState.nextBulletId());	
+					SProjectile newP = new SRocket(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)*ROCKETSPEED,(float)Math.sin(rotation)*ROCKETSPEED,(float)rotation,SState.nextBulletId(),ROCKETPOWER);	
 					SState.addProjectile(newP);
 					SState.newProj.add(newP);
 				
@@ -116,16 +117,19 @@ public class Server extends BasicGame{
 				
 					float heldSpread = 0;
 					float heldSpeed = 0;
+					short heldPower = 0;
 					
 					if(p.getWeapon() == CSLO.SHOTGUN)
 					{
 						heldSpread = SHOTGUNSPREAD;
 						heldSpeed = SHOTGUNSPEED;
+						heldPower = SHOTGUNPOWER;
 						
 					} else 
 					{
 						heldSpread = GARANDSPREAD;
 						heldSpeed = GARANDSPEED;
+						heldPower = GARANDPOWER;
 					}
 				
 				
@@ -138,7 +142,7 @@ public class Server extends BasicGame{
 				//Bullet inaccuracy
 				//depends on who fired it.
 				float thisBulletheldSpread = (float)( (Math.random()*heldSpread) - (heldSpread/2.0));
-				SProjectile newP = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+thisBulletheldSpread)*heldSpeed,(float)Math.sin(rotation+thisBulletheldSpread)*heldSpeed,SState.nextBulletId());
+				SProjectile newP = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+thisBulletheldSpread)*heldSpeed,(float)Math.sin(rotation+thisBulletheldSpread)*heldSpeed,SState.nextBulletId(),heldPower);
 				SState.addProjectile(newP);
 				SState.newProj.add(newP);
 				
@@ -147,7 +151,7 @@ public class Server extends BasicGame{
 					for(int i = 0; i != 10; i ++)
 					{
 						thisBulletheldSpread = (float) ((Math.random()*heldSpread) - (heldSpread/2.0));
-						SProjectile newPs = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+thisBulletheldSpread)*heldSpeed,(float)Math.sin(rotation+thisBulletheldSpread)*heldSpeed,SState.nextBulletId());
+						SProjectile newPs = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+thisBulletheldSpread)*heldSpeed,(float)Math.sin(rotation+thisBulletheldSpread)*heldSpeed,SState.nextBulletId(),heldPower);
 						SState.addProjectile(newPs);
 						SState.newProj.add(newPs);
 					}

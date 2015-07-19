@@ -4,8 +4,8 @@ public class SBullet extends SProjectile {
 	public final static int bulletSize = 2;
 	private double wallDamage = 100;
 	
-	public SBullet(float xCenter, float yCenter, float xVel, float yVel, short ID) {
-		super(new Circle(xCenter,yCenter,bulletSize), xVel, yVel,ID);
+	public SBullet(float xCenter, float yCenter, float xVel, float yVel, short ID,short damage) {
+		super(new Circle(xCenter,yCenter,bulletSize), xVel, yVel,ID,damage);
 	}
 
 	@Override

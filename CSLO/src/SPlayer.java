@@ -44,6 +44,8 @@ public class SPlayer extends Circle {
 	private short sb;
 	
 	private byte weapon = 1;
+	
+	private byte HP = 100;
 
 	public SPlayer(boolean c, short r, short g, short b, short sr, short sg, short sb){
 		super(0, 0, RADIUS);
@@ -220,17 +222,17 @@ public class SPlayer extends Circle {
 		return new short[]{r,g,b,sr,sg,sb};
 	}
 
-	public void die() {
+	private void die() {
+		
 		if(team)
 		{
-		super.setX(Server.homeSpawnX);
-		super.setY(Server.homeSpawnY);
+			super.setX(Server.homeSpawnX);
+			super.setY(Server.homeSpawnY);
 		} else 
 		{
-		super.setX(Server.awaySpawnX);
-		super.setY(Server.awaySpawnY);
-		}
-		
+			super.setX(Server.awaySpawnX);
+			super.setY(Server.awaySpawnY);
+		}	
 		
 	}
 
@@ -247,6 +249,15 @@ public class SPlayer extends Circle {
 	public byte getWeapon() 
 	{
 		return weapon;
+	}
+	
+	public void hurt(short damage)
+	{
+		HP = (byte)(HP - damage);
+		if(damage >= 100 && HP <= 0)
+		{
+			die();
+		}
 	}
 	
 }
