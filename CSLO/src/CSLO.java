@@ -340,10 +340,14 @@ public class CSLO extends BasicGame
 
 				g.setColor(new Color(0f,0f,0f,0.5f));
 				g.fillRect(300, 350, 100, 50);
-				CWFont.draw(g, "Life:   "+SState.players[clientID].getHP(), 305, 355, 1, new Color (1f,1f,1f,0.5f));
-				CWFont.draw(g, "Ammo:   99/99", 305, 365, 1, new Color (1f,1f,1f,0.5f));
-				CWFont.draw(g, "Bout 5  $9999", 305, 375, 1, new Color (1f,1f,1f,0.5f));
-				CWFont.draw(g, "Build Time 5:00", 305, 385, 1, new Color (1f,1f,1f,0.5f));
+				
+				if(CState.players[clientID] != null)
+				{
+					CWFont.draw(g, "Life:   "+CState.players[clientID].getHP(), 305, 355, 1, new Color (1f,1f,1f,0.5f));
+					CWFont.draw(g, "Ammo:   99/99", 305, 365, 1, new Color (1f,1f,1f,0.5f));
+					CWFont.draw(g, "Bout 5  $9999", 305, 375, 1, new Color (1f,1f,1f,0.5f));
+					CWFont.draw(g, "Build Time 5:00", 305, 385, 1, new Color (1f,1f,1f,0.5f));
+				}
 				
 				//24 * 2 (26 * 7) + 2 = 184
 				g.setColor(new Color(0f,0f,1f,0.3f));
