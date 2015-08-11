@@ -43,7 +43,12 @@ public class SPlayer extends Circle {
 	private short sg;
 	private short sb;
 	
-	private byte weapon = 1;
+	
+	//Pointer to the SPECIFIC weapon we are using
+	private byte weaponPtr = 0;
+	
+	//Inventory
+	private Weapon[] weapons;
 	
 	private byte HP = 100;
 
@@ -61,6 +66,8 @@ public class SPlayer extends Circle {
 		this.sr = sr;
 		this.sg = sg;
 		this.sb = sb;
+		weapons = new Weapon[]{new Weapon(Weapon.WeaponType.KNIFE,(byte)0,(byte)0),null,null,null,null,null,null};
+		weaponPtr = 0;
 	}
 
 	public int getMouseX() {
@@ -246,14 +253,21 @@ public class SPlayer extends Circle {
 	}
 	
 
-	public void setWeapon(byte b)
+	public Weapon.WeaponType getWeaponDraw() 
 	{
-		weapon = b;
+		return (weapons[weaponPtr].getType());
 	}
-
-	public byte getWeapon() 
+	
+	//only set weapon pointer server side if the weapon exists.
+	public void setWeaponPointer(byte b)
 	{
-		return weapon;
+		if(weapons[b] != null)
+			weaponPtr = b;
+	}
+	
+	public Weapon getEquippedWeapon()
+	{
+		return weapons[weaponPtr];
 	}
 	
 	public void hurt(short damage)
@@ -289,4 +303,15 @@ public class SPlayer extends Circle {
 		return money;
 	}
 	
+	public boolean withdrawMoney(short amount) {
+		if(amount <= money)
+		{
+			money -= amount;
+			return true;
+		} else return false;
+	}
+
+	public Weapon[] getWeapons() {
+		return weapons;
+	}
 }

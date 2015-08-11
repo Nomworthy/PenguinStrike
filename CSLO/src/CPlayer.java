@@ -44,13 +44,13 @@ public class CPlayer{
 			spriteWeapon = new Animation(new SpriteSheet("data/chars/garand.png",31,31),100);
 			
 			weapons = new Animation[7];
-			weapons[0] = null;
-			weapons[1] = new Animation(new SpriteSheet("data/chars/knife.png",31,31),100);
-			weapons[2] = new Animation(new SpriteSheet("data/chars/pistol.png",31,31),100);
-			weapons[3] = new Animation(new SpriteSheet("data/chars/smg.png",31,31),100);
-			weapons[4] = new Animation(new SpriteSheet("data/chars/shotgun.png",31,31),100);
-			weapons[5] = new Animation(new SpriteSheet("data/chars/garand.png",31,31),100);
-			weapons[6] = new Animation(new SpriteSheet("data/chars/rocketLauncher.png",31,31),100);
+			//harcoded
+			weapons[0] = new Animation(new SpriteSheet("data/chars/knife.png",31,31),100);
+			weapons[1] = new Animation(new SpriteSheet("data/chars/pistol.png",31,31),100);
+			weapons[2] = new Animation(new SpriteSheet("data/chars/smg.png",31,31),100);
+			weapons[3] = new Animation(new SpriteSheet("data/chars/shotgun.png",31,31),100);
+			weapons[4] = new Animation(new SpriteSheet("data/chars/garand.png",31,31),100);
+			weapons[5] = new Animation(new SpriteSheet("data/chars/rocketLauncher.png",31,31),100);
 			
 			
 			
@@ -150,10 +150,6 @@ public class CPlayer{
 		}
 	}
 	
-	public void setWeapon(byte b)
-	{
-		spriteWeapon = weapons[b];
-	}
 
 	public void setHP(byte readByte) {
 		HP = readByte;
@@ -171,5 +167,22 @@ public class CPlayer{
 	public void setMoney(short m)
 	{
 		money = m;
+	}
+
+	public void setInvWeaponType(int w, byte type) {
+		// TODO Auto-generated method stub
+		
+	}
+	public void setInvWeaponMag(int w, byte type) {
+		// TODO Auto-generated method stub
+		
+	}
+	public void setInvWeaponBullets(int w, byte type) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setWeaponDraw(byte readByte) {
+		spriteWeapon = weapons[readByte];
 	}
 }

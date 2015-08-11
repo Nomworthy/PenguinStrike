@@ -8,9 +8,10 @@ import org.newdawn.slick.geom.Rectangle;
 public class WorldMap extends TiledMap {
 	final int TILESIZE = 8;
 	//0, Destroyed. 0-499, weak. 500-999, med. 1000-1499, strong.
-	private final double STONEPHASESTR = 500;
-	private final int STONESTART = 4000;
-	private final int STONEPHASE = 4;
+	public final static double STONEPHASESTR = 500;
+	public final static int STONESTART = 4000;
+	public final static int STONEPHASE = 4;
+	//Unbreakable ID
 	private final int UNBREAKABLE = 0;
 	private double[][] tileIntegrity;
 	private LinkedList<Tile> dirtyTiles;
@@ -148,14 +149,25 @@ public class WorldMap extends TiledMap {
 		}	
 	}
 	
-	public void constructTile(int xTile,int yTile)
+	public boolean constructTile(int xTile,int yTile)
 	{
-		//cant carry over
-		tileIntegrity[xTile][yTile] = ((STONEPHASE-1) * STONEPHASESTR) - 1.0;
-		Tile t = new Tile(xTile,yTile);
-		t.id = 4002;
-		setTileId(t.x,t.y,wallLayerIndex,t.id); 
-		dirtyTiles.add(t);
+		if(tileIntegrity[xTile][yTile] == Integer.MAX_VALUE)
+		{
+			return false;
+		} else {
+			//can build
+			tileIntegrity[xTile][yTile] = ((STONEPHASE-1) * STONEPHASESTR) - 1.0;
+			Tile t = new Tile(xTile,yTile);
+			t.id = 4002;
+			setTileId(t.x,t.y,wallLayerIndex,t.id); 
+			dirtyTiles.add(t);
+			return true;
+		}
+	}
+	
+	public double getTileIntegrity(int x, int y)
+	{
+		return tileIntegrity[x][y];
 	}
 
 }

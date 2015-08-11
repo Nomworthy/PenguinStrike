@@ -37,6 +37,8 @@ public class Server extends BasicGame{
 	
 	private static long tickRateNano =30000000L;
 	
+	public static final short WALLCOST = 20;
+	
 	public static final int GARANDACC = 3;
 	public static final int GARANDCLIP = 7;
 	public static final int GARANDCOST = 500;
@@ -152,28 +154,32 @@ public class Server extends BasicGame{
 			p.setRot((float) Math.toDegrees(rotation + Math.PI));
 		
 			if(SState.buildMode == true && p.getMouse1() ){
+	
+					//Bad way to do thangs but i works
+					//TODO -- Copy Code
+					int playerXBase = (int) (p.getX() + CPlayer.RADIUS - CSLO.GAMEDIM/2);
+					int playerYBase = (int) (p.getY() + CPlayer.RADIUS - CSLO.GAMEDIM/2);
 				
-				//Bad way to do thangs but i works
-				//TODO -- Copy Code
-				int playerXBase = (int) (p.getX() + CPlayer.RADIUS - CSLO.GAMEDIM/2);
-				int playerYBase = (int) (p.getY() + CPlayer.RADIUS - CSLO.GAMEDIM/2);
+					//factor in mouse.
+					int deltaX = (p.getMouseX() - ((CSLO.GAMEDIM/2)));
+					int deltaY = (p.getMouseY() - ((CSLO.GAMEDIM/2)));
 				
-				//factor in mouse.
-				int deltaX = (p.getMouseX() - ((CSLO.GAMEDIM/2)));
-				int deltaY = (p.getMouseY() - ((CSLO.GAMEDIM/2)));
+					//draw the map
+					int mapOffsetX = playerXBase + deltaX;
+					int mapOffsetY = playerYBase + deltaY;
 				
-				//draw the map
-				int mapOffsetX = playerXBase + deltaX;
-				int mapOffsetY = playerYBase + deltaY;
+					//TODO: calculate this better
+					int tileX = ((((p.getMouseX() + mapOffsetX) / 8)));
+					int tileY = ((((p.getMouseY() + mapOffsetY) / 8)));
 				
-				//TODO: calculate this better
-				int tileX = ((((p.getMouseX() + mapOffsetX) / 8)));
-				int tileY = ((((p.getMouseY() + mapOffsetY) / 8)));
+					
+					if(SState.map.getTileIntegrity(tileX, tileY) < ((WorldMap.STONEPHASE-2)*WorldMap.STONEPHASESTR) && p.withdrawMoney(WALLCOST))
+					{
+						SState.map.constructTile(tileX, tileY);
+					}
 				
-				SState.map.constructTile(tileX, tileY);
 				
-				
-			} else if(p.getMouse1() && p.getWeapon() == CSLO.SMG && p.getSmgCoolDown() <= 0)
+			} else if(p.getMouse1() && p.getEquippedWeapon().getType() == Weapon.WeaponType.SMG && p.getSmgCoolDown() <= 0)
 			{
 				
 				float gunXAdd = (float) (((float) (1.1f*p.getSpeed()*ms) + 2f + p.radius) *  Math.cos(-Math.PI + -Math.toRadians(p.getRot()) +- .38));
@@ -193,9 +199,9 @@ public class Server extends BasicGame{
 				
 			} else
 			
-			if(p.getMouse1() && !p.isHeldMouse() && p.getWeapon() != CSLO.SMG){
+			if(p.getMouse1() && !p.isHeldMouse() && p.getEquippedWeapon().getType()  != Weapon.WeaponType.SMG){
 		
-				if(p.getWeapon() == CSLO.ROCKET)
+				if(p.getEquippedWeapon().getType()  == Weapon.WeaponType.RLAUNCHER)
 				{	
 					SProjectile newP = new SRocket(p.getCenterX(),p.getCenterY(),(float)Math.cos(rotation)*ROCKETSPEED,(float)Math.sin(rotation)*ROCKETSPEED,(float)rotation,SState.nextBulletId(),ROCKETPOWER);	
 					SState.addProjectile(newP);
@@ -212,14 +218,14 @@ public class Server extends BasicGame{
 					short heldPower = 0;
 					short heldVar = 0;
 					
-					if(p.getWeapon() == CSLO.SHOTGUN)
+					if(p.getEquippedWeapon().getType()  == Weapon.WeaponType.SHOTGUN)
 					{
 						heldSpread = SHOTGUNSPREAD;
 						heldSpeed = SHOTGUNSPEED;
 						heldPower = SHOTGUNPOWER;
 						heldVar = SHOTGUNVAR;
 						
-					} else if(p.getWeapon() == CSLO.RIFLE) 
+					} else if(p.getEquippedWeapon().getType()  == Weapon.WeaponType.RIFLE) 
 					{
 						heldSpread = GARANDSPREAD;
 						heldSpeed = GARANDSPEED;
@@ -244,14 +250,14 @@ public class Server extends BasicGame{
 				//depends on who fired it.
 				float thisBulletheldSpread = (float)( (Math.random()*heldSpread) - (heldSpread/2.0));
 				
-				if(p.getWeapon() != CSLO.SHOTGUN)
+				if(p.getEquippedWeapon().getType()  !=Weapon.WeaponType.SHOTGUN)
 				{
 					SProjectile newP = new SBullet(p.getCenterX()+gunXAdd,p.getCenterY()+gunYAdd,(float)Math.cos(rotation+thisBulletheldSpread)*heldSpeed,(float)Math.sin(rotation+thisBulletheldSpread)*heldSpeed,SState.nextBulletId(),(short)(heldPower+(Math.random()*heldVar)));
 					SState.addProjectile(newP);
 					SState.newProj.add(newP);
 				}
 				
-				if(p.getWeapon() == CSLO.SHOTGUN && p.getShotgunCoolDown() <= 0.0)
+				if(p.getEquippedWeapon().getType() == Weapon.WeaponType.SHOTGUN && p.getShotgunCoolDown() <= 0.0)
 				{
 					for(int i = 0; i != SHOTGUNPELLETS; i ++)
 					{
@@ -364,7 +370,22 @@ public class Server extends BasicGame{
 						daos.writeShort(p.sendColorArray()[i]);
 					}
 
-					daos.writeByte(p.getWeapon());
+					//Save space by not transmitting null weapons.
+					for(int i = 0; i != 7; i++)
+					{
+						Weapon[] w = p.getWeapons();
+						
+						if(w[i] == null)
+						{
+							daos.writeByte(-1);
+						} else
+						{
+							daos.writeByte(w[i].getType().ordinal());
+							daos.writeByte(w[i].getMagsLeft());
+							daos.writeByte(w[i].getBulletsLeft());
+						}
+					}
+					daos.writeByte(p.getWeaponDraw().ordinal());
 				}
 			}
 			
@@ -468,7 +489,11 @@ public class Server extends BasicGame{
 			final byte[] b = baos.toByteArray();
 			DatagramPacket p= new DatagramPacket(b,b.length,packet.getAddress(),CSLO.statePort);
 			sock.send(p);
-		} else 
+		} else if(clientID == CSLO.BUYREQUEST){
+			byte trueid = dais.readByte();
+			byte weapon = dais.readByte();
+			SState.players[trueid].getWeapons()[0] = new Weapon(Weapon.WeaponType.values()[weapon],(byte)0,(byte)0);
+		} else
 			
 			
 		{
@@ -482,7 +507,7 @@ public class Server extends BasicGame{
 		p.setMoveD(dais.readBoolean());
 		p.setMouse1(dais.readBoolean());
 		p.setMouse2(dais.readBoolean());
-		p.setWeapon(dais.readByte());
+		p.setWeaponPointer(dais.readByte());
 		dais.close();
 		}
 	}

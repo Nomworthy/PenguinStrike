@@ -64,13 +64,6 @@ public class CSLO extends BasicGame
 	public static byte TEAMREQUEST = -126;
 	public static byte BUYREQUEST = -125;
 	
-	public static byte KNIFE = 1;
-	public static byte PISTOL = 2;
-	public static byte SMG = 3;
-	public static byte SHOTGUN = 4;
-	public static byte RIFLE = 5;
-	public static byte ROCKET = 6;
-	
 	static final int maxPlayerCount = 10;
 	
 	private static boolean buyMenu = false;
@@ -155,7 +148,7 @@ public class CSLO extends BasicGame
     	CWFont.initFontSheet();
     	preLobby = new CMainMenu(container);
     	explosions = new LinkedList<Explosion>();
-    	CWeapon.load();
+    	Weapon.load();
     	CState.initInventory();
     }
  
@@ -186,6 +179,18 @@ public class CSLO extends BasicGame
 				updateInputs(container.getInput());
 				
 				toggleBuyMenu(container.getInput());
+				if(buyMenu)
+				{
+					byte buy = requestBuy();
+					if(buy >= 0)
+					{
+						sendBuyRequest(buy);
+						readState();
+						break;
+					}
+				}
+				
+				
 				inventoryMenu(container.getInput());
 				//send to da server
 				if(gs != GameState.TEAMMENU)
@@ -222,6 +227,13 @@ public class CSLO extends BasicGame
     }
  
 
+
+	private byte requestBuy() {
+		if(CState.mouse1)
+			return (byte)(Math.random() * 6);
+		else
+			return -1;
+	}
 
 	private void inventoryMenu(Input input) {
 		
@@ -396,7 +408,7 @@ public class CSLO extends BasicGame
 				g.setColor(new Color(0f,0f,0f,0.3f));
 				
 				int i = 0;
-				for(CWeapon c : CState.inventory)
+				for(Weapon c : CState.inventory)
 				{
 					if(c != null)
 						c.draw(118+(26*i), 374);
@@ -503,7 +515,25 @@ public class CSLO extends BasicGame
     			CState.players[i].setMoney(dais.readShort());
     			
     			CState.players[i].setCol(dais.readShort(),dais.readShort(),dais.readShort() ,dais.readShort(),dais.readShort(),dais.readShort());
-    			CState.players[i].setWeapon(dais.readByte());
+    			
+				//Save space by not transmitting null weapons.
+				for(int w = 0; w != 7; w++)
+				{
+					byte type = dais.readByte();
+					if(type == -1)
+						continue;
+					else
+					{
+						byte mag = dais.readByte();
+						byte bullet = dais.readByte();
+						CState.players[i].setInvWeaponType(w,type);
+						CState.players[i].setInvWeaponMag(w,mag);
+						CState.players[i].setInvWeaponBullets(w,bullet);
+	
+					}
+				}
+				
+    			CState.players[i].setWeaponDraw(dais.readByte());
     		}
     		
 	    	int newProjCount = dais.readShort();
@@ -692,7 +722,6 @@ public class CSLO extends BasicGame
     		buyMenu = !buyMenu;
     }
     
-    //fun fact: you can hack to buy any weapon
     void sendBuyRequest(int weapon)
     { 	
     	try {

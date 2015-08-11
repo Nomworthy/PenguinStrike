@@ -1,7 +1,7 @@
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-public class CWeapon {
+public class Weapon {
 	
 	private byte bulletsLeft;
 	private byte magsLeft;
@@ -55,7 +55,7 @@ public class CWeapon {
 	}
 
 	
-	public CWeapon(WeaponType w, byte b, byte m )
+	public Weapon(WeaponType w, byte b, byte m )
 	{
 		bulletsLeft = b;
 		magsLeft = m;
@@ -97,5 +97,18 @@ public class CWeapon {
 		}
 		
 	}
+
+	public WeaponType getType() {
+		return wType;
+	}
 	
+	public byte getBulletsLeft()
+	{
+		return bulletsLeft;
+	}
+	
+	public byte getMagsLeft()
+	{
+		return magsLeft;
+	}
 }
