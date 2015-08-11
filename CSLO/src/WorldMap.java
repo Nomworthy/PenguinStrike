@@ -115,7 +115,6 @@ public class WorldMap extends TiledMap {
 				newID = baseID + 1 + (int)(tileIntegrity[t.x][t.y] / STONEPHASESTR) + 1;
 			t.id = newID;
 			
-			
 			setTileId(t.x,t.y,wallLayerIndex,newID); 
 		}
 		return dirtyTiles;
@@ -147,6 +146,16 @@ public class WorldMap extends TiledMap {
 			
 			tileIntegrity[xTile][yTile] = Math.max(tileIntegrity[xTile][yTile] - damage,0.0);
 		}	
+	}
+	
+	public void constructTile(int xTile,int yTile)
+	{
+		//cant carry over
+		tileIntegrity[xTile][yTile] = ((STONEPHASE-1) * STONEPHASESTR) - 1.0;
+		Tile t = new Tile(xTile,yTile);
+		t.id = 4002;
+		setTileId(t.x,t.y,wallLayerIndex,t.id); 
+		dirtyTiles.add(t);
 	}
 
 }

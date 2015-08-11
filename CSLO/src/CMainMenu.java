@@ -1,5 +1,8 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.LinkedList;
+
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.AppletGameContainer.Container;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -31,13 +34,15 @@ public class CMainMenu {
 	private static final int MAXIPLEN = 15;	
 	private TextField nameField;
 	private TextField IPField;
-	private Color primaryColor = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
-	private Color secondaryColor = new Color((float)Math.random(),(float)Math.random(),(float)Math.random());
+	private Color primaryColor = new Color(0);
+	private Color secondaryColor = new Color(0);
+	private LinkedList<String> ipList = new LinkedList<String>();
 	
 	public CMainMenu(GameContainer container){
    		TrueTypeFont f = new TrueTypeFont(new java.awt.Font(java.awt.Font.SERIF,java.awt.Font.BOLD,8),false);
 		nameField = new TextField(container,f,-1,-1,0,0);
 		IPField = new TextField(container,f,-1,-1,0,0);
+		loadSettings();
 	}
 	
 	
@@ -191,4 +196,41 @@ public class CMainMenu {
 		return secondaryColor;
 	}
 	
+    private void loadSettings() {
+    	BufferedReader br;
+    	
+		try {
+			
+			br = new BufferedReader(new FileReader("settings.neutral"));
+    	    
+    	    String line = br.readLine();
+    	    primaryColor.r = Float.parseFloat(line);
+    	    
+    	    line = br.readLine();
+    	    primaryColor.g = Float.parseFloat(line);
+    	    
+    	    line = br.readLine();
+    	    primaryColor.b = Float.parseFloat(line);
+    	    
+    	    line = br.readLine();
+    	    secondaryColor.r = Float.parseFloat(line);
+    	    
+    	    line = br.readLine();
+    	    secondaryColor.g = Float.parseFloat(line);
+    	    
+    	    line = br.readLine();
+    	    secondaryColor.b = Float.parseFloat(line);
+    	    
+    	    line = br.readLine();
+    	    while (line != null) {
+    	    	ipList.add(line);
+    	        line = br.readLine();
+    	    }
+
+    	    br.close();
+    	    
+    	} catch (Exception e){
+    		e.printStackTrace();
+    	}
+	}
 }

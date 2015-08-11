@@ -37,8 +37,6 @@
 <fullyQualifiedTypeName name="org.newdawn.slick.TrueTypeFont"/>
 <fullyQualifiedTypeName name="org.newdawn.slick.AppletGameContainer.Container"/>
 <fullyQualifiedTypeName name="java.net.InetAddress"/>
-<fullyQualifiedTypeName name="CSLO"/>
-<fullyQualifiedTypeName name="CSLO.GameState"/>
 <fullyQualifiedTypeName name="org.lwjgl.input.Mouse"/>
 <fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="java.awt.Image"/>
@@ -49,6 +47,11 @@
 <fullyQualifiedTypeName name="org.newdawn.slick.Color"/>
 <fullyQualifiedTypeName name="CWFont"/>
 <fullyQualifiedTypeName name="CWeapon.WeaponType"/>
+<fullyQualifiedTypeName name="java.io.BufferedReader"/>
+<fullyQualifiedTypeName name="java.io.FileReader"/>
 <fullyQualifiedTypeName name="SState"/>
 <fullyQualifiedTypeName name="CState"/>
+<fullyQualifiedTypeName name="CSLO"/>
+<fullyQualifiedTypeName name="CSLO.GameState"/>
+<fullyQualifiedTypeName name="Server"/>
 </qualifiedTypeNameHistroy>

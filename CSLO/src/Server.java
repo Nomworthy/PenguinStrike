@@ -49,7 +49,7 @@ public class Server extends BasicGame{
 	public static final int PISTOLCOST = 100;
 	public static final int PISTOLPOWER = 30;
 	public static final int PISTOLVAR = 10;
-	public static final float PISTOLSPEED = .40f;
+	public static final float PISTOLSPEED = .25f;
 	
 	public static final int SHOTGUNACC = 50;
 	public static final int SHOTGUNCLIP = 5;
@@ -76,17 +76,13 @@ public class Server extends BasicGame{
 	private static float GARANDSPREAD = (float) Math.toRadians(GARANDACC);
 	private static float SHOTGUNSPREAD = (float) Math.toRadians(SHOTGUNACC);
 	private static float SMGSPREAD = (float) Math.toRadians(SMGACC);
-
+	private static float PISTOLSPREAD = (float) Math.toRadians(PISTOLACC);
 	
 	public static final int homeSpawnX = 500;
 	public static final int homeSpawnY = 500;
 	
 	public static final int awaySpawnX = 312*8;
 	public static final int awaySpawnY = 178*8;
-
-
-	
-
 	
 	
 	public Server(String title) {
@@ -112,6 +108,27 @@ public class Server extends BasicGame{
 	
 	private static void doGameLogic(long l) {
 		float ms = (float) (l*.000001);
+		
+		SState.time = SState.time - (.001f * ms);
+		
+		if(SState.time <= 0)
+		{
+			SState.buildMode = !SState.buildMode;
+			if(SState.buildMode)
+				SState.time = SState.buildTimeMax;
+			else
+				SState.time = SState.fightTimeMax;
+			
+			for(SPlayer p : SState.players)
+			{
+				
+				if(p!= null)
+					p.die();
+			}
+			
+		}
+
+		
 		for(SPlayer p : SState.players)
 		{
 			if(p != null)
@@ -120,7 +137,6 @@ public class Server extends BasicGame{
 				if(p.getShotgunCoolDown() > 0.0)
 				{
 					p.setShotgunCoolDown(p.getShotgunCoolDown() - ms);
-					
 				}
 				
 				if(p.getSmgCoolDown() > 0.0)
@@ -135,7 +151,29 @@ public class Server extends BasicGame{
 			double rotation = (Math.atan2(p.getMouseY() - (CSLO.GAMEDIM/2), p.getMouseX() - (CSLO.GAMEDIM/2)));
 			p.setRot((float) Math.toDegrees(rotation + Math.PI));
 		
-			if(p.getMouse1() && p.getWeapon() == CSLO.SMG && p.getSmgCoolDown() <= 0)
+			if(SState.buildMode == true && p.getMouse1() ){
+				
+				//Bad way to do thangs but i works
+				//TODO -- Copy Code
+				int playerXBase = (int) (p.getX() + CPlayer.RADIUS - CSLO.GAMEDIM/2);
+				int playerYBase = (int) (p.getY() + CPlayer.RADIUS - CSLO.GAMEDIM/2);
+				
+				//factor in mouse.
+				int deltaX = (p.getMouseX() - ((CSLO.GAMEDIM/2)));
+				int deltaY = (p.getMouseY() - ((CSLO.GAMEDIM/2)));
+				
+				//draw the map
+				int mapOffsetX = playerXBase + deltaX;
+				int mapOffsetY = playerYBase + deltaY;
+				
+				//TODO: calculate this better
+				int tileX = ((((p.getMouseX() + mapOffsetX) / 8)));
+				int tileY = ((((p.getMouseY() + mapOffsetY) / 8)));
+				
+				SState.map.constructTile(tileX, tileY);
+				
+				
+			} else if(p.getMouse1() && p.getWeapon() == CSLO.SMG && p.getSmgCoolDown() <= 0)
 			{
 				
 				float gunXAdd = (float) (((float) (1.1f*p.getSpeed()*ms) + 2f + p.radius) *  Math.cos(-Math.PI + -Math.toRadians(p.getRot()) +- .38));
@@ -181,12 +219,18 @@ public class Server extends BasicGame{
 						heldPower = SHOTGUNPOWER;
 						heldVar = SHOTGUNVAR;
 						
-					} else 
+					} else if(p.getWeapon() == CSLO.RIFLE) 
 					{
 						heldSpread = GARANDSPREAD;
 						heldSpeed = GARANDSPEED;
 						heldPower = GARANDPOWER;
 						heldVar = GARANDVAR;
+					} else {
+						heldSpread = PISTOLSPREAD;
+						heldSpeed = PISTOLSPEED;
+						heldPower = PISTOLPOWER;
+						heldVar = PISTOLVAR;
+						
 					}
 				
 				
@@ -291,9 +335,15 @@ public class Server extends BasicGame{
 	}
 	
 	private static void writeState(){
+		
 		final ByteArrayOutputStream baos=new ByteArrayOutputStream();
 		final DataOutputStream daos=new DataOutputStream(baos);
+		
 		try{
+
+			
+			daos.writeBoolean(SState.buildMode);
+			daos.writeShort((short)SState.time);
 			
 			daos.writeByte(SState.playerCount);
 			
@@ -307,6 +357,8 @@ public class Server extends BasicGame{
 					daos.writeFloat(p.getRot());
 					daos.writeByte(p.getFrame());
 					daos.writeBoolean(p.getTeam());
+					daos.writeShort(p.getMoney());
+					
 					for(int i = 0; i != 6; i++)
 					{
 						daos.writeShort(p.sendColorArray()[i]);

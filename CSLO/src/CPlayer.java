@@ -13,7 +13,7 @@ public class CPlayer{
 	private int xOffset = 5;
 	private int yOffset = 5;
 	
-	public final int RADIUS = 11;
+	public final static int RADIUS = 11;
 	private float rotation;
 	private int frame;
 	private float x;
@@ -32,6 +32,8 @@ public class CPlayer{
 	private boolean oldTeam = false;
 	
 	private byte HP;
+	
+	private short money;
 	
 	public CPlayer(){
 		try {
@@ -87,26 +89,39 @@ public class CPlayer{
 	
 	public void draw(Graphics g, int wx, int wy) {
 
-		spriteJacket.setCurrentFrame(frame);
-		spriteHead.setCurrentFrame(frame);
-		spriteUnderShirt.setCurrentFrame(frame);
-		spriteWeapon.setCurrentFrame(frame);
+		try
+		{
+
+			//Temp: drawArc is drawn with repect to current resolution
+			g.setLineWidth(3f);
+			g.setColor(Color.red);
+			g.drawArc(x +- xOffset +- wx + (RADIUS/2),y +- yOffset +- wy + (RADIUS/2),RADIUS*2, RADIUS*2,0,360 * (HP/100f));
+			g.setLineWidth(1f);
+			
+			spriteJacket.setCurrentFrame(frame);
+			spriteHead.setCurrentFrame(frame);
+			spriteUnderShirt.setCurrentFrame(frame);
+			spriteWeapon.setCurrentFrame(frame);
 		
-		Image j =spriteJacket.getCurrentFrame();
-		Image u =spriteUnderShirt.getCurrentFrame();
-		Image he =spriteHead.getCurrentFrame();
-		Image w =spriteWeapon.getCurrentFrame();
+			Image j =spriteJacket.getCurrentFrame();
+			Image u =spriteUnderShirt.getCurrentFrame();
+			Image he =spriteHead.getCurrentFrame();
+			Image w =spriteWeapon.getCurrentFrame();
 		
-		j.setRotation(rotation);
-		u.setRotation(rotation);
-		he.setRotation(rotation);
-		w.setRotation(rotation);
+			j.setRotation(rotation);
+			u.setRotation(rotation);
+			he.setRotation(rotation);
+			w.setRotation(rotation);
+			
 		
-		
-		g.drawImage(j,x +- xOffset +- wx, y +- yOffset +- wy,jacketCol);
-		g.drawImage(u,x +- xOffset +- wx, y +- yOffset +- wy,underShirtCol);
-		g.drawImage(he,x +- xOffset +- wx, y +- yOffset +- wy);
-		g.drawImage(w,x +- xOffset +- wx, y +- yOffset +- wy);
+			g.drawImage(j,x +- xOffset +- wx, y +- yOffset +- wy,jacketCol);
+			g.drawImage(u,x +- xOffset +- wx, y +- yOffset +- wy,underShirtCol);
+			g.drawImage(he,x +- xOffset +- wx, y +- yOffset +- wy);
+			g.drawImage(w,x +- xOffset +- wx, y +- yOffset +- wy);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -148,4 +163,13 @@ public class CPlayer{
 		return HP;
 	}
 	
+	public short getMoney()
+	{
+		return money;
+	}
+	
+	public void setMoney(short m)
+	{
+		money = m;
+	}
 }

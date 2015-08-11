@@ -50,6 +50,8 @@ public class SPlayer extends Circle {
 	private float shotgunCoolDown;
 	private float smgCoolDown;
 	
+	private short money = 10000;
+	
 	public SPlayer(boolean c, short r, short g, short b, short sr, short sg, short sb){
 		super(0, 0, RADIUS);
 		this.fixedDirMode = c;
@@ -225,7 +227,7 @@ public class SPlayer extends Circle {
 		return new short[]{r,g,b,sr,sg,sb};
 	}
 
-	private void die() {
+	void die() {
 		HP = 100;
 		if(team)
 		{
@@ -281,6 +283,10 @@ public class SPlayer extends Circle {
 
 	public void setSmgCoolDown(float smgCoolDown) {
 		this.smgCoolDown = smgCoolDown;
+	}
+
+	public short getMoney() {
+		return money;
 	}
 	
 }

@@ -1,7 +1,10 @@
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -71,6 +74,8 @@ public class CSLO extends BasicGame
 	static final int maxPlayerCount = 10;
 	
 	private static boolean buyMenu = false;
+	
+	private LinkedList<String> ipList = new LinkedList<String>();
 	
 	enum GameState{
 		//menu for setting name, color, etc.
@@ -154,9 +159,11 @@ public class CSLO extends BasicGame
     	CState.initInventory();
     }
  
-    @Override
+
+	@Override
     public void update(GameContainer container, int delta) throws SlickException
     {
+		//clean!
     	switch(gs)
     	{
 			case INLOBBY:
@@ -182,7 +189,10 @@ public class CSLO extends BasicGame
 				inventoryMenu(container.getInput());
 				//send to da server
 				if(gs != GameState.TEAMMENU)
+				{
 					sendInputPacket(container.getInput());
+					
+				}
 				else 
 				{
 					boolean mPressed = container.getInput().isMousePressed(0) ;
@@ -283,7 +293,7 @@ public class CSLO extends BasicGame
 				if(buyMenu)
 				{
 					mapOffsetX = playerXBase;
-					mapOffsetY = playerYBase ;	
+					mapOffsetY = playerYBase;	
 					
 				}
 				
@@ -292,9 +302,26 @@ public class CSLO extends BasicGame
 				{
 					mapOffsetX = 400;
 					mapOffsetY = 400;			
-				}
+				} 
 				
 				CState.worldMap.drawWorldMap(mapOffsetX,mapOffsetY);
+				
+				if(CState.buildMode && gs != GameState.TEAMMENU)
+				{
+					//TILE : (CState.scaledMouseX + mapOffsetX) / 8) 
+					int tileX = ((((CState.scaledMouseX + mapOffsetX) / 8)));
+					int tileY = ((((CState.scaledMouseY + mapOffsetY) / 8)));
+					
+				//	CWFont.draw(g, -mapOffsetX + (8*tileX) + "", 30 , 30, 1, Color.red);
+				//	CWFont.draw(g, -mapOffsetY + (8*tileY) + "", 30 , 50, 1, Color.red);
+					
+					g.setColor(Color.black);
+					g.drawRect(-mapOffsetX + (8*tileX), -mapOffsetY + (8*tileY), 8, 8);
+					
+					g.setColor(new Color(0f,0f,1f,.2f));
+					g.fillRect(-mapOffsetX + (8*tileX), -mapOffsetY + (8*tileY), 8, 8);
+					
+				}		
  
 				for(int i = 0; i != CState.players.length; i++){
 					CPlayer p = CState.players[i];
@@ -334,7 +361,6 @@ public class CSLO extends BasicGame
 				
 				if(gs == GameState.TEAMMENU)
 				{
-
 					drawTeamMenu(g);
 				}
 
@@ -345,8 +371,16 @@ public class CSLO extends BasicGame
 				{
 					CWFont.draw(g, "Life:   "+CState.players[clientID].getHP(), 305, 355, 1, new Color (1f,1f,1f,0.5f));
 					CWFont.draw(g, "Ammo:   99/99", 305, 365, 1, new Color (1f,1f,1f,0.5f));
-					CWFont.draw(g, "Bout 5  $9999", 305, 375, 1, new Color (1f,1f,1f,0.5f));
-					CWFont.draw(g, "Build Time 5:00", 305, 385, 1, new Color (1f,1f,1f,0.5f));
+					CWFont.draw(g, "Round X  $" + CState.players[clientID].getMoney(), 305, 375, 1, new Color (1f,1f,1f,0.5f));
+					//Not op'd
+					String state;
+					if(CState.buildMode)
+						state = "Build Time ";
+					else
+						state = "Fight Time ";
+					
+					CWFont.draw(g, state + CState.time, 305, 385, 1, new Color (1f,1f,1f,0.5f));
+					
 				}
 				
 				//24 * 2 (26 * 7) + 2 = 184
@@ -453,6 +487,9 @@ public class CSLO extends BasicGame
     		final ByteArrayInputStream bais=new ByteArrayInputStream(inputbfr);
     		final DataInputStream dais=new DataInputStream(bais);
     		
+    		CState.buildMode = dais.readBoolean();
+			CState.time = dais.readShort();
+    		
     		byte playerCount = dais.readByte();
     		
     		for (int i = 0; i != playerCount; i++){
@@ -463,6 +500,8 @@ public class CSLO extends BasicGame
        			CState.players[i].setRotation(dais.readFloat());
     			CState.players[i].setFrame(dais.readByte());
     			CState.players[i].setTeam(dais.readBoolean());
+    			CState.players[i].setMoney(dais.readShort());
+    			
     			CState.players[i].setCol(dais.readShort(),dais.readShort(),dais.readShort() ,dais.readShort(),dais.readShort(),dais.readShort());
     			CState.players[i].setWeapon(dais.readByte());
     		}
@@ -675,5 +714,5 @@ public class CSLO extends BasicGame
 		}
 
     }
-    	
+
 }

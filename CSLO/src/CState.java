@@ -19,7 +19,10 @@ public class CState {
 	public static byte  hp = 100;
 	public static byte  ammo1 = 0;
 	public static byte  ammo2 = 0;
-	public static short money = 1000;
+	
+	
+	public static boolean buildMode;
+	public static short time;
 	
 	public static void initInventory()
 	{
