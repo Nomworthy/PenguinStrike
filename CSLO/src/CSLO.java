@@ -193,6 +193,7 @@ public class CSLO extends BasicGame
 				
 				
 				inventoryMenu(container.getInput());
+				
 				//send to da server
 				if(gs != GameState.TEAMMENU)
 				{
@@ -231,6 +232,23 @@ public class CSLO extends BasicGame
 
 	private byte requestBuy(GameContainer container) {
 		Input i = container.getInput();
+		
+		if(i.isKeyPressed(Input.KEY_LCONTROL))
+		{
+			if(i.isKeyPressed(Input.KEY_1))
+				return 50;
+			if(i.isKeyPressed(Input.KEY_2))
+				return 51;
+			if(i.isKeyPressed(Input.KEY_3))
+				return 52;
+			if(i.isKeyPressed(Input.KEY_4))
+				return 53;
+			if(i.isKeyPressed(Input.KEY_5))
+				return 54;
+			if(i.isKeyPressed(Input.KEY_6))
+				return 55;
+		}
+		
 		if(i.isKeyPressed(Input.KEY_1))
 			return 0;
 		if(i.isKeyPressed(Input.KEY_2))
@@ -249,40 +267,44 @@ public class CSLO extends BasicGame
 
 	private void inventoryMenu(Input input) {
 		
-		if(input.isKeyPressed(Input.KEY_1))
+		
+		
+		if(input.isKeyPressed(Input.KEY_1) && CState.players[clientID].getInventory()[0] != null)
 		{
 			CState.invPointer = 0;
 		}
 		
-		if(input.isKeyPressed(Input.KEY_2))
+		if(input.isKeyPressed(Input.KEY_2) && CState.players[clientID].getInventory()[1] != null)
 		{
 			CState.invPointer = 1;
 		}
 		
-		if(input.isKeyPressed(Input.KEY_3))
+		if(input.isKeyPressed(Input.KEY_3) && CState.players[clientID].getInventory()[2] != null)
 		{
 			CState.invPointer = 2;
 		}
 		
-		if(input.isKeyPressed(Input.KEY_4))
+		if(input.isKeyPressed(Input.KEY_4) && CState.players[clientID].getInventory()[3] != null)
 		{
 			CState.invPointer = 3;
 		}
 		
-		if(input.isKeyPressed(Input.KEY_5))
+		if(input.isKeyPressed(Input.KEY_5) && CState.players[clientID].getInventory()[4] != null)
 		{
 			CState.invPointer = 4;
 		}
 		
-		if(input.isKeyPressed(Input.KEY_6))
+		if(input.isKeyPressed(Input.KEY_6) && CState.players[clientID].getInventory()[5] != null)
 		{
 			CState.invPointer = 5;
 		}
 		
-		if(input.isKeyPressed(Input.KEY_7))
+		if(input.isKeyPressed(Input.KEY_7) && CState.players[clientID].getInventory()[6] != null)
 		{
 			CState.invPointer = 6;
 		}
+		
+		System.out.println("INV" + CState.invPointer);
 		
 	}
 
@@ -393,8 +415,12 @@ public class CSLO extends BasicGame
 				
 				if(CState.players[clientID] != null)
 				{
+			
 					CWFont.draw(g, "Life:   "+CState.players[clientID].getHP(), 305, 355, 1, new Color (1f,1f,1f,0.5f));
-					CWFont.draw(g, "Ammo:   99/99", 305, 365, 1, new Color (1f,1f,1f,0.5f));
+					
+					if(CState.players[clientID].getInventory()[CState.invPointer] != null)
+						CWFont.draw(g, "Ammo:   "+CState.players[clientID].getInventory()[CState.invPointer].getBulletsLeft()+"/"+CState.players[clientID].getInventory()[CState.invPointer].getMagsLeft(), 305, 365, 1, new Color (1f,1f,1f,0.5f));
+					
 					CWFont.draw(g, "Round X  $" + CState.players[clientID].getMoney(), 305, 375, 1, new Color (1f,1f,1f,0.5f));
 					//Not op'd
 					String state;
@@ -533,15 +559,17 @@ public class CSLO extends BasicGame
 				{
 					byte type = dais.readByte();
 					if(type == -1)
+					{
+						CState.players[i].getInventory()[w] = null;
 						continue;
-					else
+					}else
 					{
 						byte ammo1 = dais.readByte();
 						byte ammo2 = dais.readByte();
 						CState.players[i].getInventory()[type] = new Weapon(Weapon.WeaponType.values()[type],ammo1,ammo2);
 					}
 				}
-				
+				System.out.println("tesT:");
     			CState.players[i].setWeaponDraw(dais.readByte());
     		}
     		

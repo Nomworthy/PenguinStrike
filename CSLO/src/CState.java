@@ -13,7 +13,7 @@ public class CState {
 	public static boolean mouse1;
 	public static boolean mouse2;
 	
-	public static int invPointer = 1;
+	public static int invPointer = 0;
 	
 	public static byte  hp = 100;
 	

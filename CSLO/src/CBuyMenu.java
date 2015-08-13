@@ -55,13 +55,26 @@ public class CBuyMenu {
 		
 		CWFont.draw(g, "DESCRIPTION", 121, 301, 1, Color.black);
 
-		CWFont.draw(g, "KNIFE    $NUL", 70, 67 + (0*30), 2, Color.black);
-		CWFont.draw(g, "MANGUM   $"+Server.PISTOLCOST, 70, 67 + (1*30), 2, Color.black);
-		CWFont.draw(g, "VECDER   $"+Server.SMGCOST, 70, 67 + (2*30), 2, Color.black);
-		CWFont.draw(g, "CORBAIN  $"+Server.SHOTGUNCOST, 70, 67 + (3*30), 2, Color.black);
-		CWFont.draw(g, "CHENEY   $"+Server.GARANDCOST, 70, 67 + (4*30), 2, Color.black);
-		CWFont.draw(g, "MURELLO  $"+Server.ROCKETCOST, 70, 67 + (5*30), 2, Color.black);
-		CWFont.draw(g, "BAND-AID $NUL", 70, 67 + (6*30), 2, Color.black);
+		//TODO fetch weapon prices from server
+		
+		CWFont.draw(g, "1 KNIFE   $0", 70, 65 + (0*30), 2, Color.black);
+		
+		CWFont.draw(g, "2 MANGUM  $"+Server.PISTOLCOST, 70, 65 + (1*30), 2, Color.black);
+		CWFont.draw(g, "6 SHOTS $10", 70, 65 + (1*30) + 13, 1, Color.black);
+		
+		CWFont.draw(g, "3 VECDER  $"+Server.SMGCOST, 70, 65 + (2*30), 2, Color.black);
+		CWFont.draw(g, "1 MAGAZINE )30 SHOTS( $30", 70, 65 + (2*30) + 13, 1, Color.black);
+		
+		CWFont.draw(g, "4 CORBAIN $"+Server.SHOTGUNCOST, 70, 65 + (3*30), 2, Color.black);
+		CWFont.draw(g, "5 SHELLS $20", 70, 65 + (3*30) + 13, 1, Color.black);
+		
+		CWFont.draw(g, "5 CHENEY  $"+Server.GARANDCOST, 70, 65 + (4*30), 2, Color.black);
+		CWFont.draw(g, "10 SHOTS $40", 70, 65 + (4*30) + 13, 1, Color.black);
+		
+		CWFont.draw(g, "6 MURELLO $"+Server.ROCKETCOST, 70, 65 + (5*30), 2, Color.black);
+		CWFont.draw(g, "1 ROCKET $70", 70, 65 + (5*30) + 13, 1, Color.black);
+		
+		CWFont.draw(g, "7 NULL", 70, 65 + (6*30), 2, Color.black);
 		
 	
 		//description

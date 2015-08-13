@@ -491,12 +491,14 @@ public class Server extends BasicGame{
 			
 			final byte[] b = baos.toByteArray();
 			DatagramPacket p= new DatagramPacket(b,b.length,packet.getAddress(),CSLO.statePort);
+			
 			sock.send(p);
 		} else if(clientID == CSLO.BUYREQUEST){
 			byte trueid = dais.readByte();
 			byte weapon = dais.readByte();
 			//give a weapon for weaponPointer.
 			short cost = 0;
+			
 			switch(weapon)
 			{
 				case 0:cost = 0;break;
@@ -508,7 +510,8 @@ public class Server extends BasicGame{
 				case 6:cost = ROCKETCOST;break;
 			}
 			
-			if(SState.players[trueid].withdrawMoney(cost))
+			//If can afford and don't own weapons
+			if(SState.players[trueid].getWeapons()[weapon] == null && SState.players[trueid].withdrawMoney(cost) )
 				SState.players[trueid].getWeapons()[weapon] = new Weapon(Weapon.WeaponType.values()[weapon],(byte)0,(byte)0);
 			
 		} else
