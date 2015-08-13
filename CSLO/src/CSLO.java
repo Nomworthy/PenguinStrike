@@ -182,7 +182,7 @@ public class CSLO extends BasicGame
 				if(buyMenu)
 				{
 					byte buy = requestBuy(container);
-					if(buy >= 0 && container.getInput().isMousePressed(0))
+					if(buy >= 0)
 					{
 						//Dirty, awful way to do this UNTIL we have a proper menu.
 						sendBuyRequest(buy);
@@ -230,48 +230,58 @@ public class CSLO extends BasicGame
 
 
 	private byte requestBuy(GameContainer container) {
-		inventoryMenu(container.getInput());
-		if(CState.mouse1)
-			return (byte) CState.invPointer;
-		else
-			return -1;
+		Input i = container.getInput();
+		if(i.isKeyPressed(Input.KEY_1))
+			return 0;
+		if(i.isKeyPressed(Input.KEY_2))
+			return 1;
+		if(i.isKeyPressed(Input.KEY_3))
+			return 2;
+		if(i.isKeyPressed(Input.KEY_4))
+			return 3;
+		if(i.isKeyPressed(Input.KEY_5))
+			return 4;
+		if(i.isKeyPressed(Input.KEY_6))
+			return 5;
+		
+		return -1;
 	}
 
 	private void inventoryMenu(Input input) {
 		
 		if(input.isKeyPressed(Input.KEY_1))
 		{
-			CState.invPointer = 1;
+			CState.invPointer = 0;
 		}
 		
 		if(input.isKeyPressed(Input.KEY_2))
 		{
-			CState.invPointer = 2;
+			CState.invPointer = 1;
 		}
 		
 		if(input.isKeyPressed(Input.KEY_3))
 		{
-			CState.invPointer = 3;
+			CState.invPointer = 2;
 		}
 		
 		if(input.isKeyPressed(Input.KEY_4))
 		{
-			CState.invPointer = 4;
+			CState.invPointer = 3;
 		}
 		
 		if(input.isKeyPressed(Input.KEY_5))
 		{
-			CState.invPointer = 5;
+			CState.invPointer = 4;
 		}
 		
 		if(input.isKeyPressed(Input.KEY_6))
 		{
-			CState.invPointer = 6;
+			CState.invPointer = 5;
 		}
 		
 		if(input.isKeyPressed(Input.KEY_7))
 		{
-			CState.invPointer = 7;
+			CState.invPointer = 6;
 		}
 		
 	}
@@ -410,12 +420,12 @@ public class CSLO extends BasicGame
 				g.setColor(new Color(0f,0f,0f,0.3f));
 				
 				int i = 0;
-				//for(Weapon c : CState.inventory)
-				//{
-				//	if(c != null)
-				//		c.draw(118+(26*i), 374);
-				//	i++;
-				//}
+				for(Weapon c : CState.players[clientID].getInventory())
+				{
+					if(c != null)
+						c.draw(118+(26*i), 374);
+					i++;
+				}
 				
 				
 				if(buyMenu)

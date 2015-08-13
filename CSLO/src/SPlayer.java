@@ -277,6 +277,7 @@ public class SPlayer extends Circle {
 		{
 			die();
 			weapons = new Weapon[]{new Weapon(Weapon.WeaponType.KNIFE,(byte)0,(byte)0),null,null,null,null,null,null};
+			weaponPtr = 0;
 		}
 	}
 

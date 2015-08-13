@@ -462,7 +462,6 @@ public class Server extends BasicGame{
 		int clientID = dais.readByte();
 		
 		if(clientID == CSLO.HANDSHAKE){
-			System.out.println("TEST");
 			final ByteArrayOutputStream baos=new ByteArrayOutputStream();
 			final DataOutputStream daos=new DataOutputStream(baos);
 				
@@ -494,20 +493,19 @@ public class Server extends BasicGame{
 			DatagramPacket p= new DatagramPacket(b,b.length,packet.getAddress(),CSLO.statePort);
 			sock.send(p);
 		} else if(clientID == CSLO.BUYREQUEST){
-			System.out.println("buy");
 			byte trueid = dais.readByte();
 			byte weapon = dais.readByte();
 			//give a weapon for weaponPointer.
 			short cost = 0;
 			switch(weapon)
 			{
-				case 0:cost = 0;
-				case 1:cost = PISTOLCOST;
-				case 2:cost = SMGCOST;
-				case 3:cost = SHOTGUNCOST;
-				case 4:cost = SMGCOST;
-				case 5:cost = GARANDCOST;
-				case 6:cost = ROCKETCOST;
+				case 0:cost = 0;break;
+				case 1:cost = PISTOLCOST;break;
+				case 2:cost = SMGCOST;break;
+				case 3:cost = SHOTGUNCOST;break;
+				case 4:cost = SMGCOST;break;
+				case 5:cost = GARANDCOST;break;
+				case 6:cost = ROCKETCOST;break;
 			}
 			
 			if(SState.players[trueid].withdrawMoney(cost))
