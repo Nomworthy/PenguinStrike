@@ -35,6 +35,8 @@ public class CPlayer{
 	
 	private short money;
 	
+	private Weapon[] inventory;
+	
 	public CPlayer(){
 		try {
 			spriteJacket = new Animation(new SpriteSheet("data/chars/thJacket.png",31,31),100);
@@ -56,6 +58,8 @@ public class CPlayer{
 			
 			jacketCol = new Color(0f,0f,0f);
 			underShirtCol = new Color(0f,0f,0f);
+			
+			inventory = new Weapon[]{null,null,null,null,null,null,null};
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -169,20 +173,11 @@ public class CPlayer{
 		money = m;
 	}
 
-	public void setInvWeaponType(int w, byte type) {
-		// TODO Auto-generated method stub
-		
-	}
-	public void setInvWeaponMag(int w, byte type) {
-		// TODO Auto-generated method stub
-		
-	}
-	public void setInvWeaponBullets(int w, byte type) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public void setWeaponDraw(byte readByte) {
 		spriteWeapon = weapons[readByte];
+	}
+
+	public Weapon[] getInventory() {
+		return inventory;
 	}
 }

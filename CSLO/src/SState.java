@@ -2,6 +2,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Shape;
 
 public class SState {
 	public static WorldMap map;
@@ -37,5 +38,21 @@ public class SState {
 	
 	public static short nextBulletId(){
 		return bulletCounter++;
+	}
+	
+
+	public static boolean noPlayerHere(Shape shape)
+	{
+		for(SPlayer p : SState.players)
+		{
+			if(p != null)
+			{
+				if(p.intersects(shape))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }

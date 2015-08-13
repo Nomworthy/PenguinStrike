@@ -14,6 +14,7 @@ import java.util.LinkedList;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.AppletGameContainer.Container;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -149,7 +150,6 @@ public class CSLO extends BasicGame
     	preLobby = new CMainMenu(container);
     	explosions = new LinkedList<Explosion>();
     	Weapon.load();
-    	CState.initInventory();
     }
  
 
@@ -181,9 +181,10 @@ public class CSLO extends BasicGame
 				toggleBuyMenu(container.getInput());
 				if(buyMenu)
 				{
-					byte buy = requestBuy();
-					if(buy >= 0)
+					byte buy = requestBuy(container);
+					if(buy >= 0 && container.getInput().isMousePressed(0))
 					{
+						//Dirty, awful way to do this UNTIL we have a proper menu.
 						sendBuyRequest(buy);
 						readState();
 						break;
@@ -228,9 +229,10 @@ public class CSLO extends BasicGame
  
 
 
-	private byte requestBuy() {
+	private byte requestBuy(GameContainer container) {
+		inventoryMenu(container.getInput());
 		if(CState.mouse1)
-			return (byte)(Math.random() * 6);
+			return (byte) CState.invPointer;
 		else
 			return -1;
 	}
@@ -408,12 +410,12 @@ public class CSLO extends BasicGame
 				g.setColor(new Color(0f,0f,0f,0.3f));
 				
 				int i = 0;
-				for(Weapon c : CState.inventory)
-				{
-					if(c != null)
-						c.draw(118+(26*i), 374);
-					i++;
-				}
+				//for(Weapon c : CState.inventory)
+				//{
+				//	if(c != null)
+				//		c.draw(118+(26*i), 374);
+				//	i++;
+				//}
 				
 				
 				if(buyMenu)
@@ -524,12 +526,9 @@ public class CSLO extends BasicGame
 						continue;
 					else
 					{
-						byte mag = dais.readByte();
-						byte bullet = dais.readByte();
-						CState.players[i].setInvWeaponType(w,type);
-						CState.players[i].setInvWeaponMag(w,mag);
-						CState.players[i].setInvWeaponBullets(w,bullet);
-	
+						byte ammo1 = dais.readByte();
+						byte ammo2 = dais.readByte();
+						CState.players[i].getInventory()[type] = new Weapon(Weapon.WeaponType.values()[type],ammo1,ammo2);
 					}
 				}
 				

@@ -20,6 +20,7 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
 
 
 public class Server extends BasicGame{
@@ -173,7 +174,8 @@ public class Server extends BasicGame{
 					int tileY = ((((p.getMouseY() + mapOffsetY) / 8)));
 				
 					
-					if(SState.map.getTileIntegrity(tileX, tileY) < ((WorldMap.STONEPHASE-2)*WorldMap.STONEPHASESTR) && p.withdrawMoney(WALLCOST))
+					//contains point? Client Side Aesthetic
+					if(SState.map.getTileIntegrity(tileX, tileY) < ((WorldMap.STONEPHASE-2)*WorldMap.STONEPHASESTR) && p.withdrawMoney(WALLCOST) && SState.noPlayerHere(new Rectangle(-1 + 8*tileX, -1 +8*tileY,10,10)))
 					{
 						SState.map.constructTile(tileX, tileY);
 					}
@@ -197,9 +199,11 @@ public class Server extends BasicGame{
 				p.setSmgCoolDown(SMGCOOLDOWNMAX);
 				
 				
-			} else
+			} else if(p.getEquippedWeapon().getType() == Weapon.WeaponType.KNIFE)
+			{
+				//lol do nothing
 			
-			if(p.getMouse1() && !p.isHeldMouse() && p.getEquippedWeapon().getType()  != Weapon.WeaponType.SMG){
+			} else if(p.getMouse1() && !p.isHeldMouse() && p.getEquippedWeapon().getType()  != Weapon.WeaponType.SMG){
 		
 				if(p.getEquippedWeapon().getType()  == Weapon.WeaponType.RLAUNCHER)
 				{	
@@ -490,9 +494,25 @@ public class Server extends BasicGame{
 			DatagramPacket p= new DatagramPacket(b,b.length,packet.getAddress(),CSLO.statePort);
 			sock.send(p);
 		} else if(clientID == CSLO.BUYREQUEST){
+			System.out.println("buy");
 			byte trueid = dais.readByte();
 			byte weapon = dais.readByte();
-			SState.players[trueid].getWeapons()[0] = new Weapon(Weapon.WeaponType.values()[weapon],(byte)0,(byte)0);
+			//give a weapon for weaponPointer.
+			short cost = 0;
+			switch(weapon)
+			{
+				case 0:cost = 0;
+				case 1:cost = PISTOLCOST;
+				case 2:cost = SMGCOST;
+				case 3:cost = SHOTGUNCOST;
+				case 4:cost = SMGCOST;
+				case 5:cost = GARANDCOST;
+				case 6:cost = ROCKETCOST;
+			}
+			
+			if(SState.players[trueid].withdrawMoney(cost))
+				SState.players[trueid].getWeapons()[weapon] = new Weapon(Weapon.WeaponType.values()[weapon],(byte)0,(byte)0);
+			
 		} else
 			
 			
