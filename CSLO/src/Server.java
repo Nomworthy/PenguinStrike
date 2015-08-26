@@ -81,12 +81,6 @@ public class Server extends BasicGame{
 	private static float SMGSPREAD = (float) Math.toRadians(SMGACC);
 	private static float PISTOLSPREAD = (float) Math.toRadians(PISTOLACC);
 	
-	public static final int homeSpawnX = 500;
-	public static final int homeSpawnY = 500;
-	
-	public static final int awaySpawnX = 312*8;
-	public static final int awaySpawnY = 178*8;
-	
 	
 	public Server(String title) {
 		super(title);
@@ -565,7 +559,9 @@ public class Server extends BasicGame{
 			e.printStackTrace();
 		}
 		lastTimeStamp = System.nanoTime();
-		SState.map = new WorldMap("data/maps/Map1.tmx");	
+		//load map based on what is chosen by the server.
+		SState.map = new WorldMap("data/maps/Map2.tmx");
+		//then, when a client joins, tell them the map.
 	}
 
 	@Override

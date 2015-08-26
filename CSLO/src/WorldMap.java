@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.newdawn.slick.SlickException;
@@ -17,6 +18,14 @@ public class WorldMap extends TiledMap {
 	private LinkedList<Tile> dirtyTiles;
 	private int wallLayerIndex;
 	
+	private boolean[][] spawnZoneTiles;
+	private ArrayList<Tile> spawnZoneTeam1;
+	private ArrayList<Tile> spawnZoneTeam2;
+	
+	private boolean[][] buildZoneTiles;
+	private boolean[][] buildZoneTeam1;
+	private boolean[][] buildZoneTeam2;
+	
 	public class Tile{
 		public int x;
 		public int y;
@@ -29,6 +38,15 @@ public class WorldMap extends TiledMap {
 	public WorldMap(String name) throws SlickException{
 		super(name);
 		tileIntegrity= new double[this.getWidth()][this.getWidth()];
+		
+		spawnZoneTiles= new boolean[this.getWidth()][this.getWidth()];
+		spawnZoneTeam1= new ArrayList<Tile>();
+		spawnZoneTeam2= new ArrayList<Tile>();
+		
+		buildZoneTiles= new boolean[this.getWidth()][this.getWidth()];
+		buildZoneTeam1= new boolean[this.getWidth()][this.getWidth()];
+		buildZoneTeam2= new boolean[this.getWidth()][this.getWidth()];
+		
 		dirtyTiles = new LinkedList<Tile>();
 		//TODO: client does not parse map!
 		parseMap();
@@ -59,6 +77,51 @@ public class WorldMap extends TiledMap {
 				if(tileID == UNBREAKABLE)
 				{
 					tileIntegrity[x][y] = Integer.MAX_VALUE;
+				}
+			}
+		}
+		
+		//now to get spawn areas where you can't build
+		int baseIndex = this.getLayerIndex("base");
+		for(int x = 0; x != this.getWidth(); x++){
+			for(int y = 0; y != this.getHeight(); y++){
+				String spawnzone = getTileProperty(getTileId(x,y,baseIndex), "Spawn", "0");
+				
+				if(spawnzone != "0")
+				{
+					spawnZoneTiles[x][y] = true;
+					
+					if(spawnzone == "1")
+					{
+						spawnZoneTeam1.add(new Tile(x,y));	
+					}
+					
+					if(spawnzone == "2")
+					{
+						spawnZoneTeam2.add(new Tile(x,y));
+					}
+				}
+			}
+		}
+		
+		int build = this.getLayerIndex("build");
+		for(int x = 0; x != this.getWidth(); x++){
+			for(int y = 0; y != this.getHeight(); y++){
+				String buildzone = getTileProperty(getTileId(x,y,build), "Build", "0");
+				
+				if(buildzone != "0")
+				{
+					buildZoneTiles[x][y] = true;
+					
+					if(buildzone == "1")
+					{
+						buildZoneTeam1[x][y] = true;
+					}
+					
+					if(buildzone == "2")
+					{
+						buildZoneTeam2[x][y] = true;
+					}
 				}
 			}
 		}

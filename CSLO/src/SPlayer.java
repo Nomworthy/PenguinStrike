@@ -208,14 +208,15 @@ public class SPlayer extends Circle {
 		if(team)
 		{
 			
-			super.setX(Server.homeSpawnX);
-			super.setY(Server.homeSpawnY);
+			//TODO
+			super.setX(-1);
+			super.setY(-1);
 			
 		} else
 		{
 			
-			super.setX(Server.awaySpawnX);
-			super.setY(Server.awaySpawnY);
+			super.setX(-1);
+			super.setY(-1);
 			
 		}
 	}
@@ -238,12 +239,12 @@ public class SPlayer extends Circle {
 		HP = 100;
 		if(team)
 		{
-			super.setX(Server.homeSpawnX);
-			super.setY(Server.homeSpawnY);
+			super.setX(-1);
+			super.setY(-1);
 		} else 
 		{
-			super.setX(Server.awaySpawnX);
-			super.setY(Server.awaySpawnY);
+			super.setX(-1);
+			super.setY(-1);
 		}	
 		
 	}

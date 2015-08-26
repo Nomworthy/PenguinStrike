@@ -145,7 +145,7 @@ public class CSLO extends BasicGame
     	cursor.setFilter(Image.FILTER_NEAREST);
     	bullet.setFilter(Image.FILTER_NEAREST);
     	container.setMouseGrabbed(true);
-    	CState.worldMap = new WorldMap("data/maps/Map1.tmx");
+    	CState.worldMap = new WorldMap("data/maps/Map2.tmx");
     	CWFont.initFontSheet();
     	preLobby = new CMainMenu(container);
     	explosions = new LinkedList<Explosion>();
