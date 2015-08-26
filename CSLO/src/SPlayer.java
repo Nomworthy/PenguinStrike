@@ -205,20 +205,10 @@ public class SPlayer extends Circle {
 	public void setTeam(boolean readBoolean) {
 		spectator = false;
 		team = readBoolean;
-		if(team)
-		{
-			
-			//TODO
-			super.setX(-1);
-			super.setY(-1);
-			
-		} else
-		{
-			
-			super.setX(-1);
-			super.setY(-1);
-			
-		}
+		WorldMap.Tile spawn = SState.map.getSpawnLocation(team);
+		super.setX(spawn.x);
+		super.setY(spawn.y);
+		
 	}
 	
 	public boolean isSpectator()
@@ -237,15 +227,9 @@ public class SPlayer extends Circle {
 
 	void die() {
 		HP = 100;
-		if(team)
-		{
-			super.setX(-1);
-			super.setY(-1);
-		} else 
-		{
-			super.setX(-1);
-			super.setY(-1);
-		}	
+		WorldMap.Tile spawn = SState.map.getSpawnLocation(team);
+		super.setX(spawn.x);
+		super.setY(spawn.y);
 		
 	}
 

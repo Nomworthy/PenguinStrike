@@ -304,8 +304,6 @@ public class CSLO extends BasicGame
 			CState.invPointer = 6;
 		}
 		
-		System.out.println("INV" + CState.invPointer);
-		
 	}
 
 	public void render(GameContainer container, Graphics g) throws SlickException
@@ -569,7 +567,6 @@ public class CSLO extends BasicGame
 						CState.players[i].getInventory()[type] = new Weapon(Weapon.WeaponType.values()[type],ammo1,ammo2);
 					}
 				}
-				System.out.println("tesT:");
     			CState.players[i].setWeaponDraw(dais.readByte());
     		}
     		

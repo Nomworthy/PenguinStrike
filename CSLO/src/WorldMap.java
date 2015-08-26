@@ -16,6 +16,8 @@ public class WorldMap extends TiledMap {
 	private final int UNBREAKABLE = 0;
 	private double[][] tileIntegrity;
 	private LinkedList<Tile> dirtyTiles;
+	
+	private int baseLayerIndex;
 	private int wallLayerIndex;
 	
 	private boolean[][] spawnZoneTiles;
@@ -56,7 +58,8 @@ public class WorldMap extends TiledMap {
 		//ok so TopX
 		int xTopOffset = topX % TILESIZE;
 		int yTopOffset = topY % TILESIZE;
-		render(-xTopOffset,-yTopOffset,topX / TILESIZE, topY / TILESIZE, 1 + CSLO.GAMEDIM / TILESIZE, 1 + CSLO.GAMEDIM / TILESIZE);
+		render(-xTopOffset,-yTopOffset,topX / TILESIZE, topY / TILESIZE, 1 + CSLO.GAMEDIM / TILESIZE, 1 + CSLO.GAMEDIM / TILESIZE, baseLayerIndex ,false);
+		render(-xTopOffset,-yTopOffset,topX / TILESIZE, topY / TILESIZE, 1 + CSLO.GAMEDIM / TILESIZE, 1 + CSLO.GAMEDIM / TILESIZE, wallLayerIndex ,false);
 	}
 	
 	public void parseMap(){
@@ -82,21 +85,21 @@ public class WorldMap extends TiledMap {
 		}
 		
 		//now to get spawn areas where you can't build
-		int baseIndex = this.getLayerIndex("base");
+		baseLayerIndex = this.getLayerIndex("base");
 		for(int x = 0; x != this.getWidth(); x++){
 			for(int y = 0; y != this.getHeight(); y++){
-				String spawnzone = getTileProperty(getTileId(x,y,baseIndex), "Spawn", "0");
+				String spawnzone = getTileProperty(getTileId(x,y,baseLayerIndex), "Spawn", "0");
 				
-				if(spawnzone != "0")
+				if(!spawnzone.equals("0"))
 				{
 					spawnZoneTiles[x][y] = true;
 					
-					if(spawnzone == "1")
+					if(spawnzone.equals("1"))
 					{
 						spawnZoneTeam1.add(new Tile(x,y));	
 					}
 					
-					if(spawnzone == "2")
+					if(spawnzone.equals("2"))
 					{
 						spawnZoneTeam2.add(new Tile(x,y));
 					}
@@ -231,6 +234,31 @@ public class WorldMap extends TiledMap {
 	public double getTileIntegrity(int x, int y)
 	{
 		return tileIntegrity[x][y];
+	}
+	
+	public Tile getSpawnLocation(boolean team1)
+	{
+		ArrayList<Tile> spawnZone;
+		if(team1)
+		{
+			spawnZone = spawnZoneTeam1;
+		} 
+		else
+		{
+			spawnZone = spawnZoneTeam2;
+		}
+		
+		//bad placement algorithm
+		Tile placeTile = null; 
+		boolean placement = false;
+		while (!placement)
+		{
+			Tile spawnTile = (Tile)(spawnZone.toArray()[(int)(spawnZone.size() * Math.random())]);
+			placeTile = new Tile(spawnTile.x * 8 - (CPlayer.RADIUS/2) , spawnTile.y * 8 - (CPlayer.RADIUS/2));
+			if(!checkCollide(new Rectangle(placeTile.x,placeTile.y,CPlayer.RADIUS,CPlayer.RADIUS)))
+				placement = true;
+		}
+		return placeTile;
 	}
 
 }

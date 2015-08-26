@@ -81,7 +81,6 @@ public class Server extends BasicGame{
 	private static float SMGSPREAD = (float) Math.toRadians(SMGACC);
 	private static float PISTOLSPREAD = (float) Math.toRadians(PISTOLACC);
 	
-	
 	public Server(String title) {
 		super(title);
 	}
