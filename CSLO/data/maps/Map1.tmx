@@ -2,6 +2,16 @@
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="375" height="250" tilewidth="8" tileheight="8" nextobjectid="1">
  <tileset firstgid="1" name="Tileset" tilewidth="8" tileheight="8">
   <image source="Tileset.png" width="640" height="400"/>
+  <tile id="2">
+   <properties>
+    <property name="Build" value="1"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="Build" value="2"/>
+   </properties>
+  </tile>
   <tile id="80">
    <properties>
     <property name="Spawn" value="1"/>
