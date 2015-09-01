@@ -103,6 +103,7 @@ public class Server extends BasicGame{
 		
 	
 	private static void doGameLogic(long l) {
+		System.out.println(SState.playerCount);
 		float ms = (float) (l*.000001);
 		
 		SState.time = SState.time - (.001f * ms);
@@ -468,6 +469,7 @@ public class Server extends BasicGame{
 			clientNames[SState.playerCount] = packet.getAddress();
 			SState.players[SState.playerCount] = new SPlayer(dais.readBoolean(), dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort());
 			SState.playerCount++;
+			
 			
 		} else if(clientID == CSLO.TEAMREQUEST){
 			

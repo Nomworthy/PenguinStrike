@@ -187,7 +187,6 @@ public class CPlayer{
 	}
 
 	public void setWeaponDraw(byte readByte) {
-		System.out.println(readByte);
 		spriteWeapon = weapons[readByte];
 	}
 
