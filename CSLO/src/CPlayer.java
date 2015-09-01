@@ -22,6 +22,8 @@ public class CPlayer{
 	private Animation spriteUnderShirt;
 	private Animation spriteHead;
 	
+	private Image death;
+	
 	private Animation spriteWeapon;
 	
 	private Animation[] weapons;
@@ -61,6 +63,9 @@ public class CPlayer{
 			
 			inventory = new Weapon[]{null,null,null,null,null,null,null};
 			
+
+			death = new Image("data/chars/dead.png");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -95,6 +100,9 @@ public class CPlayer{
 
 		try
 		{
+			
+			if(HP > 0)
+			{
 
 			//Temp: drawArc is drawn with repect to current resolution
 			g.setLineWidth(3f);
@@ -122,6 +130,11 @@ public class CPlayer{
 			g.drawImage(u,x +- xOffset +- wx, y +- yOffset +- wy,underShirtCol);
 			g.drawImage(he,x +- xOffset +- wx, y +- yOffset +- wy);
 			g.drawImage(w,x +- xOffset +- wx, y +- yOffset +- wy);
+			
+			} else {
+				g.drawImage(death,x +- xOffset +- wx, y +- yOffset +- wy);
+			}
+			
 		} catch (Exception e)
 		{
 			e.printStackTrace();

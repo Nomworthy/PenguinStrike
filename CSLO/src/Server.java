@@ -118,8 +118,10 @@ public class Server extends BasicGame{
 			for(SPlayer p : SState.players)
 			{
 				
-				if(p!= null)
-					p.die();
+				if(p != null)
+				{
+					p.respawn();
+				}
 			}
 			
 		}
@@ -127,7 +129,7 @@ public class Server extends BasicGame{
 		
 		for(SPlayer p : SState.players)
 		{
-			if(p != null)
+			if(p != null && p.getHP() > 0)
 			{
 				
 				if(p.getShotgunCoolDown() > 0.0)

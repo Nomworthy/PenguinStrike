@@ -206,8 +206,8 @@ public class SPlayer extends Circle {
 		spectator = false;
 		team = readBoolean;
 		WorldMap.Tile spawn = SState.map.getSpawnLocation(team);
-		super.setX(spawn.x);
-		super.setY(spawn.y);
+		super.setX(spawn.x + 1);
+		super.setY(spawn.y + 1);
 		
 	}
 	
@@ -226,10 +226,10 @@ public class SPlayer extends Circle {
 	}
 
 	void die() {
-		HP = 100;
-		WorldMap.Tile spawn = SState.map.getSpawnLocation(team);
-		super.setX(spawn.x);
-		super.setY(spawn.y);
+
+		//simply set HP to 0
+		//really unnesseary. 
+		HP = 0;
 		
 	}
 
@@ -300,5 +300,12 @@ public class SPlayer extends Circle {
 
 	public Weapon[] getWeapons() {
 		return weapons;
+	}
+
+	public void respawn() {
+		HP = 100;
+		WorldMap.Tile spawn = SState.map.getSpawnLocation(team);
+		super.setX(spawn.x + 1);
+		super.setY(spawn.y+ 1);
 	}
 }

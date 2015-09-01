@@ -246,8 +246,8 @@ public class WorldMap extends TiledMap {
 		while (!placement)
 		{
 			Tile spawnTile = (Tile)(spawnZone.toArray()[(int)(spawnZone.size() * Math.random())]);
-			placeTile = new Tile(spawnTile.x * 8 - (CPlayer.RADIUS/2) , spawnTile.y * 8 - (CPlayer.RADIUS/2));
-			if(!checkCollide(new Rectangle(placeTile.x,placeTile.y,CPlayer.RADIUS,CPlayer.RADIUS)))
+			placeTile = new Tile(spawnTile.x * 8 , spawnTile.y * 8 );
+			if(!checkCollide(new Rectangle(placeTile.x,placeTile.y,2*CPlayer.RADIUS,2*CPlayer.RADIUS)))
 				placement = true;
 		}
 		return placeTile;

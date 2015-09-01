@@ -13,8 +13,8 @@ public class SState {
 	public static LinkedList<SProjectile> oldProj = new LinkedList<SProjectile>();
 	public static short bulletCounter = 0;
 	
-	public static final float buildTimeMax = 60;
-	public static final float fightTimeMax = 10;
+	public static final float buildTimeMax = 30;
+	public static final float fightTimeMax = 30;
 	
 	public static boolean buildMode = true;
 	public static float time = 10;

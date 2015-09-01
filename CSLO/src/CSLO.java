@@ -139,6 +139,7 @@ public class CSLO extends BasicGame
     	cursor = new Image("data/gui/mouse.png");
     	bullet = new Image("data/weapon/bullet.png");
     	explosionImage = new Image("data/weapon/explosion.png");
+    
     	
 		rocket = new Animation(new SpriteSheet("data/weapon/rocket.png",20,8),70);
 		rocket.setAutoUpdate(true);
@@ -513,6 +514,7 @@ public class CSLO extends BasicGame
     
     public static void updateInputs(Input in)
     {
+    	
     	CState.scaledMouseX = ((int)((double)in.getMouseX() * ((double)GAMEDIM/(double)RESX)));
     	CState.scaledMouseY = ((int)((double)in.getMouseY() * ((double)GAMEDIM/(double)RESY)));
     	CState.moveW = in.isKeyDown(Input.KEY_W);
@@ -603,7 +605,7 @@ public class CSLO extends BasicGame
 			
 			
 		} catch (Exception e){
-	//System.out.println("Client Error: " + e.getMessage());
+			//System.out.println("Client Error: " + e.getMessage());
 		}
     }
     
