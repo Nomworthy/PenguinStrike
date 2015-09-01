@@ -14,7 +14,7 @@ public class SState {
 	public static short bulletCounter = 0;
 	
 	public static final float buildTimeMax = 60;
-	public static final float fightTimeMax = 60;
+	public static final float fightTimeMax = 10;
 	
 	public static boolean buildMode = true;
 	public static float time = 10;

@@ -20,11 +20,9 @@ public class WorldMap extends TiledMap {
 	private int baseLayerIndex;
 	private int wallLayerIndex;
 	
-	private boolean[][] spawnZoneTiles;
 	private ArrayList<Tile> spawnZoneTeam1;
 	private ArrayList<Tile> spawnZoneTeam2;
 	
-	private boolean[][] buildZoneTiles;
 	private boolean[][] buildZoneTeam1;
 	private boolean[][] buildZoneTeam2;
 	
@@ -41,11 +39,9 @@ public class WorldMap extends TiledMap {
 		super(name);
 		tileIntegrity= new double[this.getWidth()][this.getWidth()];
 		
-		spawnZoneTiles= new boolean[this.getWidth()][this.getWidth()];
 		spawnZoneTeam1= new ArrayList<Tile>();
 		spawnZoneTeam2= new ArrayList<Tile>();
-		
-		buildZoneTiles= new boolean[this.getWidth()][this.getWidth()];
+	
 		buildZoneTeam1= new boolean[this.getWidth()][this.getWidth()];
 		buildZoneTeam2= new boolean[this.getWidth()][this.getWidth()];
 		
@@ -92,7 +88,6 @@ public class WorldMap extends TiledMap {
 				
 				if(!spawnzone.equals("0"))
 				{
-					spawnZoneTiles[x][y] = true;
 					
 					if(spawnzone.equals("1"))
 					{
@@ -114,14 +109,13 @@ public class WorldMap extends TiledMap {
 				
 				if(buildzone != "0")
 				{
-					buildZoneTiles[x][y] = true;
 					
-					if(buildzone == "1")
+					if(buildzone.equals("1"))
 					{
 						buildZoneTeam1[x][y] = true;
 					}
 					
-					if(buildzone == "2")
+					if(buildzone.equals("2"))
 					{
 						buildZoneTeam2[x][y] = true;
 					}
@@ -215,20 +209,18 @@ public class WorldMap extends TiledMap {
 		}	
 	}
 	
-	public boolean constructTile(int xTile,int yTile)
+	public void constructTile(int xTile,int yTile)
 	{
-		if(tileIntegrity[xTile][yTile] == Integer.MAX_VALUE)
-		{
-			return false;
-		} else {
-			//can build
-			tileIntegrity[xTile][yTile] = ((STONEPHASE-1) * STONEPHASESTR) - 1.0;
-			Tile t = new Tile(xTile,yTile);
-			t.id = 4002;
-			setTileId(t.x,t.y,wallLayerIndex,t.id); 
-			dirtyTiles.add(t);
-			return true;
-		}
+		tileIntegrity[xTile][yTile] = ((STONEPHASE-1) * STONEPHASESTR) - 1.0;
+		Tile t = new Tile(xTile,yTile);
+		t.id = 4002;
+		setTileId(t.x,t.y,wallLayerIndex,t.id); 
+		dirtyTiles.add(t);
+	}
+	
+	public boolean buildPermsission(int xTile, int yTile, boolean team)
+	{
+		return ((team ? buildZoneTeam1[xTile][yTile] : buildZoneTeam2[xTile][yTile]));
 	}
 	
 	public double getTileIntegrity(int x, int y)

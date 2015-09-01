@@ -168,7 +168,7 @@ public class Server extends BasicGame{
 				
 					
 					//contains point? Client Side Aesthetic
-					if(SState.map.getTileIntegrity(tileX, tileY) < ((WorldMap.STONEPHASE-2)*WorldMap.STONEPHASESTR) && p.withdrawMoney(WALLCOST) && SState.noPlayerHere(new Rectangle(-1 + 8*tileX, -1 +8*tileY,10,10)))
+					if(SState.map.getTileIntegrity(tileX, tileY) < ((WorldMap.STONEPHASE-2)*WorldMap.STONEPHASESTR) && SState.noPlayerHere(new Rectangle(-1 + 8*tileX, -1 +8*tileY,10,10))   && SState.map.buildPermsission(tileX,tileY,p.getTeam())  && p.withdrawMoney(WALLCOST))
 					{
 						SState.map.constructTile(tileX, tileY);
 					}
