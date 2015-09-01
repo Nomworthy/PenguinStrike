@@ -467,6 +467,7 @@ public class Server extends BasicGame{
 			DatagramPacket p= new DatagramPacket(b,b.length,packet.getAddress(),CSLO.statePort);
 			sock.send(p);
 			clientNames[SState.playerCount] = packet.getAddress();
+			//Two players drawn?
 			SState.players[SState.playerCount] = new SPlayer(dais.readBoolean(), dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort(),dais.readShort());
 			SState.playerCount++;
 			
@@ -490,6 +491,26 @@ public class Server extends BasicGame{
 			DatagramPacket p= new DatagramPacket(b,b.length,packet.getAddress(),CSLO.statePort);
 			
 			sock.send(p);
+		}  else if(clientID == CSLO.MAPREQUEST){
+			/** send map info
+			//send two packets:
+			final ByteArrayOutputStream baos=new ByteArrayOutputStream();
+			final DataOutputStream daos=new DataOutputStream(baos);
+				
+			daos.writeByte(CSLO.TEAMREQUEST);
+			daos.close();
+			
+			byte playerID = dais.readByte();
+			
+			//Transmit COLOR1, COLOR2, TEAM. 
+			SState.players[playerID].setTeam(dais.readBoolean());
+			
+			
+			final byte[] b = baos.toByteArray();
+			DatagramPacket p= new DatagramPacket(b,b.length,packet.getAddress(),CSLO.statePort);
+			
+			sock.send(p);
+			*/
 		} else if(clientID == CSLO.BUYREQUEST){
 			byte trueid = dais.readByte();
 			byte weapon = dais.readByte();

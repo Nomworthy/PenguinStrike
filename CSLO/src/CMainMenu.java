@@ -1,3 +1,4 @@
+//Draw a basic main menu
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.LinkedList;
@@ -12,36 +13,51 @@ import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.gui.GUIContext;
 import org.newdawn.slick.gui.TextField;
 
-
 public class CMainMenu {
-
+	
+	private static final int MAXNAMELEN = 8;
+	private static final int MAXIPLEN = 15;
+	private static final int CURSORBLINKTIME = 500;
+	
 	private enum State{
-	PRELOBBY,
-	//Defining name
-	NAMESET,
-	//Defining color
-	COLORSET1,
-	COLORSET2,
-	//Defining IP
-	IPSET,
-	//searching for a lobby to connect to.
-	LOBBYSEARCH,
+		//Nothing has been selected on the menu.
+		PRELOBBY,
+		//Defining player name, which (TODO) does nothing.
+		NAMESET,
+		//Defining primary color
+		COLORSET1,
+		//Defining secondary color
+		COLORSET2,
+		//Defining IP
+		IPSET,
+		//Searching for a lobby to connect to.
+		LOBBYSEARCH,
 	}
 	
-	private boolean done;
+	//Menu State
 	private State mState = State.PRELOBBY;
-	private static final int MAXNAMELEN = 8;
-	private static final int MAXIPLEN = 15;	
+
+	//when true, ready to join server.
+	private boolean finished;
+	
 	private TextField nameField;
 	private TextField IPField;
-	private Color primaryColor = new Color(0);
-	private Color secondaryColor = new Color(0);
-	private LinkedList<String> ipList = new LinkedList<String>();
+	
+	private Color primaryColor;
+	private Color secondaryColor;
+	
+	//goes from CURSORBLINKTIMER to -CURSORBLINKTIMER
+	private int cursorBlinkTimer;
+	
 	
 	public CMainMenu(GameContainer container){
+		//Unfortunately, If I want to use a TextField, I am forced to use a font, even if I don't render it.
    		TrueTypeFont f = new TrueTypeFont(new java.awt.Font(java.awt.Font.SERIF,java.awt.Font.BOLD,8),false);
 		nameField = new TextField(container,f,-1,-1,0,0);
+		nameField.setMaxLength(MAXNAMELEN);
 		IPField = new TextField(container,f,-1,-1,0,0);
+		IPField.setMaxLength(MAXIPLEN);
+		//Load last saved stuff
 		loadSettings();
 	}
 	
@@ -51,12 +67,12 @@ public class CMainMenu {
     		CWFont.draw(g,"COLD WAR", 70, 50,5,Color.cyan);
     		CWFont.draw(g,"-ULTIMATE PENGUIN HEROES-", 110, 90,1,Color.cyan);
     		
-    		CWFont.draw(g,"NAME: " + nameField.getText() + (mState == State.NAMESET ? "-" : "")
+    		CWFont.draw(g,"NAME: " + nameField.getText() + (mState == State.NAMESET && cursorBlinkTimer > 0 ? "|" : "")
     				, 30, 110,3,new Color(127,0,255));
     		CWFont.draw(g,"FAVOURITE COLOUR", 30, 150,3, primaryColor);
     		CWFont.draw(g,"SECONDARY COLOUR", 30, 190,3, secondaryColor);
     		CWFont.draw(g,"SERVER IP:", 30, 230,3, Color.orange);
-    		CWFont.draw(g,IPField.getText() + (mState == State.IPSET? "-" : "")
+    		CWFont.draw(g,IPField.getText() + (mState == State.IPSET && cursorBlinkTimer > 0 ? "-" : "")
     				, 210, 235,2,Color.orange);
     		CWFont.draw(g,"CONNECT!", 30, 270,3, ((IPField.getText().length() == 0|| nameField.getText().length() == 0) ? Color.darkGray : Color.white));
     		
@@ -64,41 +80,33 @@ public class CMainMenu {
         	
   
 	    			
-	        	if(CState.scaledMouseY > 150 && CState.scaledMouseY < 170)
-	        	{
-	
-	        		drawColorSet(g,30,150,290,20);
-	        		if(Mouse.isButtonDown(0))
-	            		CWFont.draw(g,"FAVOURITE COLOUR", 30, 150,3, primaryColor);
-	        	}
-	        	if(CState.scaledMouseY > 190 && CState.scaledMouseY < 210)
-	        	{
-	
-	        		drawColorSet(g,30,190,290,20);
-	        		if(Mouse.isButtonDown(0))
-	            		CWFont.draw(g,"SECONDARY COLOUR", 30, 190,3, secondaryColor);
-	        	}
-    		
-	    		
+        	if(CState.scaledMouseY > 150 && CState.scaledMouseY < 170)
+        	{
+        		drawColorSet(g,30,150,290,20);
+        		if(Mouse.isButtonDown(0))
+            		CWFont.draw(g,"FAVOURITE COLOUR", 30, 150,3, primaryColor);
+        	}
+        	if(CState.scaledMouseY > 190 && CState.scaledMouseY < 210)
+        	{
+        		drawColorSet(g,30,190,290,20);
+        		if(Mouse.isButtonDown(0))
+            		CWFont.draw(g,"SECONDARY COLOUR", 30, 190,3, secondaryColor);
+        	}
+        	
     		g.drawImage(cursor,CState.scaledMouseX-5 , CState.scaledMouseY-5 );
-    		
-    		
 	}
 
-	public void doLogic(GameContainer container, int delta) {
+	public void doLogic(GameContainer container, int delta, Input i) {
 		
-		if(nameField.getText().length() > MAXNAMELEN)
-		{
-			nameField.setText(nameField.getText().substring(0, MAXNAMELEN));
-		}
-		if(IPField.getText().length() > MAXIPLEN)
-		{
-			IPField.setText(IPField.getText().substring(0, MAXIPLEN));
-		}
+		cursorBlinkTimer = cursorBlinkTimer - delta;
+		if (cursorBlinkTimer < -CURSORBLINKTIME)
+			cursorBlinkTimer = CURSORBLINKTIME;
 		
     	if(CState.mouse1 && CState.scaledMouseY > 110 && CState.scaledMouseY < 150)
+    	{
+    		cursorBlinkTimer= CURSORBLINKTIME;
     		mState = State.NAMESET;
-    	
+    	}
   		
 		if(CState.scaledMouseX > 30 && CState.scaledMouseX < 320)
 		{
@@ -110,17 +118,20 @@ public class CMainMenu {
 	    	}
 	    	if(CState.mouse1 && CState.scaledMouseY > 190 && CState.scaledMouseY < 220)
 	    	{
-	
 	    		secondaryColor = getColor(30,190,290,20,CState.scaledMouseX,CState.scaledMouseY);
 	    		//colour change
 	    	}
 		}	
 		
     	if(CState.mouse1 && CState.scaledMouseY > 230 && CState.scaledMouseY < 280)
+    	{
+    		cursorBlinkTimer= CURSORBLINKTIME;
     		mState = State.IPSET;
+    	}
+    	
     	if(CState.mouse1 && CState.scaledMouseY > 280 && CState.scaledMouseY < 320)
-    		done = true;
-    		//start the game
+    		finished = true;
+    		//starts the game
     	if(container.getInput().isKeyPressed(Input.KEY_ENTER))
     		mState = State.PRELOBBY;
     	
@@ -128,7 +139,7 @@ public class CMainMenu {
 		IPField.setFocus(mState == State.IPSET);	
 	}
 	public boolean isDone() {
-		return done;
+		return finished;
 	}
 	
 	public String getServerIP(){
@@ -196,38 +207,24 @@ public class CMainMenu {
 		return secondaryColor;
 	}
 	
+	//Load last name, color,
     private void loadSettings() {
     	BufferedReader br;
     	
 		try {
 			
 			br = new BufferedReader(new FileReader("settings.neutral"));
-    	    
-    	    String line = br.readLine();
-    	    primaryColor.r = Float.parseFloat(line);
-    	    
-    	    line = br.readLine();
-    	    primaryColor.g = Float.parseFloat(line);
-    	    
-    	    line = br.readLine();
-    	    primaryColor.b = Float.parseFloat(line);
-    	    
-    	    line = br.readLine();
-    	    secondaryColor.r = Float.parseFloat(line);
-    	    
-    	    line = br.readLine();
-    	    secondaryColor.g = Float.parseFloat(line);
-    	    
-    	    line = br.readLine();
-    	    secondaryColor.b = Float.parseFloat(line);
-    	    
-    	    line = br.readLine();
-    	    while (line != null) {
-    	    	ipList.add(line);
-    	        line = br.readLine();
-    	    }
-
-    	    br.close();
+			
+			String name = br.readLine();
+    	    nameField.setText(name.length() <= MAXNAMELEN ? name : name.substring(0, MAXNAMELEN-1));
+			nameField.setCursorPos(nameField.getText().length());
+    	    primaryColor = new Color(Float.parseFloat( br.readLine() ),Float.parseFloat(br.readLine()),Float.parseFloat(br.readLine()));
+			secondaryColor = new Color(Float.parseFloat( br.readLine() ),Float.parseFloat(br.readLine()),Float.parseFloat(br.readLine()));
+			
+			String IP = br.readLine();
+			IPField.setText(IP);
+			nameField.setCursorPos(IP.length());
+	    	
     	    
     	} catch (Exception e){
     		e.printStackTrace();

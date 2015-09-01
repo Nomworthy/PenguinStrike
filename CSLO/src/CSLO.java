@@ -61,11 +61,13 @@ public class CSLO extends BasicGame
 	
 	private long currentTimeStamp;
 	
-	public static byte HANDSHAKE = -127;
-	public static byte TEAMREQUEST = -126;
-	public static byte BUYREQUEST = -125;
+	public static final byte HANDSHAKE = -127;
+	public static final byte TEAMREQUEST = -126;
+	public static final byte BUYREQUEST = -125;
+	public static final byte MAPREQUEST = -124;
 	
 	static final int maxPlayerCount = 10;
+
 	
 	private static boolean buyMenu = false;
 	
@@ -164,7 +166,7 @@ public class CSLO extends BasicGame
 				break;
 			case PRELOBBY:
 				updateInputs(container.getInput());
-				preLobby.doLogic(container,delta);
+				preLobby.doLogic(container,delta,container.getInput());
 				if(preLobby.isDone()){
 					gs = GameState.TEAMMENU;
 					serverIP = preLobby.getServerIP();
